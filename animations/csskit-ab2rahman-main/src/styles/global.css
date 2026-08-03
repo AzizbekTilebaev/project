@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #050B18;
+  --color-bg-surface: #0B0F14;
+  --color-bg-surface-hover: #111820;
+  --color-bg-glass: rgba(11, 15, 20, 0.7);
+  --color-tech-blue: #00AFFF;
+  --color-tech-blue-dim: rgba(0, 175, 255, 0.15);
+  --color-neon-green: #00E676;
+  --color-electric-cyan: #00D9FF;
+  --color-text-primary: #F5F7FA;
+  --color-text-muted: #9AA4B2;
+  --color-border: #1A2030;
+  --color-border-hover: #2A3548;
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+::selection {
+  background: var(--color-tech-blue);
+  color: white;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--color-border-hover); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-tech-blue); }
+
+pre, code { font-family: var(--font-mono); }
+
+/* Hide scrollbar for horizontal scroll areas */
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter { animation: page-in 0.3s ease-out; }
+
+/* Cyber glow for accent elements */
+.glow-blue { text-shadow: 0 0 20px rgba(0, 175, 255, 0.3); }
+.glow-green { text-shadow: 0 0 20px rgba(0, 230, 118, 0.3); }
+
+/* Glassmorphism card */
+.glass-card {
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+}

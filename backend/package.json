@@ -1,0 +1,51 @@
+{
+  "name": "qaraqalpaq-til-platformasi-backend",
+  "version": "1.0.0",
+  "description": "Qaraqalpaq Til Platforması Backend API",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "setup": "node scripts/setup.js",
+    "ensure-env": "node scripts/ensure-env.js",
+    "setup-quiz": "node scripts/setup-quiz-db.js",
+    "setup-dictionary": "node scripts/setup-dictionary-db.js",
+    "setup-books": "node scripts/setup-books-db.js",
+    "setup-literature": "node scripts/setup-literature-db.js",
+    "import-literature": "node scripts/import-literature-data.js",
+    "setup-crosswords": "node scripts/setup-crosswords-db.js",
+    "backup": "node scripts/backup-db.js",
+    "restore": "node scripts/restore-db.js",
+    "lint": "eslint .",
+    "setup-roles": "node scripts/setup-roles.js",
+    "setup-points": "node scripts/setup-points.js",
+    "start:prod": "NODE_ENV=production node src/server.js",
+    "test": "node --test --test-force-exit test/searchFold.test.js test/health.test.js test/quizRoutes.test.js test/quizSession.test.js test/community.test.js test/books.test.js test/gameRooms.test.js test/irt.test.js test/adaptiveQuiz.test.js test/localTutorAi.test.js test/qqScript.test.js test/readingLessonEngine.test.js test/literatureApi.test.js test/rbac.test.js test/points.test.js test/quizDictBridge.test.js test/tutorMistakeBank.test.js test/dictGameMistakeBank.test.js test/readingSrsFidelity.test.js test/quizCrossSourceSrs.test.js test/tutorProduce.test.js test/mistakeBankResolvedReactivation.test.js"
+  },
+  "keywords": [
+    "qaraqalpaq",
+    "language",
+    "learning"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.6.0",
+    "helmet": "^8.3.0",
+    "multer": "^2.2.0",
+    "mysql2": "^3.4.0",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "globals": "^15.15.0",
+    "nodemon": "^3.0.2"
+  }
+}

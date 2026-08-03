@@ -1,0 +1,17 @@
+{
+  "name": "qaraqalpaq-til-platformasi",
+  "version": "1.0.0",
+  "description": "Qaraqalpaq Til Platforması - Full Stack Web Application",
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "start:prod": "npm run build:frontend && cd backend && npm run start:prod"
+  },
+  "keywords": ["qaraqalpaq", "language", "learning", "education"],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,140 @@
+{
+  "generatorVersion": 2,
+  "pages": 10,
+  "messages": 7787,
+  "poems": 3022,
+  "withAuthor": 368,
+  "withoutAuthor": 2654,
+  "duplicates": 555,
+  "duplicateGroups": 201,
+  "noise": 2230,
+  "mediaMissing": 2022,
+  "byBucket": {
+    "aniq_muallifli": 280,
+    "muallifsiz": 2187,
+    "takror": 555,
+    "shovqin": 2230
+  },
+  "topAuthors": [
+    {
+      "name": "(muallifsiz)",
+      "count": 2654
+    },
+    {
+      "name": "Dau'letniyazov. Q",
+      "count": 83
+    },
+    {
+      "name": "(Ibrayim Yusupov)",
+      "count": 75
+    },
+    {
+      "name": "Kallıgul Bazarımbetova",
+      "count": 35
+    },
+    {
+      "name": "Azamat Nuratdinov",
+      "count": 14
+    },
+    {
+      "name": "Azat Daushbaev.✍",
+      "count": 11
+    },
+    {
+      "name": "Indira Toqtarbaeva",
+      "count": 10
+    },
+    {
+      "name": "Babanazarov Muratbay✍",
+      "count": 8
+    },
+    {
+      "name": "Durdana Seytnazarova",
+      "count": 5
+    },
+    {
+      "name": "Keńesbay Raxmanov",
+      "count": 5
+    },
+    {
+      "name": "Abbaz Dabilov",
+      "count": 4
+    },
+    {
+      "name": "Eshanov Rufat",
+      "count": 4
+    },
+    {
+      "name": "T. Matmuratov",
+      "count": 3
+    },
+    {
+      "name": "Tolibay Qabulov",
+      "count": 3
+    },
+    {
+      "name": "Abilqasim Ótepbergenov",
+      "count": 2
+    },
+    {
+      "name": "Azamat Qaniyazov",
+      "count": 2
+    },
+    {
+      "name": "Bazarbay Seytaev",
+      "count": 2
+    },
+    {
+      "name": "Dauletniyazov.Q",
+      "count": 2
+    },
+    {
+      "name": "den-sawlıq mudamı joldasıńız bolsın",
+      "count": 2
+    },
+    {
+      "name": "I.Yusupov",
+      "count": 2
+    },
+    {
+      "name": "K. Bazarımbetova",
+      "count": 2
+    },
+    {
+      "name": "Kúnxoja Ibrayım ulı",
+      "count": 2
+    },
+    {
+      "name": "Miyirman Erimbetov",
+      "count": 2
+    },
+    {
+      "name": "RAYANA",
+      "count": 2
+    },
+    {
+      "name": "Seyfulǵabit Majitov",
+      "count": 2
+    },
+    {
+      "name": "Tólepbergen Matmuratov",
+      "count": 2
+    },
+    {
+      "name": "Úmit Bijanova✍",
+      "count": 2
+    },
+    {
+      "name": "YUSUPOV MAQSET QAŃLÍBEKOVICH",
+      "count": 2
+    },
+    {
+      "name": "Abat Kramov ✍",
+      "count": 1
+    },
+    {
+      "name": "Al basla",
+      "count": 1
+    }
+  ]
+}

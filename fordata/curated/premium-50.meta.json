@@ -1,0 +1,357 @@
+{
+  "count": 50,
+  "importItems": 50,
+  "skipped": [],
+  "words": [
+    {
+      "title": "АЛДАП",
+      "score": 42,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0009.json",
+      "category": "ф.",
+      "defPreview": "Кеулин алып, жубатып, алдастырып, өтирикке инандырып. Базы да алданамыз, базы да"
+    },
+    {
+      "title": "АЛҒЫСНАМА",
+      "score": 40,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0009.json",
+      "category": "ат.",
+      "defPreview": "Үзликсиз мийнеті ушын айтылған ямаса берилген рәсмий ҳүрмет белгиси. Хүкимет тәр"
+    },
+    {
+      "title": "АЛКОГОЛИЗМ",
+      "score": 39,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0010.json",
+      "category": "мед.",
+      "defPreview": "Саламатлығына ҳәм мийнет ислеў қәбилетлигине зыян тийетуғын дәрежеде үзликсиз, м"
+    },
+    {
+      "title": "АЙТЫЛЫЎ",
+      "score": 36,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0005.json",
+      "category": "ф.",
+      "defPreview": "Сөйлениў, гәп болыў, хабарланыў. Айтылды бул қосық сизге, Ашыўланба енди бизге, "
+    },
+    {
+      "title": "АҚЫЛЛЫ",
+      "score": 36,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0008.json",
+      "category": "кел.",
+      "defPreview": "Ақылы көп, басы ислейтуғын, если, парасатлы, саналы. Ақыллы арымайды, Алтын шири"
+    },
+    {
+      "title": "АБАЖУР",
+      "score": 35,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0001.json",
+      "category": "ат.",
+      "defPreview": "Күшли жақтылық көзди (шағылдырмаўы) қамастырмаўы ҳәм тийисли орынға ғана топланы"
+    },
+    {
+      "title": "АЙҚЫНЛЫҚ",
+      "score": 34,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0004.json",
+      "category": "ат.",
+      "defPreview": "Анықлық, шынлық, ҳақыйқатлық, дурыслық. Жийен жыраўдың қосықларының көркемлиғи, "
+    },
+    {
+      "title": "АҒАЎЫЗ",
+      "score": 33,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0003.json",
+      "category": "кел.",
+      "defPreview": "Писпеғен, шала, ўақты жетпеғен, шийки, ўақты толмаған. Сен қарақалпақ, қазақ бол"
+    },
+    {
+      "title": "АЗЫЎ ІІ",
+      "score": 33,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0004.json",
+      "category": "ф.",
+      "defPreview": "Болдырыў, жүдеў, арықлаў, бузылыў. Заман қыслетинен сарғайдым аздым. Болар ма де"
+    },
+    {
+      "title": "АЙТПАҚЛЫҚ Ф.",
+      "score": 33,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0005.json",
+      "category": "Ф.",
+      "defPreview": "Айтыў кереклик, айтыўға тийислилик, айтыў лазымлық, дәркарлык. Анда бул сөзди ха"
+    },
+    {
+      "title": "АЛАРТЫЎ",
+      "score": 33,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0008.json",
+      "category": "ф.",
+      "defPreview": "Көзди шеннен тыс адырайтыў, бир нәрсеге елериў, бежирейиў. Бул кетистен жигит ке"
+    },
+    {
+      "title": "АГРОХИМИЯ",
+      "score": 32,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0003.json",
+      "category": "ат.",
+      "defPreview": "Өсимликлерди азықландырыў, оларды (жақсы жағдайда) раўажландырыў туўралы илим, ө"
+    },
+    {
+      "title": "АЙЛАНЫШ",
+      "score": 32,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0004.json",
+      "category": "кел.",
+      "defPreview": "Узақ, бурыў, шарым, айланшық. Арқан бойы айланышты, тусаў бойы төтелеген бар (ққ"
+    },
+    {
+      "title": "АЛАҚЛАСЫЎ",
+      "score": 32,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0008.json",
+      "category": "ф.",
+      "defPreview": "Не қыларын билмеў, албыраў, алағадаланыў, ҳайран болыў. Келген жаўды шыдатпады, "
+    },
+    {
+      "title": "АБАДАНШЫЛЫҚ",
+      "score": 31,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0001.json",
+      "category": "ат.",
+      "defPreview": "Молшылық, жетискенлик, курғын дәўир, абаданлық. Арық мерген жигитлери менен аң а"
+    },
+    {
+      "title": "АҚИЙ",
+      "score": 31,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0007.json",
+      "category": "кел.",
+      "defPreview": "Жүдә бий, шер, өзин жоқары санайтуғын адам. Астында бар торы аты, Белинде гәўҳар"
+    },
+    {
+      "title": "АҚПЫШАҚ",
+      "score": 31,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0007.json",
+      "category": "ат.",
+      "defPreview": "Урыўдың аты. Мүйтен, қоңырат, қытай, қыпшақ, кенегес маңғыт, ақпышақ, Бәри алты "
+    },
+    {
+      "title": "АҚЫЛГӨЙЛИК",
+      "score": 31,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0008.json",
+      "category": "ат.",
+      "defPreview": "Ақыл бериўшилик, ақыл айтыўшылық, даналық. Болар ма қасқаның дәни, Дән екен адам"
+    },
+    {
+      "title": "АҚЫЛСЫЗ",
+      "score": 31,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0008.json",
+      "category": "кел.",
+      "defPreview": "Акылы жок, басы ислемейтуғын, ойсыз, надан. Атасынан жаман болса, Оны жақсы деп "
+    },
+    {
+      "title": "АЛҒЫС",
+      "score": 31,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0009.json",
+      "category": "ат.",
+      "defPreview": "Рахмет, тәңир жарылқасын, ырзалық. Бул сөзлерди жазды қолым, Бүлбүл янлы сайрап "
+    },
+    {
+      "title": "АНЫДАҒЫ",
+      "score": 31,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0014.json",
+      "category": "ал.",
+      "defPreview": "Оныдағы, сол нәрсени, соны, соны да. Дарғадан өттик аржаққа, Интизар болдық бер "
+    },
+    {
+      "title": "АЗЫЎЛАСЫЎ",
+      "score": 30,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0004.json",
+      "category": "ф.",
+      "defPreview": "Айқасыў, урысыў, қарсыласыў, ашшыласыў, душпан менен сынасыў, тислесиў, шайқасыў"
+    },
+    {
+      "title": "АЙҚУЛАШ",
+      "score": 30,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0004.json",
+      "category": "ат.",
+      "defPreview": "Ойынның аты, ески ойынлардың бир түри. Айқулаш, айқулаш, Айға қарап қулаш аш, Ай"
+    },
+    {
+      "title": "АЙТАРЛЫҚ",
+      "score": 30,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0005.json",
+      "category": "ат.",
+      "defPreview": "Айтатуғын, айтажақ, жүдә жақсы кеўилдегидей. Келипсиз батыр булманға, Айтарлығың"
+    },
+    {
+      "title": "АҚЫЛСЫЗЛЫҚ",
+      "score": 30,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0008.json",
+      "category": "ат.",
+      "defPreview": "Ақмақлық, ойсызлық, көргенсизлик. Билгир сөзин тыңламаған, гәп мөнисин аңламаған"
+    },
+    {
+      "title": "АҚЫРАҢЛАЎ Ф",
+      "score": 30,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0008.json",
+      "category": "Фф.",
+      "defPreview": "Сығалаў, ашкөзлик пенен қараў. Төрт түлик мал шыкса өрип, Қарар еди кабақ түрип,"
+    },
+    {
+      "title": "АЛАЎАТ",
+      "score": 30,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0008.json",
+      "category": "ат.",
+      "defPreview": "Ғаўға, жәнжел, ғабырыспа, ғаўасат. Катынларды қырды, шапты, Толтырды өликке жапт"
+    },
+    {
+      "title": "АЛҒАЛЫ Ф.",
+      "score": 30,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0009.json",
+      "category": "Ф.",
+      "defPreview": "Алғаннан бери, соннан бери. Бул дүнья дүнья болғалы, Патша әдил болған емес, Шай"
+    },
+    {
+      "title": "АЛТАҚЛАЎ",
+      "score": 30,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0011.json",
+      "category": "ф.",
+      "defPreview": "Көтерилиў, менменсиниў, мардыйыў. Алтақлама, талтақлама, Биреў урды деп жылама, "
+    },
+    {
+      "title": "АЛТАЎ",
+      "score": 30,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0011.json",
+      "category": "с.",
+      "defPreview": "Санлықтың анлықтың жыйнаклаў түри, саны алтаў. Алтаў ала болса аўыздағыны алдыра"
+    },
+    {
+      "title": "АЛЫЎШЫ",
+      "score": 30,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0011.json",
+      "category": "ат.",
+      "defPreview": "Затты, нәрсени алатуғын адам, алажақ киси, аларман. Сайлап кызды алыўшылар, Жөнс"
+    },
+    {
+      "title": "АҒАСЫЗ",
+      "score": 28,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0003.json",
+      "category": "кел.",
+      "defPreview": "Ағасы жоқ, жасы үлкени жок, кәткудасы жоқ, ғамхорсыз, қәўендерсиз. Ел ағасыз бол"
+    },
+    {
+      "title": "АЙРАН",
+      "score": 28,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0005.json",
+      "category": "ат.",
+      "defPreview": "Ағарғанның бір түрі, қатықты пісіп майын алғаннан кейінгісі. Айран тілеп келіпсе"
+    },
+    {
+      "title": "АҚДУР",
+      "score": 28,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0007.json",
+      "category": "кел.",
+      "defPreview": "Ак, ҳакыйқат, хадал, таза, пәк, ҳақ, жақсы, ең жақсысы. Талап ислеп тап дүньяны,"
+    },
+    {
+      "title": "АЛДАРЫ",
+      "score": 28,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0009.json",
+      "category": "р.",
+      "defPreview": "Илгери, алдыңғы сапта, өрлеген, алға таман. Алдары болса кәдемиң, Бермей бизге ә"
+    },
+    {
+      "title": "АБЗАЦ",
+      "score": 27,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0001.json",
+      "category": "ат.",
+      "defPreview": "Текст басындағы яки оның айырым пикир билдирилген бөлеғиндеги биринши сөздиң бир"
+    },
+    {
+      "title": "АЙБАТЛАНЫЎ",
+      "score": 27,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0004.json",
+      "category": "ф.",
+      "defPreview": "Ғайрат көрсетиў, кәҳәрлениў, түсин суўытыў. Айбатланып сулыў сонда, Ағып кетти к"
+    },
+    {
+      "title": "АҚБАСЛЫҚ",
+      "score": 27,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0007.json",
+      "category": "кел.",
+      "defPreview": "Ақбас шөплердиң көп өскен жери. Адам билмес ақбаслықта жатырман, Керек болсам өз"
+    },
+    {
+      "title": "АҚМАҚЛЫҚ",
+      "score": 27,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0007.json",
+      "category": "ат.",
+      "defPreview": "Ақылсызлық, ойсызлық, тәртипсизлик. Ақмақлығы болмаса, Ҳеш нәрседен Айдос бий, Қ"
+    },
+    {
+      "title": "АБСОЛЮТ І",
+      "score": 26,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0001.json",
+      "category": "ат.",
+      "defPreview": "Идеалистлик философия түсинигинде әлемниң мәңгилик өзгермейтуғын дәслепки негизи"
+    },
+    {
+      "title": "АЗАЙҒАНДАЙ",
+      "score": 26,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0003.json",
+      "category": "кел.",
+      "defPreview": "Азырак, көп емес, азайып қалғандай. Кудаң болыс, сен ақсақал, Азайғандай көп ғал"
+    },
+    {
+      "title": "АККУМУЛЯТОР",
+      "score": 26,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0006.json",
+      "category": "ат.",
+      "defPreview": "Электр ямаса ток күшин саклап, үнемлеп пайдаланатуғын әсбап (қурал). Автомашинан"
+    },
+    {
+      "title": "АҚСАЗАН",
+      "score": 26,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0007.json",
+      "category": "ат.",
+      "defPreview": "Балықтың аты, түри. Барып көрсек қазаға, Ақшабақ пенен ақсазан, Сыйғанынша толып"
+    },
+    {
+      "title": "АЛЫСЛЫҚ",
+      "score": 26,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0011.json",
+      "category": "ат.",
+      "defPreview": "Узақлық, қашықлық, бир шет, бурыўлық. Қалалар мыңлаған километр алыслықта турады"
+    },
+    {
+      "title": "АНЫ",
+      "score": 26,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0014.json",
+      "category": "ал.",
+      "defPreview": "Ана нәрсени, оны, соны, сол нәрсени. Талап ислеп тап дүньяны, Сүттен ақдур билсе"
+    },
+    {
+      "title": "АЛАГӨТ",
+      "score": 25,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0008.json",
+      "category": "ат.",
+      "defPreview": "Кустың түри. Кусының түри усар алагөтке, Алагөт аң ала алмас қонар шетке (Әжиния"
+    },
+    {
+      "title": "АЛМАҚ",
+      "score": 25,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0011.json",
+      "category": "ф.",
+      "defPreview": "Аласы, алыўға тийисли зат, нәрсе. Алмақтың бермеги бар, буны билесең. (газетадан"
+    },
+    {
+      "title": "АВТОПОРТРЕТ",
+      "score": 23,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0002.json",
+      "category": "ат.",
+      "defPreview": "Художниктиң өзи тәрепинен исленген өзиниң (портрети) сүўрети."
+    },
+    {
+      "title": "АЙЛАС",
+      "score": 23,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0004.json",
+      "category": "ат.",
+      "defPreview": "Бирге, бир ўақытта, бир ўақытлы. Айлас қатын мунлас (ққ.х.н.)."
+    },
+    {
+      "title": "АККРЕДИТИВ",
+      "score": 20,
+      "source": "dict_pages_v2/15_remaining_simple/togri/0006.json",
+      "category": "ат.",
+      "defPreview": "Аманат кассасында ақшасы бар адам, сол ақшасынан басқа аймақтағы қалаларда жүрге"
+    }
+  ]
+}

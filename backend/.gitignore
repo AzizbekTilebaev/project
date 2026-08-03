@@ -1,0 +1,18 @@
+# Node.js
+node_modules/
+
+# Environment variables
+.env
+
+# DB dumps
+backups/
+
+# Generated audit/debug reports
+tmp/
+
+# IDE sozlamalari
+.claude/
+
+# Upload fayllar (agar papkangiz bo‘lsa)
+uploads/
+tusindirme_ushin/

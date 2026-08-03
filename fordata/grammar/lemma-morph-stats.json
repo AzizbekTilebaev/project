@@ -1,0 +1,280 @@
+{
+  "generatedAt": "2026-08-02T14:00:43.318Z",
+  "applied": true,
+  "titles": 27617,
+  "rootSetSize": 25423,
+  "multiWordSkipped": 1222,
+  "withSuffixes": 5239,
+  "knownRoot": 26361,
+  "knownRootWithSuffixes": 5239,
+  "bareKnownRoot": 21122,
+  "unknownRoot": 34,
+  "pctKnownRoot": 95.5,
+  "pctWithSuffixes": 19,
+  "pctKnownRootAmongSplit": 100,
+  "topAffixes": [
+    {
+      "form": "lıq",
+      "n": 1043
+    },
+    {
+      "form": "ıw",
+      "n": 658
+    },
+    {
+      "form": "lik",
+      "n": 568
+    },
+    {
+      "form": "shı",
+      "n": 556
+    },
+    {
+      "form": "iw",
+      "n": 352
+    },
+    {
+      "form": "las",
+      "n": 340
+    },
+    {
+      "form": "sız",
+      "n": 336
+    },
+    {
+      "form": "shi",
+      "n": 254
+    },
+    {
+      "form": "les",
+      "n": 224
+    },
+    {
+      "form": "siz",
+      "n": 207
+    },
+    {
+      "form": "tır",
+      "n": 142
+    },
+    {
+      "form": "sha",
+      "n": 119
+    },
+    {
+      "form": "ıl",
+      "n": 117
+    },
+    {
+      "form": "lı",
+      "n": 108
+    },
+    {
+      "form": "shılıq",
+      "n": 104
+    },
+    {
+      "form": "ıs",
+      "n": 99
+    },
+    {
+      "form": "dır",
+      "n": 78
+    },
+    {
+      "form": "xana",
+      "n": 72
+    },
+    {
+      "form": "she",
+      "n": 69
+    },
+    {
+      "form": "shilik",
+      "n": 68
+    },
+    {
+      "form": "ın",
+      "n": 66
+    },
+    {
+      "form": "in",
+      "n": 64
+    },
+    {
+      "form": "tir",
+      "n": 58
+    },
+    {
+      "form": "il",
+      "n": 58
+    },
+    {
+      "form": "li",
+      "n": 54
+    },
+    {
+      "form": "man",
+      "n": 52
+    },
+    {
+      "form": "is",
+      "n": 47
+    },
+    {
+      "form": "dir",
+      "n": 45
+    },
+    {
+      "form": "ıraq",
+      "n": 43
+    },
+    {
+      "form": "paq",
+      "n": 40
+    },
+    {
+      "form": "ker",
+      "n": 40
+    },
+    {
+      "form": "ısh",
+      "n": 37
+    },
+    {
+      "form": "ger",
+      "n": 32
+    },
+    {
+      "form": "shıq",
+      "n": 30
+    },
+    {
+      "form": "ǵısh",
+      "n": 26
+    },
+    {
+      "form": "laq",
+      "n": 26
+    },
+    {
+      "form": "shik",
+      "n": 26
+    },
+    {
+      "form": "maq",
+      "n": 25
+    },
+    {
+      "form": "irek",
+      "n": 25
+    },
+    {
+      "form": "das",
+      "n": 22
+    }
+  ],
+  "samples": {
+    "good": [
+      {
+        "soz": "АБАДАНЛАСТЫРЫЎ",
+        "split": "abadan + las + tır + ıw"
+      },
+      {
+        "soz": "АБАДАНЛАСЫЎ",
+        "split": "abadan + las + ıw"
+      },
+      {
+        "soz": "АБАДАНШЫЛЫҚ",
+        "split": "abadan + shılıq"
+      },
+      {
+        "soz": "АБСОЛЮТЛИК",
+        "split": "absolyut + lik"
+      },
+      {
+        "soz": "АГЕНТЛИК",
+        "split": "agent + lik"
+      },
+      {
+        "soz": "АҒАСЫЗ",
+        "split": "aǵa + sız"
+      },
+      {
+        "soz": "АЗДЫРЫЎ",
+        "split": "az + dır + ıw"
+      },
+      {
+        "soz": "АЗЫЎЛАСЫЎ",
+        "split": "azıw + las + ıw"
+      },
+      {
+        "soz": "АЙҚЫНЛЫҚ",
+        "split": "ayqın + lıq"
+      },
+      {
+        "soz": "АЙЛАС",
+        "split": "ay + las"
+      },
+      {
+        "soz": "АЙЛЫҚЛЫ",
+        "split": "ay + lıq + lı"
+      },
+      {
+        "soz": "АЙТАРЛЫҚ",
+        "split": "aytar + lıq"
+      }
+    ],
+    "bare": [
+      "АБАЖУР",
+      "АБЗАЦ",
+      "АБИТУРИЕНТ",
+      "АБОНЕМЕНТ",
+      "АБОНЕНТ",
+      "АБОРТ"
+    ],
+    "unknown": [
+      {
+        "soz": "У"
+      },
+      {
+        "soz": "Ж"
+      },
+      {
+        "soz": "Қ"
+      },
+      {
+        "soz": "З"
+      },
+      {
+        "soz": "Х Х"
+      },
+      {
+        "soz": "Ц Ц"
+      },
+      {
+        "soz": "Б"
+      },
+      {
+        "soz": "Г"
+      },
+      {
+        "soz": "Д"
+      },
+      {
+        "soz": "П"
+      }
+    ],
+    "multi": [
+      "АЙТАР АЎЫЗ",
+      "АЙЫР АҒАШ",
+      "АЙЫР БАҚАН",
+      "АҚ МАЯ",
+      "АҚ ОРДА",
+      "АҚ ОТАЎ",
+      "АҚ ПУШТА",
+      "АҚ СИЙНЕ"
+    ]
+  },
+  "elapsedMs": 1892
+}

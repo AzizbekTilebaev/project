@@ -1,0 +1,70 @@
+[
+  {
+    "title": "ОРДЕР",
+    "full_text": "ОРДЕР (нем. Order ОРДИНАТА (лат. ordinatus - тәртипленген; тәртип пенен жайластырылған). мат. Кеңисликтеги ноқаттың жағдайын аныклаўшы үш координатадан бири.",
+    "source": "5_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": "нем. Order ОРДИНАТА (лат. ordinatus - тәртипленген; тәртип пенен жайластырылған). мат. Кеңисликтеги ноқаттың жағдайын аныклаўшы үш координатадан бири",
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "dot_only_text"
+    ]
+  },
+  {
+    "title": "ОССУАРИЙ",
+    "full_text": "ОССУАРИЙ (лат. ossuarium - марҳум сүйеги сақланатуғын ыдыс",
+    "source": "5_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": "лат. ossuarium - марҳум сүйеги сақланатуғын ыды",
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "dot_only_text"
+    ]
+  },
+  {
+    "title": "СЕЗОН",
+    "full_text": "СЕЗОН ат. (фр. — егис мәўсими). Мәўсим.",
+    "source": "6_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": "фр. — егис мәўсими",
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "ат.",
+          "Мәўсим."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def"
+    ]
+  }
+]

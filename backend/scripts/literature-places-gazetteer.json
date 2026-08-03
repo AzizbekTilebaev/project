@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "notes": "Qaraqalpaqstan hám qońsı jerler — bio geokodlaw ushın curated gazetteer.",
+  "places": [
+    { "keys": ["нөкис", "нокis", "nókis", "нукус", "nukus"], "labelOriginal": "Нөкис", "labelLatin": "Nókis", "lat": 42.4600, "lng": 59.6100 },
+    { "keys": ["мойнақ", "moynaq", "muynak"], "labelOriginal": "Мойнақ", "labelLatin": "Moynaq", "lat": 43.7680, "lng": 59.0210 },
+    { "keys": ["шымбай", "shımbay", "shimbay", "chimbay"], "labelOriginal": "Шымбай", "labelLatin": "Shımbay", "lat": 42.9330, "lng": 59.7770 },
+    { "keys": ["тахтакөпир", "taxtakópir", "takhtakupir", "taxtakupir"], "labelOriginal": "Тахтакөпир", "labelLatin": "Taxtakópir", "lat": 43.0230, "lng": 60.0740 },
+    { "keys": ["хожели", "xojeli", "khojeli", "хожейли"], "labelOriginal": "Хожели", "labelLatin": "Xojeli", "lat": 42.4040, "lng": 59.4510 },
+    { "keys": ["төрткүл", "tórtkúl", "turtkul", "tortkul"], "labelOriginal": "Төрткүл", "labelLatin": "Tórtkúl", "lat": 41.5520, "lng": 60.9980 },
+    { "keys": ["қоңырат", "qońırat", "kungrad", "qonirat"], "labelOriginal": "Қоңырат", "labelLatin": "Qońırat", "lat": 43.0440, "lng": 58.8460 },
+    { "keys": ["кегейли", "kegeyli"], "labelOriginal": "Кегейли", "labelLatin": "Kegeyli", "lat": 42.7770, "lng": 59.6080 },
+    { "keys": ["қараөзек", "qaraózek", "karaozek"], "labelOriginal": "Қараөзек", "labelLatin": "Qaraózek", "lat": 43.0260, "lng": 60.0160 },
+    { "keys": ["шоманай", "shomanay"], "labelOriginal": "Шоманай", "labelLatin": "Shomanay", "lat": 42.6350, "lng": 58.9290 },
+    { "keys": ["қанлықөл", "qanlıкól", "qanlıqol", "kanlikul"], "labelOriginal": "Қанлықөл", "labelLatin": "Qanlıqól", "lat": 42.8000, "lng": 59.0000 },
+    { "keys": ["елликқала", "ellikqala", "ellikkala"], "labelOriginal": "Елликқала", "labelLatin": "Ellikqala", "lat": 41.8450, "lng": 60.8700 },
+    { "keys": ["берунiй", "beruniy", "бируний"], "labelOriginal": "Беруний", "labelLatin": "Beruniy", "lat": 41.6910, "lng": 60.7520 },
+    { "keys": ["амударья", "ámiwdárya", "amiwdarya"], "labelOriginal": "Әмиўдәрья", "labelLatin": "Ámiwdárya", "lat": 42.1000, "lng": 60.0500 },
+    { "keys": ["арал", "aral"], "labelOriginal": "Арал", "labelLatin": "Aral", "lat": 44.1000, "lng": 58.5000 },
+    { "keys": ["ташаўыз", "tashawız", "dashoguz"], "labelOriginal": "Ташаўыз", "labelLatin": "Tashawız", "lat": 41.8400, "lng": 59.9660 },
+    { "keys": ["гөне үргениш", "góne úrgenish", "koneurgench"], "labelOriginal": "Гөне Үргениш", "labelLatin": "Góne Úrgenish", "lat": 42.3270, "lng": 59.1550 },
+    { "keys": ["ташкент", "tashkent"], "labelOriginal": "Ташкент", "labelLatin": "Tashkent", "lat": 41.2995, "lng": 69.2401 },
+    { "keys": ["москва", "moskva", "moscow"], "labelOriginal": "Москва", "labelLatin": "Moskva", "lat": 55.7558, "lng": 37.6173 },
+    { "keys": ["азат", "azat"], "labelOriginal": "Азат аўылы (Шымбай)", "labelLatin": "Azat awılı (Shımbay)", "lat": 42.9500, "lng": 59.8000 },
+    { "keys": ["қамыс бөгет", "qamıs bóget", "камыс богет", "qamis boget", "қамыс буғат"], "labelOriginal": "Қамыс бөгет (Мойнақ)", "labelLatin": "Qamıs bóget (Moynaq)", "lat": 43.6500, "lng": 59.0500 },
+    { "keys": ["аққала", "aqqala", "аккала", "ақ қала"], "labelOriginal": "Аққала (Мойнақ)", "labelLatin": "Aqqala (Moynaq)", "lat": 43.6000, "lng": 58.9500 },
+    { "keys": ["қазақдәрья", "qazaqdárya", "казахдарья", "qazaqdarya"], "labelOriginal": "Қазақдәрья (Мойнақ)", "labelLatin": "Qazaqdárya (Moynaq)", "lat": 43.3500, "lng": 59.5500 },
+    { "keys": ["хийўа", "xiywa", "хива", "khiva", "xiwa"], "labelOriginal": "Хийўа", "labelLatin": "Xiywa", "lat": 41.3783, "lng": 60.3639 },
+    { "keys": ["үргениш", "úrgenish", "ургенч", "urgench"], "labelOriginal": "Үргениш", "labelLatin": "Úrgenish", "lat": 41.5500, "lng": 60.6300 },
+    { "keys": ["түркстан", "túrkstan", "туркестан", "turkistan"], "labelOriginal": "Түркстан", "labelLatin": "Túrkstan", "lat": 43.3000, "lng": 68.2700 }
+  ]
+}

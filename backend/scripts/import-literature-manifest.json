@@ -1,0 +1,376 @@
+{
+  "version": 1,
+  "root": "fordata/books",
+  "notes": "High-confidence book imports for quiz_db. Originals preserved; derived script secondary. Skip entries carry reasons; unlisted files are reported by the import audit.",
+  "curatedWriters": [
+    {
+      "slug": "berdaq-gargabay-uly",
+      "poetNameOriginal": "Бердақ Ғарғабай улы",
+      "poetNameLatin": "Berdaq Ǵarǵabay ulı",
+      "lifeSpan": "1827-1900",
+      "biographyPlain": "Бердақ (Бердимурат) Ғарғабай улы — қарақалпақ халқының уллы классик шайыры, ҳәзирги қарақалпақ әдебий тилиниң тийкарын салыўшылардың бири. Ол 1827-жылы Арал теңизиниң қубла жағасындағы Аққала деген жерде туўылған. Он жасында ата-анасынан айырылып, аўыл мектебинде оқыған, соң Қарақум ийшан медресесинде билим алған. Устазлары Күнхожа менен Әжинияз оның дөретиўшилигине үлкен тәсир еткен. Узақ жыллар той-мерекелерде дуўтар шертип, өз қосықларын атқарған. «Халық ушын», «Болған емес», «Шежире», «Амангелди», «Айдос баба», «Ерназар бий», «Ақмақ патша» сыяқлы шығармалары қарақалпақ әдебиятының алтын қорына кирген. Өзиниң «Өмирим» қосығында автобиографиясын қалдырған. Шайыр 1900-жылы Қазақдәрьяда қайтыс болған.",
+      "aliases": ["Berdaq", "Бердак", "Бердақ", "Berdaq Ǵarǵabay ulı", "Berdaq (Berdimurat Ǵarǵabay ulı)", "Бердимурат Ғарғабай улы"]
+    },
+    {
+      "slug": "ajiniyaz-qosibay-uly",
+      "poetNameOriginal": "Әжинияз Қосыбай улы",
+      "poetNameLatin": "Ájiniyaz Qosıbay ulı",
+      "lifeSpan": "1824-1878",
+      "biographyPlain": "Әжинияз Қосыбай улы (Зийўар) — XIX әсирдеги қарақалпақ классик шайыры, ойшыл ҳәм ағартыўшы. Ол 1824-жылы Мойнақ районына қараслы Қамыс бөгет аўылында туўылған. Әкеси Қосыбай, анасы Назийра сөзге шешен, дилўар ҳаял болған. Хийўадағы Шерғазы хан ҳәм Қутлымурат инақ медреселеринде оқып, араб, парсы, түркмен, қазақ тиллерин жетик билген. 1858–1859-жыллардағы Қоңырат көтерилисине қатнасқан, усы ўақыялар тәсиринде атақлы «Бозатаў» дәстанын жазған. 1864-жылы Қазақстанға сапарында қазақ шайыры Қыз Меңеш пенен айтысқа түсип жеңип шыққан. Бозатаў, Қамыс бөгет аўылларында кәмбағал балалары ушын мектеплер ашып, сабақ берген. Зийўар — оның әдебий лақабы. Шайыр 1878-жылы қайтыс болған.",
+      "aliases": ["Ájiniyaz", "Ajiniyaz", "Әжинияз", "Зийўар", "Ziywar", "Zíywar", "Ájiniyaz (Ájiniyaz Qosıbay ulı)"]
+    },
+    {
+      "slug": "kunxoja-ibrayim-uly",
+      "poetNameOriginal": "Күнхожа Ибрайым улы",
+      "poetNameLatin": "Kúnxoja Ibrayım ulı",
+      "lifeSpan": "1799-1880",
+      "biographyPlain": "Күнхожа Ибрайым улы (шын аты Жийемурат) — қарақалпақ классик шайыры, халық турмысын жырлаған демократ шайырлардың бири. Ол 1799-жылы Тахтакөпир районы аймағында туўылған. Қоңырат арысы Қолдаўлы руўының Қалхаман тийресинен шыққан кәмбағал шаңарақтан. Жаслайынан шопан болып иследи, Қарақум ийшан медресесинде оқыды, бирақ жарлылық себепли оқыўын тамамлай алмады. Үргениш ҳәм Хийўада жүрип халықтың аўыр турмысын өз көзи менен көрген. «Ораққа кеткенде», «Шопанлар», «Ақ қамыс», «Умытпаспан» сыяқлы қосықлары халық арасында кең тарқалған. Оның дөретиўшилиги Бердақ шайырға да үлкен тәсир еткен. Шайыр 1880-жылы қайтыс болған.",
+      "aliases": ["Kúnxoja", "Kunxoja", "Күнхожа", "Kúnxoja (Jiyen Tildesh ulı)"]
+    },
+    {
+      "slug": "jiyen-jiraw-tagay-uly",
+      "poetNameOriginal": "Жийен Жыраў Аманлық улы",
+      "poetNameLatin": "Jiyen Jıraw Amanlıq ulı",
+      "lifeSpan": "1730-1784",
+      "biographyPlain": "Жийен Жыраў Аманлық улы — XVIII әсирдеги қарақалпақ жыраўы ҳәм шайыры. Ол шама менен 1730-жылы Түркстан әтирапында туўылған. Ерте изертлеўлерде «Тағай улы» деп те аталған. Оның «Посқан ел» дәстаны қарақалпақлардың Түркстаннан Хорезмге аўыр көшиўин өз көзи менен көрген гүўасы сыпатында жазылған тарийхый шығарма. Жыраў шама менен 1784-жылы қайтыс болған.",
+      "aliases": ["Jiyen Jıraw", "Жийен Жыраў", "Жийен жыраў Тағай улы", "Жийен Жыраў Тағай улы", "Jiyen Jıraw Taǵay ulı", "jiyen-jiraw-amaliq-uli"]
+    }
+  ],
+  "books": [
+    {
+      "id": "ushpelek-1964",
+      "path": "shawdirbay seytov/ushpelek/Үшпелек.json",
+      "parser": "ushpelek-json",
+      "title": "Үшпелек",
+      "authorMatch": ["Сейтов Шаўдырбай", "Шаўдырбай Сейитов", "Shawdirbay Seyitov"],
+      "years": "1964",
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high",
+      "pdfSidecar": "shawdirbay seytov/ushpelek/Ш_Сейитов_Үшпелек_1964_SH_Seyitov_Úshpelek_1964.pdf"
+    },
+    {
+      "id": "jollar-seyitov",
+      "path": "Жоллар.txt",
+      "parser": "dash-title-txt",
+      "title": "Жоллар",
+      "authorMatch": ["Сейтов Шаўдырбай", "Shawdirbay Seyitov"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high",
+      "pdfSidecar": "shawdirbay seytov/jollar/Ш.Сейитов Жоллар.pdf"
+    },
+    {
+      "id": "jeti-asirim-1962",
+      "path": "jeti asirim/Ibrayim-Yusupov.-Jeti-asirim-_1962_.txt",
+      "parser": "dash-title-txt",
+      "title": "Жети асырым",
+      "authorMatch": ["Юсупов Ибрайым", "Ibrayim Yusupov"],
+      "years": "1962",
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high",
+      "pdfSidecar": "jeti asirim/Ibrayim Yusupov. Jeti asirim (1962).pdf"
+    },
+    {
+      "id": "begligindi-buzba-sen-1995",
+      "path": "begligindi buzbasen/Ibrayim-Yusupov.-Begligindi-buzba-sen-_1995_.txt",
+      "parser": "caps-heading-txt",
+      "title": "Беглигиңди бузба сен",
+      "authorMatch": ["Юсупов Ибрайым"],
+      "years": "1995",
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high",
+      "pdfSidecar": "begligindi buzbasen/Ibrayim Yusupov. Begligindi buzba sen (1995).pdf"
+    },
+    {
+      "id": "alasatli-dunya-bul-1987",
+      "path": "Alasatli dunya bul/Ibrayim Yusupov. Alasatli dunya bul (1987).txt",
+      "parser": "caps-heading-txt",
+      "title": "Аласатлы дүнья бул",
+      "titleOriginal": "Аласатлы дүнья бул",
+      "titleLatin": "Alasatlı dúnya bul",
+      "authorMatch": ["Юсупов Ибрайым", "Ibrayim Yusupov"],
+      "years": "1987",
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high",
+      "pdfSidecar": "Alasatli dunya bul/Ibrayim Yusupov. Alasatli dunya bul (1987).pdf"
+    },
+    {
+      "id": "bulbil-uyasi-1997",
+      "path": "bul bul uyasi/Ibrayim-Yusupov.-Bulbil-uyasi-_1997_.txt",
+      "parser": "caps-heading-txt",
+      "title": "Бүлбил уясы",
+      "titleOriginal": "Бүлбил уясы",
+      "titleLatin": "Búlbil uyası",
+      "authorMatch": ["Юсупов Ибрайым"],
+      "years": "1997",
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high",
+      "pdfSidecar": "bul bul uyasi/Ibrayim Yusupov. Bulbil uyasi (1997).pdf"
+    },
+    {
+      "id": "baxit-lirikasi-1955",
+      "path": "baxit lirikasi/Ibrayim-Yusupov.-Baxit-lirikasi-_1955_.txt",
+      "parser": "caps-heading-txt",
+      "title": "Бахыт лирикасы",
+      "titleOriginal": "Бахыт лирикасы",
+      "titleLatin": "Baxit lirikası",
+      "authorMatch": ["Юсупов Ибрайым"],
+      "years": "1955",
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high",
+      "pdfSidecar": "baxit lirikasi/Ibrayim Yusupov. Baxit lirikasi (1955).pdf"
+    },
+    {
+      "id": "99-maslahat",
+      "path": "Tólepbergen Qayıpbergenov 99 máslahát.txt",
+      "parser": "blank-paragraph-txt",
+      "title": "ХХІ әсирдиң босағасында туўылған адасыма 99 кеңес",
+      "authorMatch": ["Қайыпбергенов Төлепберген", "Tólepbergen Qayıpbergenov", "Tólepbergen Qaipbergenov"],
+      "genre": "other",
+      "workKind": "prose",
+      "confidence": "high"
+    },
+    {
+      "id": "gozzalliq-oyandi-1970",
+      "path": "gozzalliqoyandi.txt",
+      "parser": "dash-title-txt",
+      "title": "Гөззаллық оянды",
+      "authorMatch": ["Мәтмуратов Төлепберген"],
+      "years": "1970",
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "aq-terekpe-kok-terek",
+      "path": "aq terekpe kok terek.txt",
+      "parser": "dash-title-txt",
+      "title": "Ақ терекпе көк терек",
+      "authorMatch": ["Мәтмуратов Төлепберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "aysanem-1967",
+      "path": "aysanem.txt",
+      "parser": "dash-title-txt",
+      "title": "Айсәнем",
+      "authorMatch": ["Мәтмуратов Төлепберген"],
+      "years": "1967",
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "matmuratov-lirika",
+      "path": "lirika.txt",
+      "parser": "dash-title-txt",
+      "title": "Лирика",
+      "authorMatch": ["Мәтмуратов Төлепберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "medium",
+      "importStatus": "draft",
+      "note": "Attribution inferred from sibling files; verify author before publishing."
+    },
+    {
+      "id": "jarshi-1974",
+      "path": "jarshi.txt",
+      "parser": "blank-paragraph-txt",
+      "title": "Жаршы",
+      "authorMatch": ["Сәрсенбаев Теңелбай", "Tengelbay Sarsenbaev"],
+      "years": "1974",
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "medium",
+      "importStatus": "draft",
+      "stripPatterns": ["@Tengelbay_Sarsenbaev", "Каналға ағза болыўды умытпаң", "топламындағы қосықлар дизими"],
+      "stripLineRegex": ["^\\s*\\d{1,3}\\.\\s"],
+      "note": "Telegram channel dump; promo lines stripped, poem titles are plain lines (best effort)."
+    },
+    {
+      "id": "posqan-el",
+      "path": "posqan el.txt",
+      "parser": "single-piece-txt",
+      "title": "Посқан ел",
+      "authorMatch": ["Жийен Жыраў Тағай улы", "Жийен Жыраў"],
+      "curatedSlug": "jiyen-jiraw-tagay-uly",
+      "genre": "klassik",
+      "workKind": "dastan",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-lirika",
+      "path": "tilewbergen jmamuratov/tayarlangan/Лирика.txt",
+      "parser": "caps-heading-txt",
+      "title": "Лирика",
+      "authorMatch": ["Жумамуратов Тилеўберген", "Тлеуберген Джумамуратов"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-poemalar",
+      "path": "tilewbergen jmamuratov/tayarlangan/Поэмалар.txt",
+      "parser": "caps-heading-txt",
+      "title": "Поэмалар",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-sonetler",
+      "path": "tilewbergen jmamuratov/tayarlangan/Сонетлер.txt",
+      "parser": "caps-heading-txt",
+      "title": "Сонетлер",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-tortlikler",
+      "path": "tilewbergen jmamuratov/tayarlangan/Төртликлер.txt",
+      "parser": "caps-heading-txt",
+      "title": "Төртликлер",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-miniatyuralar",
+      "path": "tilewbergen jmamuratov/tayarlangan/Миниатюралар.txt",
+      "parser": "caps-heading-txt",
+      "title": "Миниатюралар",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-balladalar",
+      "path": "tilewbergen jmamuratov/tayarlangan/Балладалар.txt",
+      "parser": "caps-heading-txt",
+      "title": "Балладалар",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-satira",
+      "path": "tilewbergen jmamuratov/tayarlangan/Cатира.txt",
+      "parser": "caps-heading-txt",
+      "title": "Сатира",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-apsanalar",
+      "path": "tilewbergen jmamuratov/tayarlangan/Әпсәналар.txt",
+      "parser": "caps-heading-txt",
+      "title": "Әпсәналар",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-ertekler",
+      "path": "tilewbergen jmamuratov/tayarlangan/Ертеклер.txt",
+      "parser": "caps-heading-txt",
+      "title": "Ертеклер",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-tymsallar",
+      "path": "tilewbergen jmamuratov/tayarlangan/Тымсаллар.txt",
+      "parser": "caps-heading-txt",
+      "title": "Тымсаллар",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-aral",
+      "path": "tilewbergen jmamuratov/tayarlangan/Арал ҳаққында.txt",
+      "parser": "caps-heading-txt",
+      "title": "Арал ҳаққында",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-watan",
+      "path": "tilewbergen jmamuratov/tayarlangan/Ўатан ҳаққында қосықлар.txt",
+      "parser": "caps-heading-txt",
+      "title": "Ўатан ҳаққында қосықлар",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "jumamuratov-dosliq",
+      "path": "tilewbergen jmamuratov/tayarlangan/Дослық ҳаққында қосықлар.txt",
+      "parser": "caps-heading-txt",
+      "title": "Дослық ҳаққында қосықлар",
+      "authorMatch": ["Жумамуратов Тилеўберген"],
+      "genre": "zamanagoy",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "berdaq-tanlamali",
+      "path": "kitapxana.com_berdaq_tanlamali_shigarmalar_jiynagi.txt",
+      "parser": "dash-title-txt",
+      "title": "Бердақ — таңламалы шығармаларының жыйнағы",
+      "authorMatch": ["Бердақ Ғарғабай улы", "Berdaq"],
+      "curatedSlug": "berdaq-gargabay-uly",
+      "genre": "klassik",
+      "workKind": "poetry",
+      "confidence": "high"
+    },
+    {
+      "id": "ajiniyaz-ziywar",
+      "path": "kitapxana.com_ziywar.txt",
+      "parser": "dash-title-txt",
+      "title": "Зийўар — таңламалы шығармалары",
+      "authorMatch": ["Әжинияз Қосыбай улы", "Ájiniyaz"],
+      "curatedSlug": "ajiniyaz-qosibay-uly",
+      "genre": "klassik",
+      "workKind": "poetry",
+      "confidence": "high"
+    }
+  ],
+  "skip": [
+    { "path": "Үшпелек.txt", "reason": "duplicate of shawdirbay seytov/ushpelek/Үшпелек.json" },
+    { "path": "shawdirbay seytov/jollar/Жоллар.txt", "reason": "variant of Жоллар.txt without heading markers (root copy imported)" },
+    { "path": "Жоллар_list.txt", "reason": "list-only table of contents" },
+    { "path": "gozzalliqoyandi_list.txt", "reason": "list-only table of contents" },
+    { "path": "shawdirbay seytov/jollar/Жоллар_list.txt", "reason": "list-only table of contents" },
+    { "path": "kitapxana.com_adebiyat_xrestomatiyasi.txt", "reason": "multi-author anthology (low confidence author mapping)" },
+    { "path": "kitapxana.com_adebiyat_xrestomatiyasi (1).txt", "reason": "duplicate copy of the anthology" },
+    { "path": "ajiniyaz.txt", "reason": "mixed-schwa duplicate of kitapxana.com_ziywar.txt content" },
+    { "path": "ajinyaz.txt", "reason": "partial variant duplicate of Ziywar selected works" },
+    { "path": "tilewbergen jmamuratov/Тлеуберген Джумамуратов __ Лирика_QQ.txt", "reason": "exact duplicate of tayarlangan/Лирика.txt" },
+    { "path": "tilewbergen jmamuratov/Тлеуберген Джумамуратов __ Лирика_Rus.txt", "reason": "Russian translation twin" },
+    { "path": "moskvadan kelgen qiz", "reason": "Telegram HTML export assets (css/js/images), not book text" }
+  ]
+}

@@ -1,0 +1,352 @@
+[
+  {
+    "title": "АЛЫП",
+    "full_text": "АЛЫП қ.",
+    "source": "1_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "қ."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "БАҚТИЯР",
+    "full_text": "БАҚТИЯР к.",
+    "source": "1_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "к."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "ВЕРСТКАЛАЎ Б",
+    "full_text": "ВЕРСТКАЛАЎ Бетлеў.",
+    "source": "2_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "Бетлеў."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def"
+    ]
+  },
+  {
+    "title": "СОҢҒЫ Қ",
+    "full_text": "СОҢҒЫ Қосық.",
+    "source": "2_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "Қосық."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "ГЕНДЕР",
+    "full_text": "ГЕНДЕР ат.",
+    "source": "2_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "ат."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "ЖАЛЛАТ ЖӘ",
+    "full_text": "ЖАЛЛАТ ЖӘллат.",
+    "source": "3_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "ЖӘллат."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "ЖАРНАҚ",
+    "full_text": "ЖАРНАҚ шерик.",
+    "source": "3_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "шерик."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "КИЛТ",
+    "full_text": "КИЛТ қ, гилт.",
+    "source": "4_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "қ, гилт.",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "КАМ II",
+    "full_text": "КАМ II К. Fам.",
+    "source": "4_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "I К. Fам.",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "НӘХАҚ",
+    "full_text": "НӘХАҚ наҳақ.",
+    "source": "5_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "наҳақ."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "ТОҒЫЗЛЫҒЫ",
+    "full_text": "ТОҒЫЗЛЫҒЫ ат.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "ат."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "ТОЙТАҢЛАЎ Ф.",
+    "full_text": "ТОЙТАҢЛАЎ Ф.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "Ф."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "ТОЙТАНЫЎ Ф.",
+    "full_text": "ТОЙТАНЫЎ Ф.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "Ф."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "ТУРНИРИ Ж",
+    "full_text": "ТУРНИРИ Жарыс.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "Жарыс."
+        ],
+        "text": "",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "empty_def",
+      "very_short_fulltext"
+    ]
+  },
+  {
+    "title": "ҚЫРҚ ТУЎАР",
+    "full_text": "ҚЫРҚ ТУЎАР ат.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "ТУЎАР ат.",
+        "idioms": []
+      }
+    ],
+    "_suspicious_reasons": [
+      "very_short_fulltext"
+    ]
+  }
+]

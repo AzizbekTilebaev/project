@@ -1,0 +1,160 @@
+{
+  "crosswords": [
+    {
+      "id": 1,
+      "title": "Bilim hám turmıs",
+      "difficulty": "Ápiwayı",
+      "description": "Kúndelikli turmıs hám bilimge baylanıslı ápiwayı sózler.",
+      "config": {
+        "CrosswordWidth": 7,
+        "CrosswordHeight": 5,
+        "WordsData": [
+          {
+            "answer": "MEKTEP",
+            "clue": "Balalar bilim alatuǵın orın.",
+            "x": 0,
+            "y": 0,
+            "direction": "across"
+          },
+          {
+            "answer": "KITAP",
+            "clue": "Betlerden ibarat oqıw quralı.",
+            "x": 2,
+            "y": 0,
+            "direction": "down"
+          },
+          {
+            "answer": "TIL",
+            "clue": "Sóylew quralı — qaraqalpaq ...",
+            "x": 2,
+            "y": 2,
+            "direction": "across"
+          },
+          {
+            "answer": "ANA",
+            "clue": "Sizdi tuwǵan eń jaqın adam.",
+            "x": 2,
+            "y": 3,
+            "direction": "across"
+          },
+          {
+            "answer": "PAXTA",
+            "clue": "«Aq altın» dep atalatuǵın ósimlik.",
+            "x": 2,
+            "y": 4,
+            "direction": "across"
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Úy hám tábiyat",
+      "difficulty": "Orta",
+      "description": "Úy-joy, tábiyat hám kúndelikli ómir sózleri.",
+      "config": {
+        "CrosswordWidth": 5,
+        "CrosswordHeight": 4,
+        "WordsData": [
+          {
+            "answer": "SUW",
+            "clue": "Ishiwge hám ómirge kerek suyıqlıq.",
+            "x": 0,
+            "y": 0,
+            "direction": "across"
+          },
+          {
+            "answer": "UY",
+            "clue": "Adam jasaytuǵın jay.",
+            "x": 1,
+            "y": 0,
+            "direction": "down"
+          },
+          {
+            "answer": "NAN",
+            "clue": "Biydaydan pishiriletuǵın azıq.",
+            "x": 0,
+            "y": 2,
+            "direction": "across"
+          },
+          {
+            "answer": "AT",
+            "clue": "Minip júretuǵın haywan.",
+            "x": 1,
+            "y": 2,
+            "direction": "down"
+          }
+        ]
+      }
+    },
+    {
+      "id": "learningapps-poogjpqhc24",
+      "title": "Ádebiyat krossvordı (Krassvard)",
+      "difficulty": "Orta",
+      "description": "Qaraqalpaq ádebiyatı — LearningApps gridı menen (poogjpqhc24). Tolıqtırıń!",
+      "source": "https://learningapps.org/watch?v=poogjpqhc24",
+      "config": {
+        "CrosswordWidth": 10,
+        "CrosswordHeight": 24,
+        "WordsData": [
+          {
+            "answer": "KEGEYLI",
+            "clue": "T.Qayıpbergenov qay jerde tuwılǵan?",
+            "x": 3,
+            "y": 7,
+            "direction": "down"
+          },
+          {
+            "answer": "ULIMTINLA",
+            "clue": "J.Aymurzaev urıs dáwirinde teren patriotizm ruxi menen jazılǵan eń jaqsı jawgerlik lirikalarınıń biri qaysı qosıǵı?",
+            "x": 1,
+            "y": 0,
+            "direction": "down"
+          },
+          {
+            "answer": "AYAZIY",
+            "clue": "«Kimdur tirisinde-aq atın joqlamas… Arjaǵında bir nársesi bolmasa…» — avtorı kim?",
+            "x": 5,
+            "y": 12,
+            "direction": "down"
+          },
+          {
+            "answer": "MONOLOG",
+            "clue": "I.Yusupov «Tırnalar» qosıǵında tırnalardıń ketiwi shayırdı qanday formada jetkeredi?",
+            "x": 3,
+            "y": 21,
+            "direction": "across"
+          },
+          {
+            "answer": "BALLADA",
+            "clue": "T.Jumamuratov «Otırıspa», «Shimbaylı qız» qosıqların qaysı janrda jazǵan?",
+            "x": 1,
+            "y": 12,
+            "direction": "across"
+          },
+          {
+            "answer": "AWIRSINAQLAR",
+            "clue": "Nawrız, Shiyringúl, Maqset, Pirjan, Erjan qaysı shıǵarma qaharmanları?",
+            "x": 7,
+            "y": 12,
+            "direction": "down"
+          },
+          {
+            "answer": "TAJETDIN",
+            "clue": "«Dostım, sen qaysınday jayda bolsań da… Senin qayǵıların meniń de qayǵım.» — kim jazǵan?",
+            "x": 0,
+            "y": 8,
+            "direction": "across"
+          },
+          {
+            "answer": "BERUNIY",
+            "clue": "«Temir qazıq» poemasinda kimniń obrazı súwretlengen?",
+            "x": 2,
+            "y": 10,
+            "direction": "across"
+          }
+        ]
+      }
+    }
+  ]
+}

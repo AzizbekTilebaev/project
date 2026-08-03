@@ -1,0 +1,286 @@
+[
+  {
+    "title": "ТАХТАПАРА",
+    "full_text": "ТАХТАПАРА ат. Тахтай бөлеги, кесиндиси",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "ат."
+        ],
+        "text": "Тахтай бөлеги, кесиндиси",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАҲИ",
+    "full_text": "ТАҲИ к.с. та, шекем",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "к.с."
+        ],
+        "text": "та, шекем",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЧАНКА",
+    "full_text": "ТАЧАНКА ат. Кеңес ҳүкимети дәўиринде пуқаралык урыста қолланылған пулеметтиң бир түри.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "ат."
+        ],
+        "text": "Кеңес ҳүкимети дәўиринде пуқаралык урыста қолланылған пулеметтиң бир түри.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯҚЛАНЫЎ",
+    "full_text": "ТАЯҚЛАНЫЎ таяклаў фейилинин өзлик дәрежеси.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "таяклаў фейилинин өзлик дәрежеси.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯҚЛАТЫЎ",
+    "full_text": "ТАЯҚЛАТЫЎ таяклаў фейилинин өзгелик дәрежеси.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "таяклаў фейилинин өзгелик дәрежеси.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯҚЛАЎШЫ",
+    "full_text": "ТАЯҚЛАЎШЫ ат. Таяк пенен урыўшы, сабаўшы, жазалаўшы.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "ат."
+        ],
+        "text": "Таяк пенен урыўшы, сабаўшы, жазалаўшы.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯҚЛЫ",
+    "full_text": "ТАЯҚЛЫ кел. Таяғы бар, қолына таяк услаған.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "кел."
+        ],
+        "text": "Таяғы бар, қолына таяк услаған.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯҚСЫЗ",
+    "full_text": "ТАЯҚСЫЗ кел. Таяғы жоқ, қолына таяк усламаған.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "кел."
+        ],
+        "text": "Таяғы жоқ, қолына таяк усламаған.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯЛТЫЎ",
+    "full_text": "ТАЯЛТЫЎ таялыў фейилининң өзгелик дәрежеси.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "таялыў фейилининң өзгелик дәрежеси.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯНДЫРЫЎ",
+    "full_text": "ТАЯНДЫРЫЎ таяныў фейилиниң өзгелик дәрежеси.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "таяныў фейилиниң өзгелик дәрежеси.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯРЛАНДЫРЫЎ",
+    "full_text": "ТАЯРЛАНДЫРЫЎ таярлаў фейилинин өзгелик дәрежеси.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "таярлаў фейилинин өзгелик дәрежеси.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯРЛАСЫЎ",
+    "full_text": "ТАЯРЛАСЫЎ таярлаў фейилиниң шериклик дәрежеси.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "таярлаў фейилиниң шериклик дәрежеси.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯРЛАТТЫРЫЎ",
+    "full_text": "ТАЯРЛАТТЫРЫЎ таярлаў фейилиниң өзгелик дәрежеси.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "таярлаў фейилиниң өзгелик дәрежеси.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯРЛАЎШЫ",
+    "full_text": "ТАЯРЛАЎШЫ ат. Ҳәзирлеўши, ғамлаўшы.",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [
+          "ат."
+        ],
+        "text": "Ҳәзирлеўши, ғамлаўшы.",
+        "idioms": []
+      }
+    ]
+  },
+  {
+    "title": "ТАЯЎ БОЙЫ",
+    "full_text": "ТАЯЎ БОЙЫ ат. Узынлық өлшеминин бір түрі. Бул өлшем  тийкарынан таяудың бойлаўына қарай алынған. Сумлығына  таяў бойламайды (КДС).",
+    "source": "7_1",
+    "roman": null,
+    "ref": null,
+    "ref_word": null,
+    "compound": null,
+    "etymology": null,
+    "definitions": [
+      {
+        "order_sort": 1,
+        "categorys": [],
+        "text": "БОЙЫ ат. Узынлық өлшеминин бір түрі. Бул өлшем  тийкарынан таяудың бойлаўына қарай алынған. Сумлығына  таяў бойламайды (КДС).",
+        "idioms": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,257 @@
+/**
+ * Loyalty / reward animations — synced from
+ * animations/csskit-ab2rahman-main/src/animations/loyalty-*.ts
+ * Keep class names in sync when editing the kit.
+ */
+
+/* --- Chest burst --- */
+.loyalty-chest-burst {
+  --lcb-gold: rgba(250, 204, 21, 0.5);
+  --lcb-violet: rgba(167, 139, 250, 0.4);
+  --lcb-orange: rgba(251, 146, 60, 0.35);
+  --lcb-speed: 1.1s;
+  position: relative;
+  overflow: hidden;
+}
+
+.loyalty-chest-burst.is-open::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: -25%;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 50% 45%, var(--lcb-gold), transparent 42%),
+    radial-gradient(circle at 30% 60%, var(--lcb-violet), transparent 40%),
+    radial-gradient(circle at 70% 55%, var(--lcb-orange), transparent 38%);
+  animation: lcb-burst var(--lcb-speed) ease-out both;
+}
+
+.loyalty-chest-burst > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes lcb-burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.28);
+  }
+}
+
+.loyalty-chest-burst.is-open > .loyalty-chest-burst__body {
+  animation: lcp-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* --- Streak flame --- */
+.loyalty-streak-flame {
+  --lsf-from: #f59e0b;
+  --lsf-to: #ea580c;
+  --lsf-speed: 1.4s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #78350f;
+  background: linear-gradient(135deg, #fef3c7, #ffedd5);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.35);
+  animation: lsf-pulse var(--lsf-speed) ease-in-out infinite;
+}
+
+.loyalty-streak-flame__dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--lsf-from), var(--lsf-to));
+  box-shadow: 0 0 8px var(--lsf-from);
+  animation: lsf-flicker calc(var(--lsf-speed) * 0.55) ease-in-out infinite;
+}
+
+@keyframes lsf-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.25);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+  }
+}
+
+@keyframes lsf-flicker {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.25) translateY(-1px);
+    opacity: 0.85;
+  }
+}
+
+/* --- Check-in pop --- */
+.loyalty-checkin-pop {
+  --lcp-bg: #ccfbf1;
+  --lcp-text: #115e59;
+  --lcp-speed: 0.55s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--lcp-text);
+  background: var(--lcp-bg);
+  animation: lcp-pop var(--lcp-speed) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes lcp-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.86);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(0) scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- Badge shine --- */
+.loyalty-badge-shine {
+  --lbs-from: #ede9fe;
+  --lbs-to: #ffedd5;
+  --lbs-text: #4c1d95;
+  --lbs-shine: rgba(255, 255, 255, 0.55);
+  --lbs-speed: 0.75s;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  padding: 0.55rem 0.9rem;
+  border-radius: 1rem;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lbs-text);
+  background: linear-gradient(90deg, var(--lbs-from), var(--lbs-to));
+  border: 1px solid rgba(124, 58, 237, 0.25);
+}
+
+.loyalty-badge-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -70%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--lbs-shine), transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+
+.loyalty-badge-shine:hover::before,
+.loyalty-badge-shine.is-active::before {
+  animation: lbs-shine var(--lbs-speed) ease;
+}
+
+@keyframes lbs-shine {
+  0% {
+    left: -70%;
+  }
+  100% {
+    left: 140%;
+  }
+}
+
+/* --- Points float --- */
+.loyalty-points-float {
+  --lpf-color: #b45309;
+  --lpf-speed: 1.35s;
+  display: inline-block;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--lpf-color);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  animation: lpf-float var(--lpf-speed) ease-out both;
+}
+
+@keyframes lpf-float {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.9);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0) scale(1.08);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-22px) scale(0.98);
+  }
+}
+
+/* --- Progress fill --- */
+.loyalty-progress-fill {
+  --lpr-from: #8b5cf6;
+  --lpr-to: #f59e0b;
+  --lpr-track: #ede9fe;
+  --lpr-value: 62%;
+  --lpr-speed: 1.2s;
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--lpr-track);
+}
+
+.loyalty-progress-fill__bar {
+  height: 100%;
+  width: var(--lpr-value);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--lpr-from), var(--lpr-to));
+  background-size: 200% 100%;
+  animation: lpr-fill var(--lpr-speed) ease-out both, lpr-shimmer 1.8s linear infinite;
+}
+
+@keyframes lpr-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--lpr-value);
+  }
+}
+
+@keyframes lpr-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}

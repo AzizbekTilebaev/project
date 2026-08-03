@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!--
+    T�mengi-shep burchak ornament.
+    Eki parallel chiziq (gap?7) � CSS relsler menen bir xil.
+    Buyn?sh: �zliksiz stroke (qol menen emes).
+  -->
+  <g
+    stroke="#c62828"
+    stroke-width="2.15"
+    stroke-linecap="square"
+    stroke-linejoin="miter"
+    fill="none"
+  >
+    <!-- S?rtq? L: t�menden joqar??a, keyin o??a -->
+    <path d="M5.5 64 V16.5 H16.5 V5.5 H64" />
+    <!-- Ishki L -->
+    <path d="M12.5 64 V23.5 H23.5 V5.5" />
+
+    <!-- B�yni� toq?mas? (bir-birine �tiwshi kvadratlar) -->
+    <path d="M16.5 16.5 H23.5 V23.5" />
+    <path d="M16.5 16.5 V23.5 H12.5" />
+    <path d="M16.5 12.5 V16.5" />
+    <path d="M12.5 16.5 H16.5" />
+    <path d="M16.5 5.5 V12.5 H23.5" />
+    <path d="M5.5 16.5 H12.5" />
+  </g>
+</svg>

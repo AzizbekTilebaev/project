@@ -1,0 +1,502 @@
+/**
+ * Product UI animations — adapted from csskit (divider-*, bg-rain, shine-sweep, etc.)
+ * Brand: teal / amber / parchment — soft, literary, not cyberpunk.
+ */
+
+/* ========== Icon Divider (sóz ↔ ma'no) ========== */
+.anim-icon-divider {
+  --di-color: #0f766e;
+  --di-speed: 4.5s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 16rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.anim-icon-divider--wide {
+  max-width: none;
+  margin: 1rem 0 1.5rem;
+}
+
+.anim-icon-divider .di-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--di-color), transparent);
+  opacity: 0.45;
+}
+
+.anim-icon-divider .di-icon {
+  color: var(--di-color);
+  font-size: 0.85rem;
+  line-height: 1;
+  animation: di-pulse var(--di-speed) ease-in-out infinite;
+}
+
+@keyframes di-pulse {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.15) rotate(12deg);
+    opacity: 1;
+  }
+}
+
+/* Compact row divider (WordCard) */
+.anim-icon-divider--compact {
+  max-width: 7.5rem;
+  margin: 0.35rem 0 0.65rem;
+  gap: 0.45rem;
+}
+
+.anim-icon-divider--compact .di-icon {
+  font-size: 0.65rem;
+}
+
+.anim-icon-divider--amber {
+  --di-color: #b45309;
+}
+
+/* ========== Chevron cascade ========== */
+.anim-chevron {
+  --dch-color: #0f766e;
+  --dch-speed: 1.6s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+}
+
+.anim-chevron span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--dch-color);
+  border-bottom: 2px solid var(--dch-color);
+  transform: rotate(-45deg);
+  animation: dch-move var(--dch-speed) ease-in-out infinite;
+  opacity: 0.3;
+}
+
+.anim-chevron span:nth-child(1) {
+  animation-delay: 0s;
+}
+.anim-chevron span:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.anim-chevron span:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+.anim-chevron--down span {
+  transform: rotate(45deg);
+  animation-name: dch-move-down;
+}
+
+.anim-chevron--left span {
+  transform: rotate(135deg);
+  animation-name: dch-move-left;
+}
+
+@keyframes dch-move {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: rotate(-45deg) translate(0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(-45deg) translate(3px, 3px);
+  }
+}
+
+@keyframes dch-move-down {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: rotate(45deg) translate(0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(45deg) translate(3px, 3px);
+  }
+}
+
+@keyframes dch-move-left {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: rotate(135deg) translate(0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(135deg) translate(3px, 3px);
+  }
+}
+
+/* Single chevron that rotates when open (Profile / accordion) */
+.anim-chevron-toggle {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.28s ease;
+  opacity: 0.7;
+  margin-left: 0.35rem;
+  vertical-align: 0.1em;
+}
+
+.anim-chevron-toggle.is-open {
+  transform: rotate(-135deg);
+  vertical-align: -0.05em;
+}
+
+/* ========== Breathe line (section separator) ========== */
+.anim-breathe-line {
+  --dbl-color: rgba(15, 118, 110, 0.45);
+  --dbl-speed: 3.2s;
+  height: 2px;
+  background: var(--dbl-color);
+  border-radius: 1px;
+  animation: dbl-breathe var(--dbl-speed) ease-in-out infinite;
+  margin: 0.5rem 0 1.25rem;
+}
+
+@keyframes dbl-breathe {
+  0%,
+  100% {
+    width: 3.5rem;
+    opacity: 0.45;
+  }
+  50% {
+    width: 8.5rem;
+    opacity: 1;
+  }
+}
+
+/* ========== Matrix Rain (Home hero — soft literary rain) ========== */
+.anim-matrix-rain {
+  --br-color: rgba(167, 243, 208, 0.55);
+  --br-color-2: rgba(253, 230, 138, 0.4);
+  --br-speed: 1.35s;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.anim-matrix-rain__drop {
+  position: absolute;
+  top: -40px;
+  width: 1.5px;
+  height: 22px;
+  background: linear-gradient(to bottom, transparent, var(--br-color));
+  border-radius: 1px;
+  animation: br-fall var(--br-speed) linear infinite;
+  opacity: 0.7;
+}
+
+.anim-matrix-rain__drop:nth-child(odd) {
+  background: linear-gradient(to bottom, transparent, var(--br-color-2));
+}
+
+.anim-matrix-rain__drop:nth-child(1) {
+  left: 6%;
+  animation-duration: calc(var(--br-speed) * 1.1);
+  height: 18px;
+}
+.anim-matrix-rain__drop:nth-child(2) {
+  left: 14%;
+  animation-duration: calc(var(--br-speed) * 0.85);
+  animation-delay: 0.35s;
+  height: 26px;
+}
+.anim-matrix-rain__drop:nth-child(3) {
+  left: 22%;
+  animation-duration: calc(var(--br-speed) * 1.2);
+  animation-delay: 0.1s;
+}
+.anim-matrix-rain__drop:nth-child(4) {
+  left: 31%;
+  animation-duration: calc(var(--br-speed) * 0.75);
+  animation-delay: 0.55s;
+  height: 30px;
+}
+.anim-matrix-rain__drop:nth-child(5) {
+  left: 40%;
+  animation-duration: calc(var(--br-speed) * 0.95);
+  animation-delay: 0.2s;
+}
+.anim-matrix-rain__drop:nth-child(6) {
+  left: 48%;
+  animation-duration: calc(var(--br-speed) * 1.15);
+  animation-delay: 0.45s;
+  height: 20px;
+}
+.anim-matrix-rain__drop:nth-child(7) {
+  left: 57%;
+  animation-duration: calc(var(--br-speed) * 0.7);
+  animation-delay: 0.65s;
+  height: 16px;
+}
+.anim-matrix-rain__drop:nth-child(8) {
+  left: 65%;
+  animation-duration: calc(var(--br-speed) * 1);
+  animation-delay: 0.15s;
+  height: 28px;
+}
+.anim-matrix-rain__drop:nth-child(9) {
+  left: 73%;
+  animation-duration: calc(var(--br-speed) * 0.8);
+  animation-delay: 0.4s;
+}
+.anim-matrix-rain__drop:nth-child(10) {
+  left: 81%;
+  animation-duration: calc(var(--br-speed) * 1.05);
+  animation-delay: 0.25s;
+  height: 24px;
+}
+.anim-matrix-rain__drop:nth-child(11) {
+  left: 88%;
+  animation-duration: calc(var(--br-speed) * 0.9);
+  animation-delay: 0.5s;
+}
+.anim-matrix-rain__drop:nth-child(12) {
+  left: 95%;
+  animation-duration: calc(var(--br-speed) * 1.25);
+  animation-delay: 0.05s;
+  height: 19px;
+}
+.anim-matrix-rain__drop:nth-child(13) {
+  left: 10%;
+  animation-duration: calc(var(--br-speed) * 0.65);
+  animation-delay: 0.8s;
+  height: 14px;
+}
+.anim-matrix-rain__drop:nth-child(14) {
+  left: 52%;
+  animation-duration: calc(var(--br-speed) * 1.3);
+  animation-delay: 0.7s;
+  height: 32px;
+}
+.anim-matrix-rain__drop:nth-child(15) {
+  left: 36%;
+  animation-duration: calc(var(--br-speed) * 0.88);
+  animation-delay: 0.9s;
+}
+
+@keyframes br-fall {
+  0% {
+    top: -40px;
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.35;
+  }
+  100% {
+    top: 108%;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-matrix-rain,
+  .anim-icon-divider .di-icon,
+  .anim-chevron span,
+  .anim-breathe-line,
+  .loyalty-streak-flame,
+  .loyalty-progress-fill__bar {
+    animation: none !important;
+  }
+}
+
+/* ========== Shine sweep (CTA / buttons) ========== */
+.anim-shine {
+  --shine-color: rgba(255, 255, 255, 0.45);
+  --shine-speed: 0.65s;
+  position: relative;
+  overflow: hidden;
+}
+
+.anim-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--shine-color), transparent);
+  transition: left var(--shine-speed) ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.anim-shine:hover::before,
+.anim-shine:focus-visible::before {
+  left: 140%;
+}
+
+/* Soft variant for dark hero CTAs */
+.anim-shine--parchment::before {
+  --shine-color: rgba(15, 92, 86, 0.18);
+}
+
+/* ========== Underline grow (nav / text links) ========== */
+.anim-underline-grow {
+  --hug-color: #0f766e;
+  --hug-thickness: 2px;
+  --hug-speed: 0.28s;
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.anim-underline-grow::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: var(--hug-thickness);
+  background: var(--hug-color);
+  border-radius: 1px;
+  transition: width var(--hug-speed) ease, left var(--hug-speed) ease;
+}
+
+.anim-underline-grow:hover::after,
+.anim-underline-grow.is-active::after {
+  width: 100%;
+  left: 0;
+}
+
+.anim-underline-grow--parchment {
+  --hug-color: rgba(254, 243, 199, 0.85);
+}
+
+/* Nav link underline (inherits teal) */
+.lollipop-nav-link.anim-underline-grow::after {
+  bottom: 0.15rem;
+  --hug-color: #0f766e;
+}
+
+/* ========== Soft floating particles (optional ambient) ========== */
+.anim-particles {
+  --fp-color: rgba(167, 243, 208, 0.45);
+  --fp-size: 4px;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.anim-particles .fp-particle {
+  position: absolute;
+  width: var(--fp-size);
+  height: var(--fp-size);
+  background: var(--fp-color);
+  border-radius: 50%;
+  opacity: 0;
+  animation: fp-float linear infinite;
+}
+
+.anim-particles .fp-particle:nth-child(1) {
+  left: 12%;
+  animation-duration: 9s;
+}
+.anim-particles .fp-particle:nth-child(2) {
+  left: 28%;
+  animation-duration: 11s;
+  animation-delay: 1s;
+}
+.anim-particles .fp-particle:nth-child(3) {
+  left: 44%;
+  animation-duration: 8s;
+  animation-delay: 2s;
+}
+.anim-particles .fp-particle:nth-child(4) {
+  left: 60%;
+  animation-duration: 10s;
+  animation-delay: 0.5s;
+}
+.anim-particles .fp-particle:nth-child(5) {
+  left: 76%;
+  animation-duration: 12s;
+  animation-delay: 2.5s;
+}
+.anim-particles .fp-particle:nth-child(6) {
+  left: 88%;
+  animation-duration: 9.5s;
+  animation-delay: 1.5s;
+}
+
+@keyframes fp-float {
+  0% {
+    bottom: -8%;
+    opacity: 0;
+    transform: translateX(0);
+  }
+  12% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.25;
+    transform: translateX(18px);
+  }
+  88% {
+    opacity: 0.5;
+  }
+  100% {
+    bottom: 110%;
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+
+.sense-panel__head {
+  position: relative;
+  border-bottom-color: transparent;
+}
+
+.sense-panel__head::after {
+  content: '';
+  position: absolute;
+  left: 1.35rem;
+  right: 1.35rem;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15, 118, 110, 0.4), transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  animation: sense-draw 0.7s ease-out 0.15s both;
+}
+
+@keyframes sense-draw {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ========== Homonym rule draw ========== */
+.anim-rule-draw {
+  flex: 1;
+  height: 0;
+  border-top: 1px dashed rgba(28, 42, 36, 0.18);
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: rule-draw 0.65s ease-out 0.1s both;
+  translate: 0 -0.35rem;
+}
+
+@keyframes rule-draw {
+  to {
+    transform: scaleX(1);
+  }
+}
