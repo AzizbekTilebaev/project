@@ -1,347 +1,154 @@
-# Project Setup Guide
+# O‘rnatish qo‘llanmasi
 
-Butun loyiham to'liq setup qilish qo'llanmasi.
+> Haqiqiy stack: **Express + mysql2** (Prisma yo‘q), frontend Vite **port 3000**.  
+> Eski `prisma migrate` / `5173` yo‘riqnomalari bekor.
 
-## 📋 Requirements
+## Talablar
 
-- **Node.js** 16+ (https://nodejs.org/)
-- **MySQL 8.0+** (https://dev.mysql.com/downloads/mysql/)
-- **npm** yoki **yarn** (Node.js bilan birga)
-- **Git** (optional)
+- **Node.js** 18+ (tavsiya)
+- **MySQL** 8.0+
+- **npm**
+- **Git**
 
-Versions check:
 ```bash
 node --version
 npm --version
 mysql --version
 ```
 
-## 🚀 Quick Start
-
-### 1. Clone/Download Project
+## 1. Clone
 
 ```bash
-cd /path/to/project
+git clone https://github.com/AzizbekTilebaev/project.git
+cd project
 ```
 
-### 2. MySQL Server Boshlash
+## 2. MySQL
 
-**Windows:**
 ```bash
-net start MySQL80
-```
-
-**Mac:**
-```bash
-/usr/local/mysql/support-files/mysql.server start
-```
-
-**Linux:**
-```bash
+# Linux misol
 sudo systemctl start mysql
 ```
 
-### 3. Backend Setup
+MySQL foydalanuvchisida 10 ta `kk_*` baza yaratish huquqi bo‘lsin (yoki root).
+
+## 3. Backend env
 
 ```bash
 cd backend
-
-# Environment variables
-# .env fayl yaratish:
-DATABASE_URL=mysql://root@localhost:3306/tilplatform
-JWT_SECRET=your_secret_key_here
-PORT=5000
-
-# Install dependencies
-npm install
-
-# Database setup
-npx prisma migrate dev
-
-# Start server
-npm run dev
+cp .env.example .env
 ```
 
-Server: `http://localhost:5000`
-
-### 4. Frontend Setup
-
-Yangi terminal'da:
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start dev server
-npm run dev
-```
-
-Server: `http://localhost:5173`
-
-## ✅ Verification
-
-### Backend
-
-```bash
-# Check if running
-curl http://localhost:5000/api/quizzes
-
-# Should return JSON response
-```
-
-### Frontend
-
-- Browser'da `http://localhost:5173` ochish
-- Home page ko'rinishi kerak
-
-## 📁 Directory Structure
-
-```
-project-root/
-├── backend/
-│   ├── src/
-│   ├── scripts/
-│   ├── public/
-│   ├── .env
-│   ├── package.json
-│   ├── README.md
-│   └── SETUP.md
-│
-├── frontend/
-│   ├── src/
-│   ├── public/
-│   ├── .env (optional)
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── README.md
-│   ├── SETUP.md
-│   └── COMPONENTS.md
-│
-├── package.json
-├── README.md
-└── START_ALL.ps1
-```
-
-## 🔧 Configuration Files
-
-### backend/.env
+`.env` da kamida to‘ldiring:
 
 ```env
-# Database
-DATABASE_URL=mysql://root:password@localhost:3306/tilplatform
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=your_user
+DB_PASS=your_password
+DB_NAME=kk_tusindirme
 
-# JWT
-JWT_SECRET=change_to_something_secure
+JWT_SECRET=   # openssl rand -base64 48
+ACTOR_HMAC_SECRET=   # openssl rand -base64 48
 
-# Server
+FRONTEND_ORIGIN=http://localhost:3000
+SITE_ORIGIN=http://localhost:3000
 PORT=5000
 NODE_ENV=development
+
+KK_USERS_DB=kk_users
+KK_POETS_DB=kk_poets
+KK_POETRYS_DB=kk_poetrys
+KK_JUMBAQLAR_DB=kk_jumbaqlar
+KK_TUSINDIRME_DB=kk_tusindirme
+KK_QUIZ_DB=kk_quiz
+KK_KRASVORD_DB=kk_krasvord
+KK_STATISTIKA_DB=kk_statistika
+KK_AI_DB=kk_ai_db
+KK_LOGS_DB=kk_logs
 ```
 
-### frontend/.env (optional)
+Admin / production kalitlari: `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` (prod ≥32).
 
-```env
-VITE_API_URL=http://localhost:5000
+## 4. Paketlar
+
+Rootdan:
+
+```bash
+npm run install:all
+# yoki:
+cd backend && npm install
+cd ../frontend && npm install
 ```
 
-If not set, default is `http://localhost:5000`
+## 5. Bazalar va sxema (birinchi marta)
 
-## 📊 Database
-
-### Create Database
-
-```sql
--- MySQL CLI
-mysql -u root -p
-
--- Run:
-CREATE DATABASE tilplatform CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-### Auto Schema
-
-Prisma automatically creates tables from schema.
-
-View database:
 ```bash
 cd backend
-npx prisma studio
+npm run setup
+node scripts/setup-kk-databases.js
+npm run setup-roles
+npm run setup-points
 ```
 
-Opens: `http://localhost:5555`
-
-## 🚦 Start All
-
-Windows PowerShell:
-```bash
-.\START_ALL.ps1
-```
-
-Or manually:
-```bash
-# Terminal 1: Backend
-cd backend && npm run dev
-
-# Terminal 2: Frontend
-cd frontend && npm run dev
-```
-
-## 🧪 Test APIs
-
-### Using Postman/Thunder Client
-
-Register:
-```
-POST http://localhost:5000/api/auth/register
-Content-Type: application/json
-
-{
-  "username": "testuser",
-  "email": "test@example.com",
-  "password": "password123"
-}
-```
-
-Login:
-```
-POST http://localhost:5000/api/auth/login
-Content-Type: application/json
-
-{
-  "email": "test@example.com",
-  "password": "password123"
-}
-```
-
-Get Quizzes:
-```
-GET http://localhost:5000/api/quizzes
-```
-
-## 🔍 Folder Descriptions
-
-### Backend (Express + MySQL + Prisma)
-
-**Key Files:**
-- `src/server.js` - Main server
-- `src/controllers/` - Business logic
-- `src/routes/` - API endpoints
-- `src/middleware/auth.js` - JWT verification
-- `.env` - Configuration
-- `prisma/schema.prisma` - Database schema
-
-**Main Folders:**
-- `src/` - Source code
-- `scripts/` - Setup/seed scripts
-- `public/avatars/` - User avatars
-- `node_modules/` - Dependencies
-
-### Frontend (React + Vite)
-
-**Key Files:**
-- `src/App.jsx` - Main component
-- `src/main.jsx` - Entry point
-- `src/pages/*.jsx` - Page components
-- `vite.config.js` - Build config
-- `tailwind.config.js` - Styling
-
-**Main Folders:**
-- `src/` - React code
-- `src/pages/` - Page components
-- `src/components/` - Reusable components
-- `node_modules/` - Dependencies
-
-## 🔐 Security Notes
-
-- Change JWT_SECRET in production
-- Use strong database password
-- Don't commit `.env` files
-- Use HTTPS in production
-- Keep dependencies updated
-
-## 🐛 Troubleshooting
-
-### Port Already in Use
+Sozlik ma’lumoti odatda **seed emas** — backup/import orqali:
 
 ```bash
-# Windows - Find process using port 5000
-netstat -ano | findstr :5000
-
-# Kill process
-taskkill /PID <PID> /F
-
-# Or use different port
-PORT=5001 npm run dev
+npm run backup
+# npm run restore -- path/to/dump.sql
 ```
 
-### MySQL Connection Error
+Import manbasi: `fordata/` (qarang `fordata/tools/`).
+
+## 6. Ishga tushirish (development)
+
+Ikki terminal:
 
 ```bash
-# Check MySQL is running
-mysql -u root -p
+# Terminal 1
+npm run dev:backend
+# → http://localhost:5000
 
-# If error, start MySQL:
-# Windows: net start MySQL80
-# Mac: /usr/local/mysql/support-files/mysql.server start
+# Terminal 2
+npm run dev:frontend
+# → http://localhost:3000  (/api proxy → :5000)
 ```
 
-### Database Already Exists
+### Tekshirish
 
 ```bash
-# Drop database (careful!)
-npx prisma migrate reset
-
-# Or manually:
-mysql -u root -p
-DROP DATABASE tilplatform;
-CREATE DATABASE tilplatform CHARACTER SET utf8mb4;
+curl http://localhost:5000/api/health
+# Brauzer: http://localhost:3000
 ```
 
-### Module Not Found
+## 7. Lokal production
 
 ```bash
-# Clear and reinstall
-rm -rf node_modules package-lock.json
-npm install
+# Rootdan — frontend/dist + API bir portda
+npm run start:prod
+# → http://localhost:5000
 ```
 
-### CORS Error in Frontend
+Talablar: kuchli secretlar, `frontend/dist` mavjudligi.
 
-Make sure backend is running and `.env` has correct API_URL
+## 8. Test / lint
 
-## 📝 Important Notes
+```bash
+cd backend && npm test && npm run lint
+cd frontend && npm test && npm run lint && npm run build
+```
 
-1. **Keep 2 terminals open** - One for backend, one for frontend
-2. **Database must be running** - Before starting backend
-3. **Port conflicts** - Change port in `.env` if needed
-4. **Hot reload** - Both servers have hot reload enabled
+## Muammolar
 
-## 🎯 Next Steps
+| Muammo | Yechim |
+|--------|--------|
+| DB ulanmaydi | `DB_USER`/`DB_PASS`, MySQL ishlayotganini tekshiring |
+| CORS | `FRONTEND_ORIGIN` = brauzer origin (`http://localhost:3000`) |
+| Bo‘sh sozlik | Import yoki `npm run restore` |
+| Port band | `PORT` yoki Vite `server.port` |
 
-1. ✅ Backend setup - See [backend/SETUP.md](backend/SETUP.md)
-2. ✅ Frontend setup - See [frontend/SETUP.md](frontend/SETUP.md)
-3. ✅ Components - See [frontend/COMPONENTS.md](frontend/COMPONENTS.md)
-4. ✅ API docs - See [backend/README.md](backend/README.md)
+## Keyingi o‘qish
 
-## 💡 Tips
-
-- Use VS Code for development
-- Install extensions:
-  - Prisma (for database schema)
-  - REST Client (for API testing)
-  - React snippets (for frontend)
-- Use browser DevTools for debugging
-
-## 📞 Support
-
-Check logs if something fails:
-- Backend: Console output
-- Frontend: Terminal + Browser console
-- Database: MySQL logs
-
----
-
-**Status**: ✅ Ready to Develop  
-**Date**: February 2026
+- Arxitektura / API: [`d.md`](d.md)
+- Backend batafsil: [`backend/README.md`](backend/README.md)
+- Ingliz kontent: [`fordata/english/ENGLISH.md`](fordata/english/ENGLISH.md)

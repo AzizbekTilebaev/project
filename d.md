@@ -2,9 +2,10 @@
 
 **Fayl:** `d.md`  
 **Loyiha:** `qaraqalpaq-til-platformasi`  
-**Manzil:** `/home/azizbek/work/proyekt2`  
-**Yangilangan:** 2026-07-29  
-**Asos:** haqiqiy kod (`server.js`, `App.jsx`, `package.json`, `.env.example`) — root `README.md` / `SETUP.md` eskirgan.
+**Repo:** https://github.com/AzizbekTilebaev/project  
+**Yangilangan:** 2026-08-06  
+**Asos:** haqiqiy kod (`server.js`, `App.jsx`, `package.json`, `.env.example`).  
+**Qisqa kirish:** [`README.md`](README.md) · **O‘rnatish:** [`SETUP.md`](SETUP.md)
 
 ---
 
@@ -22,6 +23,8 @@ Qaraqalpaq tilini o‘rganish uchun **full-stack interaktiv web-platforma**:
 - Ball tizimi, kvotalar, anonim mehmon progressi
 - Admin paneli (RBAC)
 - Morfologiya (so‘zni túbir + qo‘shimtalarga bo‘lish)
+- **Qoidalar** (`/qoidalar`) — QQ maktab grammatikasi (MD)
+- **Ingliz tili** (`/english`) — Kids / Fly High / Teens / 10–11: fraza + mashq + grammatika
 
 UI asosan **qaraqalpaq**; lotin ↔ kirill almashtirish bor (`frontend/src/i18n/kaa.js`).
 
@@ -30,19 +33,18 @@ UI asosan **qaraqalpaq**; lotin ↔ kirill almashtirish bor (`frontend/src/i18n/
 ## 2. Yuqori darajadagi tuzilma
 
 ```
-proyekt2/
+project/
 ├── backend/           # Express API + MySQL (mysql2) + Socket.IO
 ├── frontend/          # React 18 + Vite + Tailwind SPA
-├── fordata/           # Import manbasi (lug‘at, kitob, jumbaq, tool’lar)
+├── fordata/           # Import + grammar/english MD manbasi
+├── grammar-site/      # Alohida grammar Vite (ixtiyoriy)
 ├── animations/        # CSSKit animatsiya kutubxonasi
-├── tmp/               # Apertium-kaa manba/extract (morfologiya ishlanmasi)
+├── tmp/               # Apertium-kaa (gitignore) — morfologiya ishlanmasi
 ├── .github/workflows/ # CI (frontend lint+build, backend test)
 ├── package.json       # Root helper: install/dev/build
-├── README.md          # ESKIRGAN (Prisma, port 5173)
-├── SETUP.md           # ESKIRGAN (prisma migrate)
+├── README.md          # Kirish + tezkor start
+├── SETUP.md           # O‘rnatish qo‘llanmasi
 ├── CLEANUP_REPORT.md  # 2026-07 tozalash hisoboti
-├── START_ALL.ps1      # Windows start (frontend porti eski: 5173)
-├── ziyonet_book.pdf
 └── d.md               # Shu to‘liq ma’lumotnoma
 ```
 
@@ -50,9 +52,9 @@ proyekt2/
 |--------|--------|
 | **backend/** | API, 10× MySQL pool, Socket.IO, skriptlar, testlar, uploadlar |
 | **frontend/** | SPA; Vite proxy `/api`, `/socket.io`, `/uploads` → `:5000`; **dev port 3000** |
-| **fordata/** | Bir martalik/qayta import manbasi; runtime asosan MySQL’dan |
+| **fordata/** | Import manbasi + `grammar/` / `english/` MD (sayt `?raw` import) |
 | **animations/** | CSSKit; frontend’da `AnimMatrixRain`, `AnimChevron` va boshqalar |
-| **tmp/** | `apertium-kaa` + extract — morfologiya ishlanmasi |
+| **tmp/** | `apertium-kaa` + extract — morfologiya ishlanmasi (odatda gitignore) |
 
 ---
 
@@ -282,6 +284,9 @@ Boshqa: `setup-crosswords`, `setup-quiz`, `import-literature`, `seed-curated-wor
 | `/settings` | Settings |
 | `/profile` | Profile |
 | `/faq`, `/about` | Faq, About |
+| `/qoidalar` | Qoidalar (QQ grammatika MD) |
+| `/english` | English (maktab fraza/mashq MD) |
+| `/facts` | CultureFacts |
 | `/community` | CommunityFeed |
 | `/login`, `/register` | AuthPage |
 | `/forgot-password`, `/reset-password` | Parol tiklash |
@@ -291,6 +296,10 @@ Boshqa: `setup-crosswords`, `setup-quiz`, `import-literature`, `seed-curated-wor
 | `/dictionary/stats` | DictionaryStats |
 | `/dictionary/game` | DictionaryGame |
 | `/dictionary/immersion` | ImmersionBrowse |
+| `/dictionary/uzb`, `/en`, `/ru` | BilingualDictPage (+ `/:id`) |
+| `/dictionary/frazeologiya` | FrazeologiyaPage |
+| `/dictionary/adam-atlari` | AdamAtlariPage |
+| `/dictionary/imla` | ImlaPage |
 | `/dictionary/:id` | WordDetail |
 | `/crossword`, `/crossword/:id` | CrosswordsList, CrosswordPage |
 | `/crossword/room`, `/crossword/room/:code` | CrosswordRoom |
@@ -323,9 +332,9 @@ Lazy-load + Suspense + AppErrorBoundary. Global: Header, Footer, OfflineBanner, 
 
 ---
 
-## 6. `fordata/` — import manbasi
+## 6. `fordata/` — import va kontent manbasi
 
-Runtime emas; lug‘at/adabiyot/jumbaq import uchun.
+Ko‘p qismi import uchun; `grammar/` va `english/` MD lari frontend’da `?raw` orqali saytda ko‘rinadi.
 
 | Subpapka | Mazmun |
 |----------|--------|
@@ -336,9 +345,18 @@ Runtime emas; lug‘at/adabiyot/jumbaq import uchun.
 | `newdata/`, `newdata-review/` | Yangi / review to‘plam |
 | `compound_fixed/` | Qo‘shma so‘z tuzatishlari |
 | `shayirlar latin/` | Shoirlar matnlari |
+| `grammar/` | QQ qoidalar MD + OCR skriptlar; `pdfs`/`ocr`/`tessdata` gitignore |
+| `english/` | Ingliz sabaqlıq MD + OCR skript; `pdfs`/`ocr`/`extract` gitignore |
 | `tools/` | Import pipeline (`validate`, `transform`, `import`, premium-50, …) |
 
-Batafsil: `fordata/tools/README.md`.
+Batafsil: `fordata/tools/README.md`, `fordata/english/ENGLISH.md`.
+
+### 6.1 Ingliz tili saytda
+
+- Sahifa: `/english` · `frontend/src/pages/English.jsx` · `frontend/src/lib/englishContent.js`
+- Kontent: `fordata/english/english-*.md`, `*-grammatika.md`, `10-klass-english-grammar-guide.md`
+- Maqsad: unit atlari emas — **sóz / fraza / mashq**; 5–6 / 10 grammar alohida tab
+- OCR (skaner PDF): `fordata/english/scripts/ocr_pdf_eng.py` (lang `eng`)
 
 ---
 
@@ -365,6 +383,8 @@ Batafsil: `fordata/tools/README.md`.
 | Mehmon kvotalari | Ha |
 | Morfologiya | Ha |
 | Lotin/kirill UI | Ha |
+| `/qoidalar` QQ grammatika MD | Ha |
+| `/english` fraza + mashq + grammar | Ha |
 | Google / TOTP / phone | Flag (ko‘pi default OFF) |
 | Admin RBAC | Ha |
 | Public API v1 | Ha |
@@ -400,7 +420,7 @@ Import / v1: `IMPORT_API_KEY`, `api_clients`.
 
 ## 9. Ishga tushirish (to‘g‘ri yo‘l)
 
-Talablar: **Node.js 20+**, **MySQL 8+**.
+Talablar: **Node.js 18+** (tavsiya 20), **MySQL 8+**.
 
 ```bash
 # Backend
