@@ -177,6 +177,8 @@ app.use(
         }
       : false,
     crossOriginResourcePolicy: { policy: 'cross-origin' },
+    // Google Identity Services (popup / One Tap) uchun
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
   })
 );
 
