@@ -271,7 +271,7 @@ export default function QuizzesAdmin() {
             <div className="grid gap-3 sm:grid-cols-2">
               {!form.id ? (
                 <label className="block text-sm sm:col-span-2">
-                  {text('ID (ixtiyarıy)')}
+                  {text('ID (ixtıyarıy)')}
                   <input
                     value={form.customId}
                     onChange={(e) =>

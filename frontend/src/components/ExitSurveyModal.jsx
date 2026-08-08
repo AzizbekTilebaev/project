@@ -154,7 +154,7 @@ export default function ExitSurveyModal() {
           </>
         ) : (
           <>
-            <h2 className="mb-2 font-display text-xl text-ink">{text('Qısqa pikir (ixtiyarıy)')}</h2>
+            <h2 className="mb-2 font-display text-xl text-ink">{text('Qısqa pikir (ixtıyarıy)')}</h2>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value.slice(0, 500))}

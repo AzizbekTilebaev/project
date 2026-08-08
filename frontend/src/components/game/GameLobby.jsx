@@ -473,7 +473,7 @@ export default function GameLobby({
               connected ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
             }`}
           >
-            {connected ? text('Onlayn') : text('Qayta ulanıw...')}
+            {connected ? text('Onlayn') : text('Qayta baylanısıw...')}
           </span>
         </div>
 

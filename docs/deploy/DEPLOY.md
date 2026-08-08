@@ -33,6 +33,15 @@ TRUST_PROXY=1
 
 4. Deploy → `https://qaraqalpaq-til.onrender.com/api/health` → `"status":"ok"`
 
+### Google orqali kirish
+
+1. Render Environment: `GOOGLE_CLIENT_ID=<Web client ID>`
+2. [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → OAuth 2.0 Client ID → **Authorized JavaScript origins**:
+   - `https://qaraqalpaq-til.onrender.com`
+   - (lokal) `http://localhost:3000`
+3. **Authorized redirect URIs** (GIS button uchun odatda origin yetadi; kerak bo‘lsa shu domenni qo‘shing).
+4. Tekshiruv: `/api/auth/config` → `"googleEnabled": true`
+
 ### Chiroyliroq domen (bepul)
 
 | Variant | Misollar |

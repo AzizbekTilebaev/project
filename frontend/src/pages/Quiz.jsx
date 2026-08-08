@@ -611,7 +611,7 @@ export default function Quiz() {
               )}
             </p>
             <label className="block text-sm text-ink/60 mb-2" htmlFor="age-input">
-              {text('Jas (ixtiyarıy, razılıq penen)')}
+              {text('Jas (ixtıyarıy, razılıq penen)')}
             </label>
             <input
               id="age-input"

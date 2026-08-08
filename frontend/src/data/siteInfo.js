@@ -44,7 +44,7 @@ export const ABOUT = {
       to: '/qoidalar',
     },
     {
-      title: 'Ingliz tili',
+      title: 'Inglis tili',
       body: 'Kids’ / Fly High / Teens’ English — unitlar hám grammatika (QQ).',
       to: '/english',
     },

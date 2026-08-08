@@ -23,7 +23,7 @@ function Login({ onSuccess }) {
       <section className="mx-auto max-w-md px-6 pt-10">
         <div className="mb-7 text-center">
           <h1 className="font-display text-4xl text-ink">{text('Sózlik admin')}</h1>
-          <p className="mt-2 text-sm text-ink/55">{text('Moderator yamasa yuqorı rol kerek.')}</p>
+          <p className="mt-2 text-sm text-ink/55">{text('Moderator yamasa joqarı rol kerek.')}</p>
         </div>
         <AdminLoginForm subtitle="" onSuccess={onSuccess} />
       </section>
@@ -348,7 +348,7 @@ export default function DictionaryAdmin() {
               </label>
               <label className="block">
                 <span className="text-xs font-semibold uppercase tracking-[0.12em] text-ink/45">
-                  {text('Kategoriya (ixtiyarıy)')}
+                  {text('Kategoriya (ixtıyarıy)')}
                 </span>
                 <input
                   type="text"

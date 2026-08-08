@@ -320,10 +320,10 @@ export const LIT_UI = {
   },
   mapLoadFailed: {
     cyrillic: 'Онлайн карта жүкленбеди. Локал картадан пайдаланың.',
-    latin: 'Onlayn xarita júklenbedi. Lokal xaritadan paydalanıń.',
+    latin: 'Onlayn karta júklenbedi. Lokal kartadan paydalanıń.',
   },
   localMap: { cyrillic: 'Локал', latin: 'Lokal' },
-  onlineMap: { cyrillic: 'Онлайн карта', latin: 'Onlayn xarita' },
+  onlineMap: { cyrillic: 'Онлайн карта', latin: 'Onlayn karta' },
   lessonBackToReader: { cyrillic: 'Оқыўшыға қайтыў', latin: 'Oqıwshıǵa qaytıw' },
   lessonTitle: { cyrillic: 'Текстти түсиниў дарсы', latin: 'Tekstti túsiniw darsı' },
   lessonIntro: {

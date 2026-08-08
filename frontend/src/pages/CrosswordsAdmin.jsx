@@ -291,7 +291,7 @@ export default function CrosswordsAdmin() {
             <div className="mb-6 grid gap-4 sm:grid-cols-2">
               {!editingId ? (
                 <label className="block text-sm sm:col-span-2">
-                  <span className="text-ink/60">{text('ID (ixtiyarıy)')}</span>
+                  <span className="text-ink/60">{text('ID (ixtıyarıy)')}</span>
                   <input
                     value={meta.customId}
                     onChange={(e) =>
@@ -373,7 +373,7 @@ export default function CrosswordsAdmin() {
                   onToggle={(e) => setShowManual(e.target.open)}
                 >
                   <summary className="cursor-pointer text-sm font-medium text-teal-900">
-                    {text('Qol menen qatorlar (ixtiyarıy)')}
+                    {text('Qol menen qatorlar (ixtıyarıy)')}
                   </summary>
                   <div className="mt-3">
                     <div className="mb-2 flex justify-end">

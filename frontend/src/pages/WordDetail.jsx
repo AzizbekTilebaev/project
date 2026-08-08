@@ -340,7 +340,7 @@ function ImmersionBlock({ titleId, soz = '' }) {
         </h2>
         <p className="mb-5 max-w-lg text-sm leading-relaxed text-ink/55">
           {text(
-            'Bul sóz ushın audio / video / 3D házirshe joq. Tayyar dawıslı sózlerdi kóriń yamasa oyin menen úyreniń.'
+            'Bul sóz ushın audio / video / 3D házirshe joq. Tayyar dawıslı sózlerdi kóriń yamasa oyın menen úyreniń.'
           )}
         </p>
         <div className="flex flex-wrap gap-3">
@@ -1388,7 +1388,7 @@ function AddSenseForm({ titleId, onSaved }) {
         type="text"
         value={category}
         onChange={(e) => setCategory(e.target.value)}
-        placeholder={text('Kategoriya / sóz túri (ixtiyarıy)')}
+        placeholder={text('Kategoriya / sóz túri (ixtıyarıy)')}
         className="w-full rounded-xl border border-ink/15 bg-white px-3 py-2 text-sm text-ink"
         disabled={busy}
         maxLength={64}
@@ -1683,7 +1683,7 @@ function SensePanel({ sense, index, total, canModerate = false, onSenseSaved }) 
                   type="text"
                   value={newAuthor}
                   onChange={(e) => setNewAuthor(e.target.value)}
-                  placeholder={text('Avtor (ixtiyarıy)')}
+                  placeholder={text('Avtor (ixtıyarıy)')}
                   className="w-full rounded-xl border border-ink/15 bg-white px-3 py-2 text-sm text-ink"
                   disabled={addBusy}
                   maxLength={255}
@@ -1759,7 +1759,7 @@ function SensePanel({ sense, index, total, canModerate = false, onSenseSaved }) 
                   rows={2}
                   value={newIdiomGloss}
                   onChange={(e) => setNewIdiomGloss(e.target.value)}
-                  placeholder={text('Máni (ixtiyarıy)')}
+                  placeholder={text('Máni (ixtıyarıy)')}
                   className="w-full rounded-xl border border-ink/15 bg-white px-3 py-2 text-sm text-ink"
                   disabled={addBusy}
                 />

@@ -17,7 +17,7 @@ export const ENGLISH_BOOKS = [
   {
     id: 'en-tolıq',
     label: 'Baǵdar',
-    title: 'Ingliz tili — baǵdar',
+    title: 'Inglis tili — baǵdar',
     subtitle: 'Sóz, fraza, mashq',
     markdown: mdTolıq,
   },

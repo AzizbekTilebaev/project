@@ -377,7 +377,7 @@ function PiecesPanel({ book, text }) {
               <input
                 value={writerQ}
                 onChange={(e) => setWriterQ(e.target.value)}
-                placeholder={text('Shoir (ixtiyarıy)…')}
+                placeholder={text('Shoir (ixtıyarıy)…')}
                 className="w-full rounded-xl border border-ink/15 px-3 py-1.5 text-sm"
               />
             )}
@@ -999,7 +999,7 @@ export default function BooksAdmin() {
         <div className="mb-4 flex flex-wrap items-end gap-2">
           <label className="min-w-[12rem] flex-1">
             <span className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/45">
-              {text('Tizimde izlew')}
+              {text('Dizimde izlew')}
             </span>
             <input
               type="search"

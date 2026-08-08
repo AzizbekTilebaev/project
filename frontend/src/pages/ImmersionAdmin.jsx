@@ -360,7 +360,7 @@ export default function ImmersionAdmin() {
           <div className="mb-4 flex flex-wrap items-end gap-2">
             <label className="min-w-[12rem] flex-1">
               <span className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/45">
-                {text('Tizimde izlew')}
+                {text('Dizimde izlew')}
               </span>
               <input
                 type="search"

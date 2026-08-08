@@ -716,7 +716,7 @@ export default function AdminPanel() {
                     className="rounded-xl border border-ink/15 px-3 py-1.5 text-sm"
                   >
                     <option value="pending">{text('Kútilip turǵan')}</option>
-                    <option value="approved">{text('Maqullangan')}</option>
+                    <option value="approved">{text('Maǵullangan')}</option>
                     <option value="rejected">{text('Biykarlanǵan')}</option>
                     <option value="all">{text('Barlıǵı')}</option>
                   </select>
@@ -731,7 +731,7 @@ export default function AdminPanel() {
                     <option value="">{text('Barlıq túr')}</option>
                     <option value="synonym">{text('Sinonim')}</option>
                     <option value="antonym">{text('Antoním')}</option>
-                    <option value="compound">{text('Qurama')}</option>
+                    <option value="compound">{text('Qospa')}</option>
                   </select>
                   <button
                     type="button"
@@ -746,7 +746,7 @@ export default function AdminPanel() {
 
               {lastApprove?.titleId ? (
                 <p className="mb-4 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
-                  {text('Maqullandı')}:{' '}
+                  {text('Maǵullandı')}:{' '}
                   <Link
                     to={`/dictionary/${encodeURIComponent(lastApprove.titleId)}`}
                     className="font-semibold underline"
@@ -830,7 +830,7 @@ export default function AdminPanel() {
                         {s.status === 'pending' ? (
                           <>
                             <label className="mt-3 block text-xs text-ink/55">
-                              {text('Moderator notası (ixtiyarıy)')}
+                              {text('Moderator notası (ixtıyarıy)')}
                               <input
                                 value={modNotes[s.id] || ''}
                                 onChange={(e) =>
@@ -844,7 +844,7 @@ export default function AdminPanel() {
                               />
                             </label>
                             <p className="mt-1 text-[0.65rem] text-teal-800/70">
-                              {text('Maqullaw — sóz public sózlikke shıǵadı')}
+                              {text('Maǵullaw — sóz public sózlikke shıǵadı')}
                             </p>
                           </>
                         ) : null}
@@ -857,7 +857,7 @@ export default function AdminPanel() {
                             disabled={busy}
                             className="qp-btn-primary !px-4 !py-1.5 !text-xs disabled:opacity-50"
                           >
-                            {text('Maqullaw')}
+                            {text('Maǵullaw')}
                           </button>
                           <button
                             type="button"
@@ -953,7 +953,7 @@ export default function AdminPanel() {
                 </label>
                 <label className="block">
                   <span className="text-xs font-semibold uppercase tracking-[0.12em] text-ink/45">
-                    {text('Kategoriya (ixtiyarıy)')}
+                    {text('Kategoriya (ixtıyarıy)')}
                   </span>
                   <input
                     type="text"

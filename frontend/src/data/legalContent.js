@@ -12,22 +12,22 @@ export const LEGAL = {
     {
       heading: 'Ne jıynaladı',
       body:
-        'Mehman rejiminde brauzerde anonim identifikator (UUID) saqlanadı — progress, check-in hám lokal sevimliler ushın. Dizimnen ótsańız, email hám (ixtıyarıy) at saqlanadı. Qurılma push tokenı (FCM/APNs) — tek ruxsat berilgende.',
+        'Mehman rejiminde brauzerde anonim identifikator (UUID) saqlanadı — progress, check-in hám lokal saylandılar ushın. Dizimnen ótsańız, email hám (ixtıyarıy) at saqlanadı. Qurılma push tokenı (FCM/APNs) — tek ruxsat berilgende.',
     },
     {
       heading: 'Qayda saqlanadı',
       body:
-        'Serverda MySQL bazalarında (foydalanıwshı, statistika, sevimliler). Parollar xeshlenedi. Mehman sevimlileri aldın localStorage’da, login’dan keyin serverge sync etiledi.',
+        'Serverda MySQL bazalarında (paydalanıwshı, statistika, saylandılar). Parollar xeshlenedi. Mehman saylandıları aldın localStorage’da, login’dan keyin serverge sync etiledi.',
     },
     {
       heading: 'Óshiriw huqıqı',
       body:
-        'Statistika / profil bo‘liminen «maǵlıwmatımdı óshir» (DELETE /api/quizzes/privacy/me) arqalı actor baylanıslı oqıw tariyxı, device tokenlar hám uqsas jazıwlar tozalanadı. Dizim akkauntın óshiriw ushın qollap-quwatlawǵa murajat etińiz.',
+        'Statistika / profil bóliminen «maǵlıwmatımdı óshir» (DELETE /api/quizzes/privacy/me) arqalı actor baylanıslı oqıw tariyxı, device tokenlar hám uqsas jazıwlar tozalanadı. Dizim akkauntın óshiriw ushın qollap-quwatlawǵa múrájat etińiz.',
     },
     {
       heading: 'Úshinshi tárep',
       body:
-        'Kirish ushın Google OAuth ixtıyarıy. Analitika ushın shaxsiy reklama trekerleri qoýılmaydı. Health/monitor (mısalı UptimeRobot) tek server holatin tekseredi.',
+        'Kiriw ushın Google OAuth ixtıyarıy. Analitika ushın shaxsiy reklama trekerleri qoýılmaydı. Health/monitor (mısalı UptimeRobot) tek server xalatın tekseredi.',
     },
   ],
 
@@ -47,7 +47,7 @@ export const LEGAL = {
     {
       heading: 'Kontent',
       body:
-        'Sózlik hám ádebiyat materialları mualliflik huqıqı menen qorǵalıwı múmkin. Jeke paydalanıw / oqıw ruxsat; massiv kóshiriw yamasa qayta satıw ushın aldin razılıq kerek.',
+        'Sózlik hám ádebiyat materialları mualliflik huqıqı menen qorǵalıwı múmkin. Jeke paydalanıw / oqıw ruxsat; massiv kóshiriw yamasa qayta satıw ushın aldın razılıq kerek.',
     },
     {
       heading: 'Ózgeriwler',

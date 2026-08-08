@@ -336,12 +336,12 @@ export default function QuizStatistics() {
             <div>
               <p className="text-sm font-semibold text-teal-950">
                 {demoMode
-                  ? text(`Demo · ${DEMO_USERS} foydalanıwshı menen kórinis`)
+                  ? text(`Demo · ${DEMO_USERS} paydalanıwshı menen kórinis`)
                   : text('Haqıyqıy statistika')}
               </p>
               <p className="mt-0.5 text-xs text-ink/50">
                 {demoMode
-                  ? text('20–25 adam oynaganda sahifa qalay tolısatın kóriń. Maǵlıwmat úlgisi.')
+                  ? text('20–25 adam oynaganda bet qalay tolısatın kóriń. Maǵlıwmat úlgisi.')
                   : text('Sizdiń akkauntıńızdaǵı haqıyqıy nátiyjeler.')}
               </p>
             </div>

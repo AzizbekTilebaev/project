@@ -13,7 +13,7 @@ export const API_ERROR_MESSAGES = {
   QUIZ_NOT_FOUND: 'Test tabılmadı',
   ADMIN_FORBIDDEN: 'Ruxsat jeterli emes',
   UNAUTHORIZED: 'Kiriw kerek',
-  GOOGLE_NOT_CONFIGURED: 'Google kiriw házirshe sozlanbaǵan',
+  GOOGLE_NOT_CONFIGURED: 'Google kiriw házirshe sazlanbaǵan',
   GOOGLE_TOKEN_INVALID: 'Google token tekshiruwden ótpedi',
   GOOGLE_EMAIL_MISMATCH: 'Google email házirgi akkaunt menen sáykes kelmeydi',
   GOOGLE_UNLINK_NEEDS_PASSWORD: 'Aldın qupıya sóz ornatıń — Google sıńırıwdan aldın',

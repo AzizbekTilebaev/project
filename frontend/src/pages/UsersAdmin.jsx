@@ -352,7 +352,7 @@ export default function UsersAdmin() {
 
   async function handleVoidAttempt(attemptId) {
     const reason =
-      window.prompt(text('Biykarlaw sebebi (ixtiyarıy):'), '') ?? null;
+      window.prompt(text('Biykarlaw sebebi (ixtıyarıy):'), '') ?? null;
     if (reason === null) return;
     if (
       !window.confirm(
@@ -449,7 +449,7 @@ export default function UsersAdmin() {
         text(
           currentlyBlocked
             ? `#${id} paydalanıwshını ${label}?`
-            : `Rostdan ham #${id} paydalanıwshını bloklaysız ma?`
+            : `Shınnan da #${id} paydalanıwshını bloklaysız ma?`
         )
       )
     ) {

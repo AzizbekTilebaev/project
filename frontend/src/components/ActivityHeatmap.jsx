@@ -59,7 +59,7 @@ export default function ActivityHeatmap({ days = [], weeks = 13 }) {
   return (
     <div>
       <p className="mb-3 text-[0.7rem] uppercase tracking-[0.18em] text-ink/40">
-        {text('Faollıq xaritasi')}
+        {text('Faollıq kartası')}
       </p>
       <div className="overflow-x-auto pb-2">
         <div className="inline-flex gap-1">

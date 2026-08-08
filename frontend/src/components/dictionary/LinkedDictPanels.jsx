@@ -390,7 +390,7 @@ export function KaaMonthsPanel({ months = [] }) {
             {text('Qaraqalpaq tili')}
           </p>
           <h2 className="font-display text-2xl text-ink mt-1">
-            {text('Anʼanavıy oy atamaları')}
+            {text('Anʼanavıy ay atamaları')}
           </h2>
           <p className="mt-1 text-sm text-ink/50">
             {text('Arabsha atamalar — Qaraqalpaqsha mánisi, grigorian ayı hám kelip shıǵıwı')}

@@ -163,7 +163,7 @@ export default function SearchAutocomplete({
             {!loading && items.length === 0 && (
               <li className="px-4 py-4 text-sm text-ink/55">
                 <p className="mb-2">
-                  {text('Hesh nárse tabılmadı. Boshqa yozıwın sınap kóriń yamasa toʻliq izlewge ótiń.')}
+                  {text('Hesh nárse tabılmadı. Basqa jazıwıńızdı sınap kóriń yamasa tolıq izlewge ótiń.')}
                 </p>
                 <button
                   type="button"
@@ -173,7 +173,7 @@ export default function SearchAutocomplete({
                     navigate(`/dictionary/all?q=${encodeURIComponent(query.trim())}`);
                   }}
                 >
-                  {text('Toʻliq izlew sahifası')}
+                  {text('Tolıq izlew beti')}
                 </button>
               </li>
             )}
