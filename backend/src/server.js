@@ -308,7 +308,11 @@ if (isProd) {
     express.static(distPath, {
       setHeaders(res, filePath) {
         if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+          // hashed chunks — uzoq cache
           res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        } else if (filePath.endsWith(`${path.sep}index.html`) || filePath.endsWith('index.html')) {
+          // entry HTML — yangi deploy dan keyin eski chunk hash qolmasin
+          res.setHeader('Cache-Control', 'no-cache');
         }
       },
     })
@@ -317,6 +321,11 @@ if (isProd) {
     if (req.path.startsWith('/api') || req.path.startsWith('/uploads') || req.path.startsWith('/socket.io')) {
       return next();
     }
+    // Yo‘q /assets/* ga index.html bermaslik — "failed to fetch dynamically imported module" oldini oladi
+    if (req.path.startsWith('/assets/')) {
+      return res.status(404).type('text/plain').send('Not found');
+    }
+    res.setHeader('Cache-Control', 'no-cache');
     res.sendFile(path.join(distPath, 'index.html'));
   });
 }
