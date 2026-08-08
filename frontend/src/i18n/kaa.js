@@ -122,6 +122,10 @@ export const KAA = {
 
   // Settings
   sazlawlarTush: 'Kórinis hám test tártibin ózgertiw.',
+  firstRunResetTitle: 'Baslanǵısh tanlaw',
+  firstRunResetBody: 'Birinshi ochılıwdaǵı oyın eshigin qayta kóriń (test / krossvord / sóz oyını).',
+  firstRunResetBtn: 'Baslanǵısh tanlawdı qayta kóriw',
+  firstRunResetDone: 'Endi bas bette eshik tanlawı qayta shıǵadı.',
   mavzu: 'Mavzu',
   testJuwabi: 'Test juwapı',
   kirillLatinHint: 'Kirill / Latın — joqarıdaǵı КИР · ЛАТ.',
@@ -831,6 +835,12 @@ export const KAA = {
   homeTodayBody: 'Kún sózi yamasa dawam — sandıq hám statistikasız.',
   homeTodayPlay: 'Búgin oyna',
   homeTodayWod: 'Kún sózine',
+  kunSoziUnavailable: 'Kún sózi házir júklenbedi — sózlikten dawam etiń.',
+  kunSoziClaimError: 'Belgiláw islemadi. Keyinirek urınıp kóriń.',
+  kunSoziRetry: 'Qayta júklew',
+  learnPracticeHint: 'Oqıǵannan keyin — bir qısqa mashq',
+  learnPracticeBody: 'Test yamasa sózlik oyını menen bekkemleń.',
+  litHubEmpty: 'Ádebiyat maǵlıwmatları házir júklenbedi — sózlik yamasa oyın menen dawam etiń.',
 
   // FAQ / About / footer
   platformName: 'Qaraqalpaq til platforması',
@@ -841,6 +851,8 @@ export const KAA = {
     'Sayt qalay isleydi, mehman, jámiyet, oyınlar hám immersiya — hár juwapta birden ótiw túymeleri.',
   aboutTitle: 'Sayt haqqında',
   aboutShort: 'Haqqında',
+  privacyShort: 'Maxfiylik',
+  termsShort: 'Shártler',
   qoidalarEyebrow: 'Grammatika',
   qoidalarTitle: 'Til qoidaları',
   qoidalarShort: 'Qoidalar',

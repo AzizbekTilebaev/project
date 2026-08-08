@@ -116,6 +116,14 @@ export async function deleteUserData(id) {
   return request(`/users/${encodeURIComponent(id)}`, { method: 'DELETE' });
 }
 
+/** Owner: actor bloklash / ochish */
+export async function setUserActiveStatus(id, active) {
+  return request(`/users/${encodeURIComponent(id)}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ active: Boolean(active) }),
+  });
+}
+
 export async function fetchAdminQuizAttempts({
   page = 1,
   limit = 25,

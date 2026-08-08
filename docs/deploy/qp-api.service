@@ -1,0 +1,31 @@
+# /etc/systemd/system/qp-api.service
+# sudo cp docs/deploy/qp-api.service /etc/systemd/system/
+# sudo systemctl daemon-reload && sudo systemctl enable --now qp-api
+
+[Unit]
+Description=Qaraqalpaq Til Platformasi API
+After=network.target mysql.service
+Wants=mysql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/proyekt2/backend
+Environment=NODE_ENV=production
+EnvironmentFile=/var/www/proyekt2/backend/.env
+# Qayta deploy / yangi VPS da unutilmasin (xato bo‘lsa ham start — "-" prefiks)
+ExecStartPre=-/usr/bin/node scripts/ensure-search-indexes.mjs
+ExecStartPre=-/usr/bin/node scripts/seed-curated-from-db.mjs
+ExecStart=/usr/bin/node src/server.js
+Restart=always
+RestartSec=5
+# Crash / OOM dan keyin ham qayta
+StartLimitIntervalSec=0
+
+# Xavfsizlik
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

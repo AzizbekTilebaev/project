@@ -1,95 +1,89 @@
-# Qaraqalpaq Til Platformasi - Frontend
+# Frontend — Qaraqalpaq Til Platforması
 
-React + Vite + Tailwind CSS orqali yaratilgan frontend.
+React 18 + Vite 5 + Tailwind 3 SPA.
 
-## Tezkor Boshlash
+| | |
+|--|--|
+| Dev | `http://localhost:3000` |
+| Proxy | `/api`, `/socket.io`, `/uploads` → `http://localhost:5000` |
+| Root o‘rnatish | [SETUP.md](../SETUP.md) |
+| To‘liq hujjat | [d.md](../d.md) §5 · [docs/INDEX.md](../docs/INDEX.md) |
+
+## Tezkor start
 
 ```bash
+# Backend ishlayotgan bo‘lsin (:5000)
+cd frontend
 npm install
 npm run dev
 ```
 
-Server `http://localhost:5173` da ishlaidi.
+```bash
+npm run build    # → dist/ (backend prod shu papkani serve qiladi)
+npm test
+npm run lint
+```
 
-## Loyiha Tuzilishi
+## Tuzilma
 
 ```
 src/
-├── App.jsx              # Routing va layout
-├── main.jsx             # Entry point
-├── index.css            # Global styles
-├── components/
-│   └── Header.jsx       # Navigation
-└── pages/
-    ├── Home.jsx         # Bosh sahifa
-    ├── Login.jsx        # Kirish
-    ├── Register.jsx     # Ro'yxatdan o'tish
-    ├── Profile.jsx      # Profil
-    ├── Quiz.jsx         # Testlar
-    ├── Dictionary.jsx   # Lug'at
-    ├── Books.jsx        # Kitoblar
-    ├── Crossword.jsx    # Krossvord
-    ├── CrosswordsList.jsx
-    ├── CrosswordPage.jsx
-    └── new.jsx          # Yangi krossvord
+├── App.jsx              # Marshrutlar + layout
+├── main.jsx
+├── index.css
+├── api/                 # Backend klientlar
+├── components/          # Header, Crossword, animatsiya, …
+├── contexts/            # Auth, UiScript, AppSettings
+├── hooks/
+├── i18n/kaa.js          # Lotin ↔ kirill
+├── lib/                 # mdToHtml, grammarContent, englishContent, …
+├── pages/               # Sahifalar
+└── utils/
 ```
 
-## Sahifalar
+## Asosiy marshrutlar
 
-| URL | Tavsif |
-|-----|--------|
+| Path | Mazmun |
+|------|--------|
 | `/` | Bosh sahifa |
-| `/login` | Kirish |
-| `/register` | Ro'yxatdan o'tish |
-| `/profile` | Foydalanuvchi profili |
-| `/quiz` | Testlar |
-| `/dictionary` | Lug'at |
-| `/books` | Kitoblar |
-| `/crossword` | Krossvordlar |
-| `/crossword/:id` | Krossvord o'ynash |
+| `/dictionary`, `/dictionary/:id` | Túsinirme sozlik |
+| `/dictionary/uzb\|en\|ru` | Ikki tilli |
+| `/dictionary/frazeologiya`, `/imla`, `/adam-atlari` | Maxsus lug‘atlar |
+| `/quiz`, `/quiz/adaptive`, `/quiz/room` | Testlar |
+| `/crossword` | Krossvord |
+| `/literature`, `/books`, `/writers` | Ádebiyat |
+| `/qoidalar` | QQ grammatika (fordata MD) |
+| `/english` | Ingliz fraza/mashq (fordata MD) |
+| `/tutor`, `/games`, `/jumbaqlar` | Mashq |
+| `/admin/*` | Admin (RBAC) |
+| `/login`, `/register`, `/profile` | Auth |
 
-## Texnologiyalar
+To‘liq jadval: `src/App.jsx` yoki [d.md](../d.md) §5.2.
 
-- React 18
-- React Router v6
-- Vite
-- Tailwind CSS
-- Fetch API
+## API (qisqa)
 
-## API
+Backend prefixlar (proxy orqali bir origin):
 
-Backend: `http://localhost:5000`
+- `/api/auth/*` — login, me, profile  
+- `/api/tusindirme/*` — sozlik (**dictionary emas**)  
+- `/api/quizzes/*` — testlar  
+- `/api/crosswords/*`, `/api/books/*`, `/api/morphology/*`, …
 
-Muhim endpoints:
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/users/me`
-- `PUT /api/users/profile`
-- `GET /api/quizzes`
-- `GET /api/dictionary`
-- `GET /api/books`
-- `GET /api/crosswords`
+Batafsil: [d.md](../d.md) §4 · [backend/README.md](../backend/README.md).
 
-## Ishlab Chiqish
+## Context / sozlamalar
 
-```bash
-npm run dev      # Development
-npm run build    # Production build
-npm run preview  # Preview build
-```
+- **AuthContext** — Bearer token (`localStorage`)
+- **UiScriptContext** — lotin / kirill
+- **AppSettingsContext** — tema: day | night | sepia | focus
 
-## Authentication
+## Kontent MD
 
-Token va foydalanuvchi ma'lumotlari `localStorage` da saqlanadi:
-- `token` - JWT token
-- `user` - User data (JSON)
+- QQ qoidalar: `fordata/grammar/*.md` → `/qoidalar`
+- Ingliz: `fordata/english/*.md` → `/english` (`src/lib/englishContent.js`)
 
-## Konfiguratsiya
+Yangi MD qo‘shganda mapper’ni yangilang.
 
-- `vite.config.js` - Vite sozlamalari
-- `tailwind.config.js` - Tailwind CSS
-- `postcss.config.js` - PostCSS
-- `index.html` - HTML shabloni
+## Eslatma
 
-
-
+Eski hujjatlardagi **port 5173** va `/api/dictionary` — bekor. Hozir: **3000** va `/api/tusindirme`.

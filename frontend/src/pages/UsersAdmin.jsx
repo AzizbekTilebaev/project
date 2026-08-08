@@ -10,6 +10,7 @@ import {
   fetchUsers,
   fetchUserDetail,
   deleteUserData,
+  setUserActiveStatus,
   fetchAdminAccounts,
   createAdminAccount,
   updateAdminAccount,
@@ -440,6 +441,36 @@ export default function UsersAdmin() {
     }
   }
 
+  async function handleToggleBlock(id, currentlyBlocked) {
+    const nextActive = currentlyBlocked;
+    const label = currentlyBlocked ? 'bloktan shıǵarıw' : 'bloklaw';
+    if (
+      !window.confirm(
+        text(
+          currentlyBlocked
+            ? `#${id} paydalanıwshını ${label}?`
+            : `Rostdan ham #${id} paydalanıwshını bloklaysız ma?`
+        )
+      )
+    ) {
+      return;
+    }
+    setBusy(true);
+    setError('');
+    try {
+      await setUserActiveStatus(id, nextActive);
+      setMsg(currentlyBlocked ? `#${id} aktivlestirildi` : `#${id} bloklandı`);
+      await loadUsers();
+      if (detail?.user?.id === id || detail?.id === id) {
+        await openDetail(id);
+      }
+    } catch (err) {
+      setError(err.message || 'Bloklaw qáteligi');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function handleCreateAccount(e) {
     e.preventDefault();
     setBusy(true);
@@ -675,9 +706,17 @@ export default function UsersAdmin() {
                       <td className="px-4 py-3">{u.booksInProgress}</td>
                       <td className="px-4 py-3">{u.crosswordsDone}</td>
                       <td className="px-4 py-3 text-ink/55">{fmtDate(u.createdAt)}</td>
-                      <td className="px-4 py-3 text-ink/55">{fmtDate(u.lastSeenAt)}</td>
+                      <td className="px-4 py-3 text-ink/55">
+                        {u.isBlocked ? (
+                          <span className="rounded-full bg-rose-50 px-2 py-0.5 text-xs text-rose-700">
+                            {text('Blok')}
+                          </span>
+                        ) : (
+                          fmtDate(u.lastSeenAt)
+                        )}
+                      </td>
                       <td className="px-4 py-3">
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                           <button
                             type="button"
                             disabled={busy}
@@ -686,6 +725,16 @@ export default function UsersAdmin() {
                           >
                             {text('Detal')}
                           </button>
+                          {isOwner && (
+                            <button
+                              type="button"
+                              disabled={busy}
+                              onClick={() => handleToggleBlock(u.id, Boolean(u.isBlocked))}
+                              className="rounded-full border border-amber-500/40 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-950"
+                            >
+                              {text(u.isBlocked ? 'Bloktan shıǵarıw' : 'Bloklaw')}
+                            </button>
+                          )}
                           {canManageUsers && (
                             <button
                               type="button"

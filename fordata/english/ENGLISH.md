@@ -2,7 +2,8 @@
 
 > Qaraqalpaq / Ózbekstan maktab seriyaları: **Kids’ English**, **New Fly High**, **Teens’ English**, **English 10–11**.  
 > QQ til qoidaları (`fordata/grammar/`) menen **aralastırılmaydı**.  
-> PDF: `pdfs/` · extract: `extract/<slug>/` · OCR: `ocr/<slug>/` (gitignore).
+> Sayt: `/english` · indeks: [docs/INDEX.md](../../docs/INDEX.md) · [fordata/README.md](../README.md).  
+> PDF/OCR/extract **trash**da: `/home/azizbek/proyekt2-trash-20260807/fordata/english/` (bazaga / MD ga o‘tkazilgan).
 
 ## Derekler
 
@@ -16,9 +17,9 @@
 | 6 | 5 | Fly High Workbook | metodika | `5-fly-high-workbook-metodika` | pdftotext ✅ | oqıtıwshı |
 | 7 | 6 | Teens’ English | oqıwshı | `6-teens-english` | pdftotext ✅ | `6-klass-teens-grammatika.md` |
 | 8 | 6 | Teens’ English | oqıtıwshı | `6-teens-english-teachers` | pdftotext ✅ | metodika |
-| 9 | 7 | Teens’ English | oqıtıwshı | `7-teens-english-teachers` | pdftotext ✅ | oqıwshı PDF joq · unitlar TB |
+| 9 | 7 | Teens’ English | oqıtıwshı | `7-teens-english-teachers` | pdftotext ✅ | oqıwshı PDF joq · fraza `english-7-9.md` |
 | 10 | 8 | Teens’ English 2020 | oqıwshı | `8-teens-english-2020` | pdftotext ✅ | `english-7-9.md` |
-| 11 | 9 | Fly High English | oqıtıwshı | `9-fly-high-teachers` | pdftotext ✅ | oqıwshı PDF joq · unitlar TB |
+| 11 | 9 | Fly High English | oqıtıwshı | `9-fly-high-teachers` | pdftotext ✅ | oqıwshı PDF joq · fraza `english-7-9.md` |
 | 12 | 10 | English | oqıwshı | `10-english` | pdftotext ✅ | `10-klass-english-grammar-guide.md` |
 | 13 | 11 | English | oqıwshı | `11-english` | OCR eng ✅ | `english-10-11.md` |
 

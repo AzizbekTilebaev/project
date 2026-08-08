@@ -864,6 +864,26 @@ html[data-theme='focus'] .qp-glass {
   animation: lesson-shake 0.45s ease-in-out both;
 }
 
+/* Quiz / dict-game wrong pick — transform-only, ~200ms */
+@keyframes quiz-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+.quiz-option--wrong {
+  animation: quiz-shake 0.2s ease-in-out both;
+}
+.quiz-option--correct-pop {
+  animation: quiz-result-pop 0.35s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
 .lesson-flip {
   perspective: 1000px;
 }
@@ -898,6 +918,10 @@ html[data-theme='focus'] .qp-glass {
     transition: none;
   }
   .lesson-shake {
+    animation: none;
+  }
+  .quiz-option--wrong,
+  .quiz-option--correct-pop {
     animation: none;
   }
 }

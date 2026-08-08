@@ -20,7 +20,9 @@ import FreePlayCtaRow from '../components/FreePlayCtaRow';
 import { FOOTER_FREE_LINKS } from '../data/siteDeepLinks';
 import { useAuth } from '../contexts/AuthContext';
 import { KAA } from '../i18n/kaa';
-import { AnimIconDivider, AnimChevron, anim } from '../animations';
+import { AnimIconDivider, AnimChevron, anim, PageEnter, MotionDiv, motionVariants } from '../animations';
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
+import SoftNextRow from '../components/SoftNextRow';
 import { clearTutorContinue, touchTutorContinue } from '../lib/tutorProgress';
 import useDictionaryFavorites from '../hooks/useDictionaryFavorites';
 import { favoritesPracticeHref } from '../lib/readingPractice';
@@ -38,10 +40,12 @@ export default function Tutor() {
     text(KAA.uyretiwshi),
     text(KAA.tutorTush)
   );
+  const reduceMotion = usePrefersReducedMotion();
   const [busy, setBusy] = useState(false);
   const [abandonedFlash, setAbandonedFlash] = useState(false);
   const skipTouchRef = useRef(false);
   const [msg, setMsg] = useState('');
+  const [pickFeedback, setPickFeedback] = useState(null);
   const [localSession, setLocalSession] = useState(null);
   const [editingPlan, setEditingPlan] = useState(false);
   const [draggedId, setDraggedId] = useState(null);
@@ -194,11 +198,17 @@ export default function Tutor() {
       });
       skipTouchRef.current = false;
       setAbandonedFlash(false);
+      setPickFeedback({ index: optionIndex, correct: Boolean(res.correct) });
+      setMsg(res.correct ? text(KAA.tutorCorrectMsg) : text(KAA.tutorWrongMsg));
+      if (!reduceMotion) {
+        await new Promise((r) => window.setTimeout(r, 650));
+      }
       const refreshed = await fetchDailyTutor();
       setLocalSession(refreshed);
-      setMsg(res.correct ? text(KAA.tutorCorrectMsg) : text(KAA.tutorWrongMsg));
+      setPickFeedback(null);
     } catch (err) {
       setMsg(err.message);
+      setPickFeedback(null);
     } finally {
       setBusy(false);
     }
@@ -307,18 +317,19 @@ export default function Tutor() {
     <PageGate status={status} error={error} onRetry={reload} backHref="/" backLabel="Bas bet">
       <DictShell className="pt-24 pb-28 md:pb-24">
         <section className="relative mx-auto max-w-2xl px-5 pt-6 sm:px-6 md:px-10 md:pt-8">
+          <PageEnter>
           <p className="mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-teal-800/70">
-            {text('Úyretiwshi')}
+            {text(KAA.uyretiwshi)}
           </p>
           <h1 className="mb-2 font-display text-3xl tracking-tight text-ink sm:text-4xl">
-            {text('Oqıw orayı')}
+            {text(KAA.practiceTitle)}
           </h1>
           <AnimIconDivider amber className="mb-3" />
           <p className="mb-8 text-ink/55">
-            {text('Test, krossvord, oyın hám kúndelikli mini-dars — bir orında.')}
+            {text(KAA.practiceBody)}
           </p>
 
-          <div className="mb-12 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="mb-12 grid grid-cols-2 gap-3 sm:grid-cols-3 motion-chip-stagger">
             {hubCards.map((c) => (
               <Link
                 key={`${c.icon}-${c.title}`}
@@ -461,7 +472,7 @@ export default function Tutor() {
           )}
 
           {session && !session.available && session.reason === 'empty_bank' && (
-            <div className="mb-8 rounded-3xl border border-teal-200/70 bg-gradient-to-br from-teal-50/80 via-white/80 to-amber-50/50 px-6 py-8 text-center">
+            <div className="mb-8 motion-rise rounded-3xl border border-teal-200/70 bg-gradient-to-br from-teal-50/80 via-white/80 to-amber-50/50 px-6 py-8 text-center">
               <Icon name="grammar" className="mb-3 text-3xl text-teal-800" />
               <p className="mb-2 font-display text-2xl text-ink">{text(KAA.tutorEmptyTitle)}</p>
               <p className="mx-auto mb-6 max-w-md text-sm text-ink/55">{text(KAA.tutorEmptyBody)}</p>
@@ -471,7 +482,7 @@ export default function Tutor() {
               <div className="flex flex-wrap justify-center gap-3">
                 <Link
                   to={session.practiceLinks?.quiz || '/quiz'}
-                  className="inline-flex items-center gap-2 rounded-full bg-teal-800 px-5 py-2.5 text-sm font-bold text-white"
+                  className={`${anim.shine} inline-flex items-center gap-2 rounded-full bg-teal-800 px-5 py-2.5 text-sm font-bold text-white`}
                 >
                   <Icon name="trophy" />
                   {text(KAA.tutorEmptyQuiz)}
@@ -506,6 +517,15 @@ export default function Tutor() {
                   {text(KAA.tutorEmptyJumbaq)}
                 </Link>
               </div>
+              <SoftNextRow
+                className="mt-5"
+                primaryTo="/games"
+                primaryIcon="trophy"
+                primaryLabelKey="oyinlar"
+                secondaryTo="/literature"
+                secondaryIcon="scroll"
+                secondaryLabelKey="adebiyat"
+              />
             </div>
           )}
 
@@ -755,17 +775,29 @@ export default function Tutor() {
                     {nextItem.kind === 'sense_mcq' ? (
                       <p className="text-xs text-ink/50">{text(KAA.tutorSenseMcqHint)}</p>
                     ) : null}
-                    {nextItem.options.map((opt, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        disabled={busy}
-                        onClick={() => onPick(idx)}
-                        className="rounded-2xl border border-ink/10 bg-parchment/40 px-4 py-3 text-left transition hover:border-teal-600/40 hover:-translate-y-0.5 disabled:opacity-50"
-                      >
-                        {text(opt)}
-                      </button>
-                    ))}
+                    {nextItem.options.map((opt, idx) => {
+                      const fb = pickFeedback;
+                      const isPicked = fb && fb.index === idx;
+                      const wrongFade = fb && !fb.correct && isPicked;
+                      const correctPop = fb && fb.correct && isPicked;
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          disabled={busy}
+                          onClick={() => onPick(idx)}
+                          className={`rounded-2xl border px-4 py-3 text-left transition hover:border-teal-600/40 hover:-translate-y-0.5 disabled:opacity-50 ${
+                            correctPop
+                              ? 'border-emerald-500/50 bg-emerald-50 text-emerald-950 scale-[1.02]'
+                              : wrongFade
+                                ? 'border-rose-300/40 bg-rose-50/40 text-ink/45 line-through opacity-60'
+                                : 'border-ink/10 bg-parchment/40'
+                          }`}
+                        >
+                          {text(opt)}
+                        </button>
+                      );
+                    })}
                   </div>
                 ) : nextItem.kind === 'produce' ||
                   nextItem.kind === 'produce_reverse' ||
@@ -815,7 +847,21 @@ export default function Tutor() {
                     {text('Kórip shıqtım')}
                   </button>
                 )}
-                {msg && <p className="mt-4 text-sm text-teal-800">{text(msg)}</p>}
+                {msg ? (
+                  <MotionDiv
+                    key={msg}
+                    variants={
+                      pickFeedback && !pickFeedback.correct
+                        ? motionVariants.shake
+                        : motionVariants.slideUp
+                    }
+                    className={`mt-4 text-sm ${
+                      pickFeedback && !pickFeedback.correct ? 'text-rose-700' : 'text-teal-800'
+                    }`}
+                  >
+                    {text(msg)}
+                  </MotionDiv>
+                ) : null}
                 {abandonedFlash ? (
                   <p className="mt-4 text-xs text-ink/50">{text(KAA.tutorAbandonedHint)}</p>
                 ) : null}
@@ -865,6 +911,7 @@ export default function Tutor() {
               </ul>
             </div>
           )}
+          </PageEnter>
         </section>
       </DictShell>
     </PageGate>

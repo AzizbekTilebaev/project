@@ -103,6 +103,56 @@ export async function getAdminDashboard() {
     /* table may be missing on fresh deploy */
   }
 
+  /** 7 kunlik funnel — learning_events */
+  let funnel = {
+    days: 7,
+    checkinDone: 0,
+    wodGameStarted: 0,
+    quizCompleted: 0,
+    checkinToGamePct: null,
+    daily: [],
+  };
+  try {
+    const [[totals]] = await pools.statistika.query(
+      `SELECT
+         SUM(event_type IN ('checkin_done','word_of_day_claimed')) AS checkinDone,
+         SUM(event_type = 'wod_game_started') AS wodGameStarted,
+         SUM(event_type = 'quiz_completed') AS quizCompleted
+       FROM learning_events
+       WHERE created_at >= (NOW() - INTERVAL 7 DAY)`
+    );
+    const checkinDone = Number(totals?.checkinDone) || 0;
+    const wodGameStarted = Number(totals?.wodGameStarted) || 0;
+    const quizCompleted = Number(totals?.quizCompleted) || 0;
+    const [dailyRows] = await pools.statistika.query(
+      `SELECT DATE(created_at) AS day,
+              SUM(event_type IN ('checkin_done','word_of_day_claimed')) AS checkinDone,
+              SUM(event_type = 'wod_game_started') AS wodGameStarted,
+              SUM(event_type = 'quiz_completed') AS quizCompleted
+       FROM learning_events
+       WHERE created_at >= (NOW() - INTERVAL 7 DAY)
+       GROUP BY DATE(created_at)
+       ORDER BY day ASC`
+    );
+    funnel = {
+      days: 7,
+      checkinDone,
+      wodGameStarted,
+      quizCompleted,
+      checkinToGamePct: checkinDone
+        ? Math.round((wodGameStarted / checkinDone) * 100)
+        : null,
+      daily: (dailyRows || []).map((r) => ({
+        day: r.day,
+        checkinDone: Number(r.checkinDone) || 0,
+        wodGameStarted: Number(r.wodGameStarted) || 0,
+        quizCompleted: Number(r.quizCompleted) || 0,
+      })),
+    };
+  } catch {
+    /* learning_events yo‘q bo‘lishi mumkin */
+  }
+
   return {
     generatedAt: new Date().toISOString(),
     summary: {
@@ -120,8 +170,13 @@ export async function getAdminDashboard() {
       exitFeedbackHelpful: exitFeedback.helpful,
       exitFeedbackTotal: exitFeedback.total,
       exitFeedbackRate: exitFeedback.helpfulRate,
+      funnelCheckin: funnel.checkinDone,
+      funnelWodGame: funnel.wodGameStarted,
+      funnelQuiz: funnel.quizCompleted,
+      funnelCheckinToGamePct: funnel.checkinToGamePct,
     },
     exitFeedback,
+    funnel,
     databases: grouped,
   };
 }

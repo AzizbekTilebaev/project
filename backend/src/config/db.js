@@ -13,6 +13,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
+import { mysqlSslOptions } from './mysqlSsl.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
@@ -39,14 +40,24 @@ export const SERVER_CONFIG = {
   password: process.env.DB_PASS || '',
 };
 
+/** Prod VPS: 10 baza × 10 = 100 ulanish — max_connections ni to‘ldirishi mumkin. */
+const POOL_LIMIT = (() => {
+  const n = Number(process.env.DB_POOL_LIMIT);
+  if (Number.isFinite(n) && n >= 1 && n <= 50) return Math.floor(n);
+  return process.env.NODE_ENV === 'production' ? 4 : 10;
+})();
+
+const SSL = mysqlSslOptions();
+
 function makePool(database) {
   return mysql.createPool({
     ...SERVER_CONFIG,
     database,
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: POOL_LIMIT,
     queueLimit: 0,
     charset: 'utf8mb4',
+    ...(SSL ? { ssl: SSL } : {}),
   });
 }
 

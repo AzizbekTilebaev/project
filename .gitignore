@@ -1,23 +1,11 @@
 node_modules/
 dist/
 frontend/dist/
-grammar-site/dist/
 .env
 .env.*
 !.env.example
 *.log
 .DS_Store
 backend/backups/
-backend/tayn_emesleri/
 backend/tmp/
-backend/.git.bak-nested/
 tmp/
-fordata/imla.local/
-
-# Grammar / English OCR artifacts (large)
-fordata/grammar/tessdata/
-fordata/grammar/ocr/
-fordata/grammar/pdfs/
-fordata/english/pdfs/
-fordata/english/ocr/
-fordata/english/extract/

@@ -113,6 +113,20 @@ export function clearFirstRunPathSelection() {
   return writePaths({ ...cur, selected: null });
 }
 
+/** Settings: first-run eshik tanlovini qayta ko‘rsatish. */
+export function resetFirstRunExperience() {
+  try {
+    localStorage.removeItem(DISMISS_KEY);
+    localStorage.removeItem(CELEBRATE_KEY);
+    localStorage.removeItem(STEPS_KEY);
+  } catch {
+    /* ignore */
+  }
+  writePaths({ selected: null, completed: emptyCompleted() });
+  emitResumeChanged();
+  return readFirstRunPaths();
+}
+
 export function readCelebratePending() {
   try {
     return localStorage.getItem(CELEBRATE_KEY) === '1';

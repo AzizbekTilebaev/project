@@ -4,7 +4,7 @@ import DictShell from '../components/dictionary/DictShell';
 import Icon from '../components/Icon';
 import { useUiScript } from '../contexts/UiScriptContext';
 import { KAA } from '../i18n/kaa';
-import { AnimIconDivider, AnimChevron, anim } from '../animations';
+import { AnimIconDivider, AnimChevron, anim, PageEnter } from '../animations';
 
 const FEATURED = [
   {
@@ -67,7 +67,8 @@ export default function GamesHub() {
           <Icon name="left" /> {text(KAA.basBet)}
         </Link>
 
-        <div className="qp-section-head mb-10 animate-dict-rise">
+        <PageEnter>
+        <div className="qp-section-head mb-10">
           <div>
             <p className="mb-2 text-[0.7rem] font-bold uppercase tracking-[0.22em] text-teal-800/60">
               {text(KAA.oyinlarEyebrow)}
@@ -100,13 +101,11 @@ export default function GamesHub() {
         </div>
 
         <div className="mb-12 grid gap-5 sm:grid-cols-2">
-          {FEATURED.map((d, i) => (
+          {FEATURED.map((d) => (
             <Link
               key={d.to}
               to={d.to}
-              className={`qp-play-card group ${
-                i === 1 ? 'animate-dict-rise-delay' : 'animate-dict-rise'
-              }`}
+              className="qp-play-card group"
             >
               <div className={`qp-play-card__media bg-gradient-to-br ${d.tone}`}>
                 <span className="qp-play-card__badge">
@@ -160,18 +159,12 @@ export default function GamesHub() {
           </Link>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {MORE.map((d, i) => (
+        <div className="motion-chip-stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {MORE.map((d) => (
             <Link
               key={d.to}
               to={d.to}
-              className={`qp-card group flex flex-col p-5 no-underline ${
-                i === 0
-                  ? 'animate-dict-rise'
-                  : i === 1
-                    ? 'animate-dict-rise-delay'
-                    : 'animate-dict-rise-delay-2'
-              }`}
+              className="qp-card group flex flex-col p-5 no-underline"
             >
               <span className={`qp-icon-tile mb-4 bg-gradient-to-br ${d.tone}`}>
                 <Icon name={d.icon} />
@@ -202,6 +195,7 @@ export default function GamesHub() {
             <AnimChevron count={2} style={{ ['--dch-color']: '#ecfdf5' }} />
           </Link>
         </div>
+        </PageEnter>
       </section>
     </DictShell>
   );

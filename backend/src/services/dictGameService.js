@@ -339,6 +339,17 @@ export async function startDictRound(actorId, count = 10, { titleIds, source } =
     [roundId, actorId, serializeRoundPayload(src || null, questions)]
   );
 
+  if (src === 'checkin') {
+    try {
+      const { recordEvent } = await import('./actorService.js');
+      await recordEvent(actorId, 'wod_game_started', {
+        payload: { roundId, count: questions.length, source: src },
+      });
+    } catch {
+      /* optional funnel */
+    }
+  }
+
   return {
     roundId,
     count: questions.length,

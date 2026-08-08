@@ -28,6 +28,7 @@ import recentWordsRoutes from './routes/recentWordsRoutes.js';
 import quotasRoutes from './routes/quotasRoutes.js';
 import statsRoutes from './routes/statsRoutes.js';
 import feedbackRoutes from './routes/feedbackRoutes.js';
+import notificationsRoutes from './routes/notificationsRoutes.js';
 import { apiLimiter } from './middleware/security.js';
 import { ensureUploadsDir } from './middleware/bookUpload.js';
 import { ensureWriterPhotosDir } from './middleware/writerPhotoUpload.js';
@@ -118,6 +119,26 @@ const allowedOrigins = (process.env.FRONTEND_ORIGIN || 'http://localhost:3000')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
+
+if (allowedOrigins.some((o) => o === '*' || o === 'null')) {
+  console.error('❌ FRONTEND_ORIGIN da wildcard (*) yoki null ruxsat etilmaydi.');
+  process.exit(1);
+}
+if (isProd && allowedOrigins.some((o) => /localhost|127\.0\.0\.1/i.test(o))) {
+  console.warn('⚠️  Productionda FRONTEND_ORIGIN ichida localhost bor — tekshiriń.');
+}
+
+// Server versiyasi — mijoz headeri ixtiyoriy; yo‘qligi yoki boshqa qiymat rad etilmaydi
+app.use('/api', (req, res, next) => {
+  res.setHeader('X-API-Version', '1');
+  const clientVer = req.get('x-api-version');
+  if (clientVer != null && String(clientVer).trim() !== '' && String(clientVer).trim() !== '1') {
+    console.info(
+      `[api-version] client=${String(clientVer).slice(0, 32)} ${req.method} ${req.originalUrl || req.url}`
+    );
+  }
+  next();
+});
 
 app.use(
   helmet({
@@ -257,12 +278,16 @@ app.use('/api/recent-words', recentWordsRoutes);
 app.use('/api/quotas', quotasRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/feedback', feedbackRoutes);
+app.use('/api/notifications', notificationsRoutes);
 app.use('/api/admin', adminAccountsRoutes);
 app.use('/api/v1', publicApiRoutes);
 app.use('/', seoRoutes);
 
 // Faqat jamoatchilik rasmlari — books/immersion signed/auth API orqali
-const publicUploadsRoot = path.join(process.cwd(), 'public', 'uploads');
+// UPLOADS_ROOT: restore-drill izolyatsiyasi (asl public/uploads ni buzmaslik)
+const publicUploadsRoot = process.env.UPLOADS_ROOT
+  ? path.resolve(process.env.UPLOADS_ROOT)
+  : path.join(process.cwd(), 'public', 'uploads');
 app.use(
   '/uploads/avatars',
   express.static(path.join(publicUploadsRoot, 'avatars'), { maxAge: '1d' })

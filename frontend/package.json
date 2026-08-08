@@ -11,6 +11,7 @@
     "test": "node --test --test-force-exit src/lib/readingPractice.test.js src/lib/crosswordMissLogic.test.js src/lib/immersionPractice.test.js src/lib/readingTapQueue.test.js src/lib/readingLessonSrs.test.js src/lib/dueRemediation.test.js src/lib/produceGrade.test.js"
   },
   "dependencies": {
+    "framer-motion": "^13.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.0",

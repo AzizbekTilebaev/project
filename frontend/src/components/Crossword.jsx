@@ -23,6 +23,7 @@ export default function Crossword({
   onGuess,
   readOnly = false,
   hideReset = false,
+  celebrate = false,
 }) {
   const { text } = useUiScript();
   const [currentWord, setCurrentWord] = useState(-1);
@@ -292,7 +293,11 @@ export default function Crossword({
           </div>
         </div>
 
-        <div className="overflow-auto max-h-[min(75vh,720px)] rounded-xl border border-ink/5 bg-white/30 p-2 md:p-3">
+        <div
+          className={`overflow-auto max-h-[min(75vh,720px)] rounded-xl border border-ink/5 bg-white/30 p-2 md:p-3 ${
+            celebrate ? 'motion-grid-pulse' : ''
+          }`}
+        >
           <div className="sr-only" aria-live="polite">
             {status?.text ? text(status.text) : ''}
           </div>

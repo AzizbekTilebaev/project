@@ -7,6 +7,28 @@ import { KAA } from '../i18n/kaa';
 import { FOOTER_FREE_LINKS } from '../data/siteDeepLinks';
 
 const SESSION_KEY = 'app:exit_survey_done';
+const COOLDOWN_KEY = 'app:exit_survey_cooldown_until';
+const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+const ARM_MS = 45000;
+
+function isCoolingDown() {
+  try {
+    if (sessionStorage.getItem(SESSION_KEY)) return true;
+    const until = Number(localStorage.getItem(COOLDOWN_KEY) || 0);
+    return Number.isFinite(until) && until > Date.now();
+  } catch {
+    return true;
+  }
+}
+
+function markSurveyConsumed() {
+  try {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    localStorage.setItem(COOLDOWN_KEY, String(Date.now() + COOLDOWN_MS));
+  } catch {
+    /* ignore */
+  }
+}
 
 export default function ExitSurveyModal() {
   const { text } = useUiScript();
@@ -17,42 +39,53 @@ export default function ExitSurveyModal() {
   const [helpfulChoice, setHelpfulChoice] = useState(null);
 
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem(SESSION_KEY)) return undefined;
-    } catch {
-      return undefined;
-    }
+    if (isCoolingDown()) return undefined;
 
     let armed = false;
+    let opened = false;
     const armTimer = window.setTimeout(() => {
       armed = true;
-    }, 45000);
+    }, ARM_MS);
 
-    const onLeaveIntent = (e) => {
-      if (!armed) return;
-      try {
-        if (sessionStorage.getItem(SESSION_KEY)) return;
-      } catch {
-        return;
-      }
-      if (e.clientY > 12) return;
-      setOpen(true);
+    const tryOpen = () => {
+      if (!armed || opened || isCoolingDown()) return;
+      opened = true;
       armed = false;
+      setOpen(true);
+    };
+
+    /** Desktop exit-intent */
+    const onLeaveIntent = (e) => {
+      if (!armed || opened) return;
+      if (e.clientY > 12) return;
+      tryOpen();
+    };
+
+    /**
+     * Mobil / touch: mouseleave yo‘q — tab/background yoki pagehide.
+     * Faqat armed (45s+) va cooldown yo‘q bo‘lsa.
+     */
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') tryOpen();
+    };
+    const onPageHide = () => {
+      tryOpen();
     };
 
     document.addEventListener('mouseout', onLeaveIntent);
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('pagehide', onPageHide);
+
     return () => {
       window.clearTimeout(armTimer);
       document.removeEventListener('mouseout', onLeaveIntent);
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pagehide', onPageHide);
     };
   }, []);
 
   const close = () => {
-    try {
-      sessionStorage.setItem(SESSION_KEY, '1');
-    } catch {
-      /* ignore */
-    }
+    markSurveyConsumed();
     setOpen(false);
     setStep('ask');
     setNote('');

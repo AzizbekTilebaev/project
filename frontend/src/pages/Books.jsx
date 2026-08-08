@@ -14,7 +14,7 @@ import {
 import ScriptToggle from '../components/literature/ScriptToggle';
 import { t, genreLabel, sourceLabel } from '../components/literature/litLabels';
 import { useUiScript } from '../contexts/UiScriptContext';
-import { AnimChevron, anim } from '../animations';
+import { AnimChevron, anim, PageEnter } from '../animations';
 import { KAA } from '../i18n/kaa';
 import { getReadingLessonMeta } from '../lib/readingProgress';
 import { clearBookContinue, getContinueBook } from '../components/literature/litUtils';
@@ -525,6 +525,7 @@ export default function Books() {
     <PageGate status={status} error={listError} onRetry={reload} backHref="/" backLabel={t('homeBack', script)}>
     <DictShell className="pt-24 pb-24">
       <section className="relative mx-auto max-w-5xl px-6 pt-8 md:px-10">
+        <PageEnter>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="mb-2 text-[0.7rem] uppercase tracking-[0.22em] text-teal-800/70">
@@ -771,6 +772,7 @@ export default function Books() {
         <p className="mt-12 text-sm leading-relaxed text-ink/55">
           {t('booksFooterHint', script)}
         </p>
+        </PageEnter>
       </section>
     </DictShell>
     </PageGate>

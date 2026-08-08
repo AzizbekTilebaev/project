@@ -83,6 +83,12 @@ export default function About() {
         <div className="mb-10 qp-surface px-5 py-5">
           <h2 className="mb-2 font-display text-xl text-ink">{text(ABOUT.privacyTitle)}</h2>
           <p className="text-sm leading-relaxed text-ink/60">{text(ABOUT.privacy)}</p>
+          <Link
+            to="/privacy"
+            className="mt-3 inline-block text-sm font-semibold text-teal-900 hover:underline"
+          >
+            {text(KAA.privacyShort)} →
+          </Link>
         </div>
 
         <div className="flex flex-wrap gap-3">

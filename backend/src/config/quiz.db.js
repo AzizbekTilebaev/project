@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
+import { mysqlSslOptions } from './mysqlSsl.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
@@ -33,12 +34,19 @@ const config = fromUrl || {
   database: process.env.QUIZ_DB_NAME || 'quiz_db',
 };
 
+const ssl = mysqlSslOptions();
 const pool = mysql.createPool({
   ...config,
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit:
+    Number(process.env.DB_POOL_LIMIT) > 0
+      ? Math.min(50, Math.floor(Number(process.env.DB_POOL_LIMIT)))
+      : process.env.NODE_ENV === 'production'
+        ? 4
+        : 10,
   queueLimit: 0,
   charset: 'utf8mb4',
+  ...(ssl ? { ssl } : {}),
 });
 
 export const QUIZ_DB_CONFIG = config;

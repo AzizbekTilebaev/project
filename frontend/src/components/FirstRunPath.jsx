@@ -4,7 +4,8 @@ import Icon from './Icon';
 import { useUiScript } from '../contexts/UiScriptContext';
 import useRecentWords from '../hooks/useRecentWords';
 import { KAA } from '../i18n/kaa';
-import { AnimChevron, anim } from '../animations';
+import { AnimChevron, anim, fmMotion } from '../animations';
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import { getDailyGoalStatus } from '../lib/dailyGoalProgress';
 import { getGuestLocalSummary } from '../lib/guestLocalSummary';
 import useResumeTick from '../hooks/useResumeTick';
@@ -51,6 +52,7 @@ const PATH_META = [
  */
 export default function FirstRunPath({ wordOfDay = null, checkin = null, className = '' }) {
   const { text } = useUiScript();
+  const reduceMotion = usePrefersReducedMotion();
   const resumeTick = useResumeTick();
   const local = useMemo(() => getGuestLocalSummary(), [resumeTick]);
 
@@ -192,12 +194,16 @@ export default function FirstRunPath({ wordOfDay = null, checkin = null, classNa
         <ul className="grid gap-2 sm:grid-cols-3">
           {PATH_META.map((p) => {
             const done = Boolean(paths.completed[p.id]);
+            const Btn = reduceMotion ? 'button' : fmMotion.button;
             return (
               <li key={p.id}>
-                <button
+                <Btn
                   type="button"
                   onClick={() => pickPath(p.id)}
-                  className={`flex w-full items-start gap-3 rounded-2xl border px-3.5 py-3 text-left transition hover:-translate-y-0.5 ${
+                  whileHover={reduceMotion ? undefined : { y: -3, scale: 1.02 }}
+                  whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                  transition={{ duration: 0.18 }}
+                  className={`flex w-full items-start gap-3 rounded-2xl border px-3.5 py-3 text-left transition ${
                     done
                       ? 'border-emerald-300/60 bg-emerald-50/70'
                       : 'border-teal-500/25 bg-white shadow-sm hover:border-teal-500/45'
@@ -214,7 +220,7 @@ export default function FirstRunPath({ wordOfDay = null, checkin = null, classNa
                     <span className="block font-semibold text-ink">{text(KAA[p.title])}</span>
                     <span className="mt-0.5 block text-xs text-ink/50">{text(KAA[p.hint])}</span>
                   </span>
-                </button>
+                </Btn>
               </li>
             );
           })}

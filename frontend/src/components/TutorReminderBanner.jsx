@@ -79,7 +79,7 @@ export default function TutorReminderBanner() {
   if (quietRoute || hidden || !reminder?.due) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-[60] mx-auto max-w-lg md:bottom-6 md:left-auto md:right-6">
+    <div className="fixed bottom-[calc(5.5rem+0.35rem)] left-4 right-4 z-[60] mx-auto max-w-lg md:bottom-6 md:left-auto md:right-6">
       <div className="flex items-start gap-3 rounded-2xl border border-teal-700/20 bg-gradient-to-br from-teal-50/95 to-amber-50/80 px-4 py-3 shadow-[0_20px_50px_-20px_rgba(15,92,86,0.45)] backdrop-blur-md">
         <span className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-800 text-white">
           <Icon name="sparkle" />

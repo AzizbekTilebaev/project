@@ -7,6 +7,7 @@ import {
   importLimiter,
   suggestLimiter,
   voteLimiter,
+  actorWriteLimiter,
 } from '../middleware/security.js';
 import { requireActor, optionalActor } from '../middleware/actor.js';
 import { optionalAuth } from '../middleware/auth.js';
@@ -75,8 +76,19 @@ router.get('/dashboard', cacheFor(60), controller.getDashboard);
 router.get('/random', dictBrowseLimiter, controller.getRandomSoz);
 router.get('/word-of-day', cacheFor(3600), controller.getWordOfDay);
 router.get('/word-of-day/checkin', requireActor, optionalAuth, controller.getWordOfDayCheckin);
-router.post('/word-of-day/checkin', requireActor, optionalAuth, controller.claimWordOfDayCheckin);
-router.post('/word-of-day/chest/claim', requireActor, controller.claimComboChest);
+router.post(
+  '/word-of-day/checkin',
+  requireActor,
+  optionalAuth,
+  actorWriteLimiter,
+  controller.claimWordOfDayCheckin
+);
+router.post(
+  '/word-of-day/chest/claim',
+  requireActor,
+  actorWriteLimiter,
+  controller.claimComboChest
+);
 router.get('/quiz', requireActor, controller.getQuiz);
 router.post('/quiz/start', requireActor, controller.startDictQuiz);
 router.get('/quiz/history', requireActor, controller.dictQuizHistory);
@@ -91,8 +103,20 @@ router.get(
   requireModerator,
   controller.listModeratorSuggestions
 );
-router.post('/suggestions', suggestLimiter, requireActor, controller.createSuggestion);
-router.post('/suggestions/:id/vote', voteLimiter, requireActor, controller.voteSuggestion);
+router.post(
+  '/suggestions',
+  suggestLimiter,
+  actorWriteLimiter,
+  requireActor,
+  controller.createSuggestion
+);
+router.post(
+  '/suggestions/:id/vote',
+  voteLimiter,
+  actorWriteLimiter,
+  requireActor,
+  controller.voteSuggestion
+);
 router.post(
   '/suggestions/:id/moderate',
   importLimiter,

@@ -17,6 +17,7 @@ import {
 import { postAuthDestination } from '../lib/postAuthDestination';
 import { KAA } from '../i18n/kaa';
 import GuestSoftContinue from '../components/GuestSoftContinue';
+import { MotionDiv, motionVariants } from '../animations';
 
 const fieldClass =
   'mt-1.5 w-full rounded-xl border border-ink/12 bg-white/80 px-4 py-3 text-base text-ink outline-none transition placeholder:text-ink/30 focus:border-teal-700 focus:ring-2 focus:ring-teal-700/15 sm:text-sm';
@@ -31,6 +32,7 @@ export default function AuthPage({ mode = 'login' }) {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
+  const [shakeKey, setShakeKey] = useState(0);
   const [busy, setBusy] = useState(false);
   const [totpChallenge, setTotpChallenge] = useState('');
   const [totpCode, setTotpCode] = useState('');
@@ -86,6 +88,7 @@ export default function AuthPage({ mode = 'login' }) {
         afterAuth(data);
       } catch (e) {
         setError(e.message || KAA.googleSatsiz);
+        setShakeKey((k) => k + 1);
       } finally {
         setBusy(false);
       }
@@ -123,6 +126,7 @@ export default function AuthPage({ mode = 'login' }) {
       afterAuth(data);
     } catch (err) {
       setError(err.message || KAA.qatelik);
+      setShakeKey((k) => k + 1);
     } finally {
       setBusy(false);
     }
@@ -166,7 +170,10 @@ export default function AuthPage({ mode = 'login' }) {
               <GoogleSignInButton
                 mode={isRegister ? 'signup' : 'signin'}
                 onCredential={onGoogle}
-                onError={(e) => setError(e?.message || KAA.googleSatsiz)}
+                onError={(e) => {
+                  setError(e?.message || KAA.googleSatsiz);
+                  setShakeKey((k) => k + 1);
+                }}
                 promptOneTap={!isRegister}
                 showFallbackHint
               />
@@ -203,7 +210,12 @@ export default function AuthPage({ mode = 'login' }) {
           </div>
         )}
 
-        <form onSubmit={submit} className={`space-y-4 ${totpChallenge ? 'mt-8' : ''}`}>
+        <MotionDiv
+          key={shakeKey}
+          variants={shakeKey ? motionVariants.shake : motionVariants.none}
+          className={totpChallenge ? 'mt-8' : ''}
+        >
+        <form onSubmit={submit} className="space-y-4">
           {totpChallenge ? (
             <label className="block">
               <span className="text-xs font-medium text-ink/50">Authenticator</span>
@@ -348,6 +360,7 @@ export default function AuthPage({ mode = 'login' }) {
             </button>
           )}
         </form>
+        </MotionDiv>
 
         {!totpChallenge && (
           <p className="mt-8 text-center text-sm text-ink/50">

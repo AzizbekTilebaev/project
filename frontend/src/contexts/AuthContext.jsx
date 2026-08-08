@@ -42,6 +42,30 @@ export function AuthProvider({ children }) {
     } catch {
       /* ignore */
     }
+    // Mehmon sevimlilari: faqat muvaffaqiyatli javobdan keyin local yangilanadi (xatoda saqlanadi → retry)
+    if (payload?.token || payload?.user) {
+      const FAV_KEY = 'dictionary:favorites:v1';
+      import('../api/favorites')
+        .then(async ({ syncFavorites, fetchFavorites }) => {
+          let localItems = [];
+          try {
+            const raw = JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+            if (Array.isArray(raw)) localItems = raw;
+          } catch {
+            /* ignore */
+          }
+          const data = localItems.length
+            ? await syncFavorites(localItems)
+            : await fetchFavorites();
+          if (Array.isArray(data?.items)) {
+            localStorage.setItem(FAV_KEY, JSON.stringify(data.items.slice(0, 200)));
+            window.dispatchEvent(new StorageEvent('storage', { key: FAV_KEY }));
+          }
+        })
+        .catch(() => {
+          /* network fail — localStorage o‘chirilmaydi; keyingi login/app-open qayta urinadi */
+        });
+    }
   }, []);
 
   const logout = useCallback(async () => {

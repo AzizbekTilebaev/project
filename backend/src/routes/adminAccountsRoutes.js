@@ -23,6 +23,7 @@ import {
   listQuizAttemptsAdmin,
   getUserDetail,
   deleteUser,
+  setUserStatus,
 } from '../services/usersAdminService.js';
 import { getAttemptReviewForAdmin, forceExpireAttemptAdmin, voidAttemptAdmin } from '../services/quizService.js';
 import {
@@ -272,6 +273,19 @@ router.delete(
     }
   }
 );
+
+/** Bloklash — faqat owner (eng xavfli amal) */
+router.put('/users/:id/status', requireOwner, async (req, res, next) => {
+  try {
+    const result = await setUserStatus(req.params.id, { active: req.body?.active });
+    res.json({ success: true, ...result });
+  } catch (err) {
+    if (err.statusCode) {
+      return res.status(err.statusCode).json({ success: false, error: err.message });
+    }
+    next(err);
+  }
+});
 
 /** Global quiz urinishlari (status / quiz / actor filtrlari). */
 router.get(

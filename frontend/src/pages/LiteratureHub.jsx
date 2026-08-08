@@ -16,7 +16,9 @@ import { useUiScript } from '../contexts/UiScriptContext';
 import { fetchWriters } from '../api/literature';
 import { fetchJumbaqCategories } from '../api/jumbaqlar';
 import { fetchBooks } from '../api/books';
-import { AnimIconDivider, AnimChevron, anim } from '../animations';
+import { AnimIconDivider, AnimChevron, anim, PageEnter } from '../animations';
+import { MotionDiv, Stagger } from '../animations/Motion';
+import { slideUp, staggerFast } from '../animations/motionVariants';
 import { getJumbaqRevealMeta, getContinueJumbaq } from '../lib/jumbaqProgress';
 import { getReadingLessonMeta } from '../lib/readingProgress';
 import {
@@ -49,7 +51,6 @@ const LINKS = [
     descKey: 'dictCardDesc',
     icon: 'book',
     tone: 'from-teal-600 to-cyan-700',
-    delay: '',
   },
   {
     to: '/books',
@@ -57,7 +58,6 @@ const LINKS = [
     descKey: 'booksCardDesc',
     icon: 'book',
     tone: 'from-teal-600 to-emerald-700',
-    delay: 'animate-dict-rise-delay',
   },
   {
     to: '/writers',
@@ -65,7 +65,6 @@ const LINKS = [
     descKey: 'writersCardDesc',
     icon: 'users',
     tone: 'from-amber-500 to-orange-600',
-    delay: 'animate-dict-rise-delay-2',
   },
   {
     to: '/jumbaqlar',
@@ -73,7 +72,6 @@ const LINKS = [
     descKey: 'jumbaqCardDesc',
     icon: 'sparkle',
     tone: 'from-sky-500 to-teal-600',
-    delay: 'animate-dict-rise-delay-2',
   },
   {
     to: '/literature/naqillar',
@@ -81,7 +79,6 @@ const LINKS = [
     descKey: 'naqillarCardDesc',
     icon: 'scroll',
     tone: 'from-rose-500 to-orange-600',
-    delay: 'animate-dict-rise-delay-2',
   },
   {
     to: '/literature/ertekler',
@@ -89,7 +86,6 @@ const LINKS = [
     descKey: 'erteklerCardDesc',
     icon: 'book',
     tone: 'from-orange-500 to-amber-600',
-    delay: 'animate-dict-rise-delay-2',
   },
 ];
 
@@ -222,7 +218,8 @@ export default function LiteratureHub() {
             <ScriptToggle value={script} onChange={setScript} />
           </div>
 
-          <div className="animate-dict-rise mb-12">
+          <PageEnter>
+          <div className="mb-12">
             <p className="mb-2 text-[0.7rem] font-bold uppercase tracking-[0.22em] text-teal-800/60">
               {t('litHeritageCover', script)}
             </p>
@@ -234,7 +231,7 @@ export default function LiteratureHub() {
               {t('litHubIntro', script)}
             </p>
 
-            <div className="mt-7">
+            <div className="mt-7 flex flex-wrap items-center gap-2">
               <Link
                 to={heroCta.href}
                 className={`${anim.shine} qp-btn-primary`}
@@ -245,6 +242,12 @@ export default function LiteratureHub() {
                   <span className="max-w-[11rem] truncate opacity-90">· {heroCta.detail}</span>
                 ) : null}
                 <AnimChevron count={2} className="opacity-80" style={{ ['--dch-color']: '#ecfdf5' }} />
+              </Link>
+              <Link
+                to="/tutor/practice?from=reading"
+                className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/25 bg-white px-5 py-3 text-sm font-bold text-teal-950"
+              >
+                <Icon name="bolt" /> {text(KAA.practiceNav)}
               </Link>
             </div>
 
@@ -257,6 +260,33 @@ export default function LiteratureHub() {
               />
             ) : null}
           </div>
+
+          {bookCount === 0 && featuredWriters.length === 0 && jumbaqCats.length === 0 && (
+            <div className="mb-10 qp-surface motion-rise border-dashed px-6 py-10 text-center">
+              <p className="font-display text-xl text-ink/60">{text(KAA.litHubEmpty)}</p>
+              <p className="mt-2 text-sm text-ink/45">{text(KAA.learnPracticeBody)}</p>
+              <div className="mt-5 flex flex-wrap justify-center gap-2">
+                <Link
+                  to="/dictionary"
+                  className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}
+                >
+                  <Icon name="book" /> {text(KAA.sozlik)}
+                </Link>
+                <Link
+                  to="/games"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/25 bg-white px-4 py-2 text-xs font-bold text-teal-950"
+                >
+                  <Icon name="trophy" /> {text(KAA.oyinlar)}
+                </Link>
+                <Link
+                  to="/tutor/practice"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/35 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-950"
+                >
+                  <Icon name="bolt" /> {text(KAA.practiceNav)}
+                </Link>
+              </div>
+            </div>
+          )}
 
           {/* Below fold — soft counts + book/jumbaq resume (no dars/tutor) */}
           <div className="mb-10 flex flex-wrap gap-3 text-xs font-semibold text-ink/50">
@@ -435,29 +465,29 @@ export default function LiteratureHub() {
             </div>
           )}
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <Stagger variants={staggerFast} className="grid gap-4 sm:grid-cols-2">
             {LINKS.map((item) => (
-              <Link
-                key={item.titleKey || item.to}
-                to={item.to}
-                className={`qp-door group animate-dict-rise ${item.delay} relative overflow-hidden rounded-[1.75rem] p-6`}
-              >
-                <span
-                  className={`qp-icon-tile mb-5 bg-gradient-to-br ${item.tone}`}
+              <MotionDiv key={item.titleKey || item.to} variants={slideUp}>
+                <Link
+                  to={item.to}
+                  className="qp-door group relative overflow-hidden rounded-[1.75rem] p-6 block"
                 >
-                  <Icon name={item.icon} />
-                </span>
-                <h2 className="font-display text-2xl tracking-tight text-ink group-hover:text-teal-900">
-                  {t(item.titleKey, script)}
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-ink/55">{t(item.descKey, script)}</p>
-                <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-teal-800/70">
-                  {t('openWord', script)}
-                  <AnimChevron count={2} className="opacity-70" />
-                </span>
-              </Link>
+                  <span className={`qp-icon-tile mb-5 bg-gradient-to-br ${item.tone}`}>
+                    <Icon name={item.icon} />
+                  </span>
+                  <h2 className="font-display text-2xl tracking-tight text-ink group-hover:text-teal-900">
+                    {t(item.titleKey, script)}
+                  </h2>
+                  <p className="mt-2 text-sm leading-6 text-ink/55">{t(item.descKey, script)}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-teal-800/70">
+                    {t('openWord', script)}
+                    <AnimChevron count={2} className="opacity-70" />
+                  </span>
+                </Link>
+              </MotionDiv>
             ))}
-          </div>
+          </Stagger>
+          </PageEnter>
         </section>
       </DictShell>
     </PageGate>

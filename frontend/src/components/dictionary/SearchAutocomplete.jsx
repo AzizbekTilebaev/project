@@ -162,7 +162,19 @@ export default function SearchAutocomplete({
             )}
             {!loading && items.length === 0 && (
               <li className="px-4 py-4 text-sm text-ink/55">
-                {text('Hesh nárse tabılmadı. Toʻliq izlew sahifasın ochıń yamasa boshqa yozıwını sınap kóriń.')}
+                <p className="mb-2">
+                  {text('Hesh nárse tabılmadı. Boshqa yozıwın sınap kóriń yamasa toʻliq izlewge ótiń.')}
+                </p>
+                <button
+                  type="button"
+                  className="text-xs font-bold text-teal-900 underline underline-offset-2 hover:text-teal-700"
+                  onClick={() => {
+                    setOpen(false);
+                    navigate(`/dictionary/all?q=${encodeURIComponent(query.trim())}`);
+                  }}
+                >
+                  {text('Toʻliq izlew sahifası')}
+                </button>
               </li>
             )}
             {items.map((item, idx) => (

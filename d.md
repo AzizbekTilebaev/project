@@ -5,7 +5,7 @@
 **Repo:** https://github.com/AzizbekTilebaev/project  
 **Yangilangan:** 2026-08-06  
 **Asos:** haqiqiy kod (`server.js`, `App.jsx`, `package.json`, `.env.example`).  
-**Qisqa kirish:** [`README.md`](README.md) · **O‘rnatish:** [`SETUP.md`](SETUP.md)
+**Qanday ishlaydi:** [`docs/QANDAY-ISHLAYDI.md`](docs/QANDAY-ISHLAYDI.md) · **Kirish:** [`README.md`](README.md) · **O‘rnatish:** [`SETUP.md`](SETUP.md)
 
 ---
 
@@ -36,25 +36,20 @@ UI asosan **qaraqalpaq**; lotin ↔ kirill almashtirish bor (`frontend/src/i18n/
 project/
 ├── backend/           # Express API + MySQL (mysql2) + Socket.IO
 ├── frontend/          # React 18 + Vite + Tailwind SPA
-├── fordata/           # Import + grammar/english MD manbasi
-├── grammar-site/      # Alohida grammar Vite (ixtiyoriy)
-├── animations/        # CSSKit animatsiya kutubxonasi
-├── tmp/               # Apertium-kaa (gitignore) — morfologiya ishlanmasi
-├── .github/workflows/ # CI (frontend lint+build, backend test)
-├── package.json       # Root helper: install/dev/build
-├── README.md          # Kirish + tezkor start
-├── SETUP.md           # O‘rnatish qo‘llanmasi
-├── CLEANUP_REPORT.md  # 2026-07 tozalash hisoboti
-└── d.md               # Shu to‘liq ma’lumotnoma
+├── fordata/           # grammar/english MD + tools (import manbalari trashda)
+├── docs/              # Hujjatlar indeksi
+├── .github/workflows/ # CI
+├── package.json
+├── README.md · SETUP.md · CONTRIBUTING.md
+└── d.md
 ```
 
 | Papka | Vazifa |
 |--------|--------|
-| **backend/** | API, 10× MySQL pool, Socket.IO, skriptlar, testlar, uploadlar |
-| **frontend/** | SPA; Vite proxy `/api`, `/socket.io`, `/uploads` → `:5000`; **dev port 3000** |
-| **fordata/** | Import manbasi + `grammar/` / `english/` MD (sayt `?raw` import) |
-| **animations/** | CSSKit; frontend’da `AnimMatrixRain`, `AnimChevron` va boshqalar |
-| **tmp/** | `apertium-kaa` + extract — morfologiya ishlanmasi (odatda gitignore) |
+| **backend/** | API, 10× MySQL pool, Socket.IO, skriptlar, testlar |
+| **frontend/** | SPA; proxy → `:5000`; **dev port 3000** |
+| **fordata/** | Faqat sayt MD (`grammar/`, `english/`) + `tools/` |
+| **docs/** | Hujjatlar indeksi |
 
 ---
 
@@ -338,25 +333,19 @@ Ko‘p qismi import uchun; `grammar/` va `english/` MD lari frontend’da `?raw`
 
 | Subpapka | Mazmun |
 |----------|--------|
-| `dict_pages_v2/` | Sahifa-bo‘yicha JSON kategoriyalar |
-| `curated/` | Premium-50 meta (endi DB `curated_words` asosiy) |
-| `books/` | Kitob matnlari |
-| `jumbaqlar/` | Topishmoq manbalari |
-| `newdata/`, `newdata-review/` | Yangi / review to‘plam |
-| `compound_fixed/` | Qo‘shma so‘z tuzatishlari |
-| `shayirlar latin/` | Shoirlar matnlari |
-| `grammar/` | QQ qoidalar MD + OCR skriptlar; `pdfs`/`ocr`/`tessdata` gitignore |
-| `english/` | Ingliz sabaqlıq MD + OCR skript; `pdfs`/`ocr`/`extract` gitignore |
-| `tools/` | Import pipeline (`validate`, `transform`, `import`, premium-50, …) |
+| `grammar/*.md` | QQ qoidalar → `/qoidalar` |
+| `english/*.md` | Ingliz fraza/mashq → `/english` |
+| `tools/` | Import CLI (kelajak) |
 
-Batafsil: `fordata/tools/README.md`, `fordata/english/ENGLISH.md`.
+Eski dict/books/PDF/OCR manbalari trashda: `/home/azizbek/proyekt2-trash-20260807/` (`fordata/README.md`).
+
+Batafsil: `fordata/README.md`, `fordata/english/ENGLISH.md`.
 
 ### 6.1 Ingliz tili saytda
 
 - Sahifa: `/english` · `frontend/src/pages/English.jsx` · `frontend/src/lib/englishContent.js`
 - Kontent: `fordata/english/english-*.md`, `*-grammatika.md`, `10-klass-english-grammar-guide.md`
 - Maqsad: unit atlari emas — **sóz / fraza / mashq**; 5–6 / 10 grammar alohida tab
-- OCR (skaner PDF): `fordata/english/scripts/ocr_pdf_eng.py` (lang `eng`)
 
 ---
 
@@ -468,18 +457,19 @@ Legacy URL’lar (`DATABASE_URL`, `DATABASE_QUIZ`, `DATABASE_TUSINDIRME`) — se
 
 ---
 
-## 10. Root README / SETUP eskirgan farqlar
+## 10. Tarixiy chalkashliklar (endi tuzatilgan)
 
-| Eski hujjatda | Haqiqat |
-|---------------|---------|
+Eski matnlarda bo‘lishi mumkin edi — **hozirgi haqiqat:**
+
+| Eski | Hozir |
+|------|--------|
 | Prisma + `prisma migrate` | **Prisma yo‘q**; faqat mysql2 |
 | Bitta DB `tilplatform` | **10 ta `kk_*`** |
 | Frontend port **5173** | **3000** |
 | `/api/dictionary`, `/api/users/me` | `/api/tusindirme`, `/api/auth/me` |
 | Oddiy quiz submit | Server-side attempt oqimi |
-| Faqat quiz/dict/crossword/books | Tutor, immersion, literature, jumbaq, points, community, morphology, adaptive, rooms, reading, admin, v1 |
 
-**Ishonchli manbalar:** `backend/README.md`, `backend/.env.example`, `backend/src/server.js`, `backend/src/config/db.js`, `frontend/src/App.jsx`, `frontend/vite.config.js`, **shu `d.md`**.
+**Ishonchli manbalar:** [`README.md`](README.md), [`SETUP.md`](SETUP.md), [`docs/INDEX.md`](docs/INDEX.md), `backend/README.md`, `backend/.env.example`, `frontend/src/App.jsx`, **shu `d.md`**.
 
 ---
 
@@ -493,8 +483,8 @@ Brauzer (React :3000)
     │                              └── morphology (qqAffixes + dict verify)
     └── Socket.IO ─────────────► gameSocket (quiz/crossword rooms)
 
-fordata/ ──(import skriptlar)──► MySQL
-tmp/apertium-kaa ──(build/analyze)──► affiks/morf ishlanma
+fordata/grammar|english MD ──(?raw)──► /qoidalar, /english
+MySQL ← asosiy runtime ma’lumot (import manbalari trashda)
 ```
 
 ---
@@ -503,15 +493,18 @@ tmp/apertium-kaa ──(build/analyze)──► affiks/morf ishlanma
 
 | Fayl | Mazmun |
 |------|--------|
+| [`docs/INDEX.md`](docs/INDEX.md) | Barcha hujjatlar indeksi |
 | `backend/README.md` | Backend setup, ball, RBAC, skriptlar |
 | `backend/docs/public-api.md` | Partner / v1 API |
-| `backend/baza.md` | Baza tafsilotlari |
-| `backend/reje.md` | Reja / eslatmalar |
-| `frontend/README.md`, `SETUP.md`, `COMPONENTS.md` | Frontend (qisman eski) |
+| `frontend/README.md` | Frontend tuzilma va marshrutlar |
+| `fordata/README.md` | Import + grammar/english |
+| `fordata/english/ENGLISH.md` | Ingliz sabaqlıqlar |
+| `fordata/grammar/README.md` | QQ qoidalar MD |
 | `fordata/tools/README.md` | Import tool’lar |
-| `CLEANUP_REPORT.md` | 2026-07 tozalash / fordata migratsiya |
+| `fordata/ANIMATSIYA-REJA.md` | Motion reja |
+| `CLEANUP_REPORT.md` | 2026-07 tozalash |
 | `animations/README.md` | CSSKit mapping |
 
 ---
 
-**Xulosa:** Bu Qaraqalpaq til o‘rganish platformasi — Express + React + 10 ta MySQL baza, sozlikdan tortib tutor/SRS/multiplayergacha keng funksiyalar. Ishga tushirish uchun `backend/README.md` + `.env.example` + shu faylni kuzating; root `README.md`/`SETUP.md` ga tayanmang.
+**Xulosa:** Qaraqalpaq til o‘rganish platformasi — Express + React + 10× MySQL; sozlik, test, krossvord, ádebiyat, tutor, `/qoidalar`, `/english`. Ishga tushirish: [`SETUP.md`](SETUP.md) → batafsil shu fayl va `backend/README.md`.

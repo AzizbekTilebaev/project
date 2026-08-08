@@ -113,7 +113,7 @@ export function MorphologyPanel({ morphology }) {
         </p>
       )}
       {hasSplit && tags.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-1.5">
+        <div className="motion-chip-stagger mt-3 flex flex-wrap gap-1.5">
           {tags.map((t, i) => (
             <span key={i} className="rounded-full border border-teal-700/15 bg-teal-50/80 px-2.5 py-1 text-[0.7rem] font-semibold text-teal-900">
               {t.form ? text(`-${t.form}`) : ''} {text(t.gloss || t.tag || '')}
@@ -122,7 +122,7 @@ export function MorphologyPanel({ morphology }) {
         </div>
       )}
       {hasSplit && segments.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-1.5">
+        <div className="motion-chip-stagger mt-3 flex flex-wrap gap-1.5">
           {segments.map((seg, i) => (
             <span
               key={i}

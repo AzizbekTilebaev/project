@@ -4,7 +4,7 @@ import Icon from './Icon';
 import { voteSuggestion } from '../api/tusindirme';
 import { useUiScript } from '../contexts/UiScriptContext';
 import { KAA } from '../i18n/kaa';
-import { AnimChevron } from '../animations';
+import { AnimChevron, MotionSpan, motionVariants } from '../animations';
 
 const TYPE_KEYS = {
   synonym: 'jamiyetTypeSynonym',
@@ -37,6 +37,7 @@ export default function CommunitySuggestionRow({
   const { text } = useUiScript();
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
+  const [voteFlash, setVoteFlash] = useState(null);
 
   const vote = async (voteValue) => {
     if (busy || item.isMine || item.status !== 'pending') return;
@@ -44,6 +45,8 @@ export default function CommunitySuggestionRow({
     setErr('');
     try {
       const res = await voteSuggestion(item.id, voteValue);
+      setVoteFlash(voteValue);
+      window.setTimeout(() => setVoteFlash(null), 400);
       if (res?.unchanged) {
         onUpdated?.({
           ...item,
@@ -88,12 +91,20 @@ export default function CommunitySuggestionRow({
             {typeLabel}
           </span>
           <span className="font-display text-lg text-ink">{text(item.suggestedWord)}</span>
-          <span className="rounded-full border border-emerald-600/15 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+          <MotionSpan
+            key={`up-${item.upvotes}-${voteFlash === 'up'}`}
+            variants={voteFlash === 'up' ? motionVariants.pop : motionVariants.none}
+            className="inline-block rounded-full border border-emerald-600/15 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700"
+          >
             ↑{item.upvotes ?? 0}
-          </span>
-          <span className="rounded-full border border-rose-500/15 bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-700">
+          </MotionSpan>
+          <MotionSpan
+            key={`dn-${item.downvotes}-${voteFlash === 'down'}`}
+            variants={voteFlash === 'down' ? motionVariants.pop : motionVariants.none}
+            className="inline-block rounded-full border border-rose-500/15 bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-700"
+          >
             ↓{item.downvotes ?? 0}
-          </span>
+          </MotionSpan>
           {showStatus && item.status ? (
             <span className="rounded-full border border-ink/10 bg-white px-2 py-0.5 text-[0.65rem] font-semibold text-ink/55">
               {text(KAA[STATUS_KEYS[item.status]] || item.status)}

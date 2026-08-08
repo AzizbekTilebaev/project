@@ -36,6 +36,12 @@ const PATHS = {
     </>
   ),
   bolt: <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" />,
+  grammar: (
+    <>
+      <path d="M5 4h14v3H5zM7 10h3v10H7zM14 10h3v10h-3z" />
+      <path d="M5 20h14" />
+    </>
+  ),
   user: (
     <>
       <circle cx="12" cy="8" r="3.5" />
@@ -58,6 +64,7 @@ const ACCENTS = {
   chart: '#4f46e5',
   sparkle: '#d97706',
   bolt: '#0f766e',
+  grammar: '#0f766e',
   user: '#e11d48',
   settings: '#64748b',
 };
@@ -105,7 +112,7 @@ export const NAV_ICON_BY_PATH = {
   '/quiz': 'bolt',
   '/crossword': 'bolt',
   '/quiz/statistics': 'chart',
-  '/qoidalar': 'book',
+  '/qoidalar': 'grammar',
   '/english': 'grammar',
   '/settings': 'settings',
   '/profile': 'user',

@@ -732,12 +732,32 @@ export default function Jumbaqlar() {
           )}
 
           {items.length === 0 ? (
-            <div className="qp-surface border-dashed px-6 py-16 text-center">
+            <div className="qp-surface motion-rise border-dashed px-6 py-16 text-center">
               <p className="font-display text-2xl text-ink/60">{t('jumbaqNotFound', script)}</p>
               <p className="mt-2 text-sm text-ink/45">{t('jumbaqNotFoundHint', script)}</p>
               <p className="mt-3 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
                 {text(KAA.jumbaqColdEmptyHint)}
               </p>
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                <Link
+                  to="/tutor/practice?from=jumbaq"
+                  className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}
+                >
+                  <Icon name="bolt" /> {text(KAA.practiceNav)}
+                </Link>
+                <Link
+                  to="/literature"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/25 bg-white px-4 py-2 text-xs font-bold text-teal-950"
+                >
+                  <Icon name="scroll" /> {text(KAA.adebiyat)}
+                </Link>
+                <Link
+                  to="/games"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-white px-4 py-2 text-xs font-bold text-ink/70"
+                >
+                  <Icon name="trophy" /> {text(KAA.oyinlar)}
+                </Link>
+              </div>
               <FreePlayCtaRow
                 links={FOOTER_FREE_LINKS}
                 showSoftProfile

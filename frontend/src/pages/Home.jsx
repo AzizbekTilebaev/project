@@ -16,7 +16,12 @@ import { useUiScript } from '../contexts/UiScriptContext';
 import { useAuth } from '../contexts/AuthContext';
 import useDictionaryFavorites from '../hooks/useDictionaryFavorites';
 import { KAA } from '../i18n/kaa';
-import { anim, AnimMatrixRain, AnimIconDivider, AnimChevron } from '../animations';
+import { anim, AnimMatrixRain, AnimIconDivider, AnimChevron, PageEnter } from '../animations';
+import CountUp from '../components/CountUp';
+import { MotionDiv, Stagger } from '../animations/Motion';
+import { scaleIn, slideUp, staggerFast } from '../animations/motionVariants';
+import { motion } from 'framer-motion';
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import FirstRunPath, { ContinueLearning } from '../components/FirstRunPath';
 import useResumeTick from '../hooks/useResumeTick';
 import { getGuestLocalSummary } from '../lib/guestLocalSummary';
@@ -45,23 +50,25 @@ export default function Home() {
   const navigate = useNavigate();
   const { text } = useUiScript();
   const { isAuthenticated } = useAuth();
+  const reduceMotion = usePrefersReducedMotion();
   const { has: hasFavorite, toggle: toggleFavorite } = useDictionaryFavorites();
   const [checkin, setCheckin] = useState(null);
   const [claiming, setClaiming] = useState(false);
   const [claimFlash, setClaimFlash] = useState(null);
+  const [claimError, setClaimError] = useState(false);
   const resumeTick = useResumeTick();
   const localResume = useMemo(() => getGuestLocalSummary(), [resumeTick]);
 
+  // Hech narsa majburiy emas: API o‘chsa ham bosh sahifa (ádebiyat/oyın/qoida) ochiladi.
   const { status, data, error, reload } = usePageData(
     () =>
       loadPageBundle(
+        {},
         {
           curated: async () => {
             const res = await fetchCurated();
             return res.data || [];
           },
-        },
-        {
           wordOfDay: async () => {
             const res = await fetchWordOfDay();
             return res?.data || null;
@@ -119,6 +126,7 @@ export default function Home() {
     e.stopPropagation();
     if (claiming || checkin?.claimedToday) return;
     setClaiming(true);
+    setClaimError(false);
     try {
       const res = await claimWordOfDayCheckin();
       setCheckin({
@@ -156,7 +164,8 @@ export default function Home() {
         });
       }
     } catch {
-      /* jim */
+      setClaimError(true);
+      setClaimFlash(text(KAA.kunSoziClaimError));
     } finally {
       setClaiming(false);
     }
@@ -217,7 +226,7 @@ export default function Home() {
             aria-hidden
           />
           <div
-            className="absolute inset-0 opacity-50 theme-focus-hide"
+            className="motion-atmosphere-drift absolute inset-0 opacity-50 theme-focus-hide"
             style={{
               backgroundImage:
                 'radial-gradient(circle at 18% 28%, rgba(255,236,179,0.45), transparent 42%), radial-gradient(circle at 88% 18%, rgba(125,211,252,0.35), transparent 40%), radial-gradient(circle at 70% 85%, rgba(255,255,255,0.18), transparent 45%)',
@@ -225,7 +234,7 @@ export default function Home() {
             aria-hidden
           />
           <AnimMatrixRain drops={12} />
-          <div className="relative z-[1] mx-auto w-full max-w-3xl animate-dict-rise text-parchment">
+          <PageEnter className="relative z-[1] mx-auto w-full max-w-3xl text-parchment">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-amber-100/95">
               {text(KAA.qaraqalpaq)}
             </p>
@@ -236,27 +245,42 @@ export default function Home() {
             <p className="mb-8 max-w-lg text-lg leading-relaxed text-parchment/85">
               {text(KAA.homeHeroBody)}
             </p>
-            <div className="qp-glass inline-flex flex-wrap items-center gap-3 rounded-[1.75rem] px-3 py-3">
-              <Link
-                to="/literature"
-                className={`${anim.shineParchment} inline-flex items-center gap-2 rounded-full bg-parchment px-6 py-3 text-sm font-bold text-teal-950`}
-              >
-                {text(KAA.adebiyat)}
-                <AnimChevron count={2} className="opacity-80" style={{ ['--dch-color']: '#0f766e' }} />
+            <Stagger
+              variants={staggerFast}
+              className="qp-glass inline-flex flex-wrap items-center gap-3 rounded-[1.75rem] px-3 py-3"
+            >
+              <MotionDiv variants={slideUp}>
+                <Link
+                  to="/dictionary"
+                  className={`${anim.shineParchment} inline-flex items-center gap-2 rounded-full bg-parchment px-6 py-3 text-sm font-bold text-teal-950`}
+                >
+                  {text(KAA.sozlik)}
+                  <AnimChevron count={2} className="opacity-80" style={{ ['--dch-color']: '#0f766e' }} />
+                </Link>
+              </MotionDiv>
+              <MotionDiv variants={slideUp}>
+                <Link
+                  to="/games"
+                  className={`${anim.underlineParchment} inline-flex items-center gap-2 rounded-full border border-white/45 bg-white/15 px-6 py-3 text-sm font-semibold text-parchment`}
+                >
+                  {text(KAA.oyinlar)}
+                  <AnimChevron count={2} className="opacity-80" style={{ ['--dch-color']: '#fde68a' }} />
+                </Link>
+              </MotionDiv>
+            </Stagger>
+            <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-parchment/75">
+              <Link to="/qoidalar" className="underline-offset-4 hover:underline hover:text-parchment">
+                {text(KAA.qoidalarShort)}
               </Link>
-              <Link
-                to="/games"
-                className={`${anim.underlineParchment} inline-flex items-center gap-2 rounded-full border border-white/45 bg-white/15 px-6 py-3 text-sm font-semibold text-parchment`}
-              >
-                {text(KAA.oyinlar)}
-                <AnimChevron count={2} className="opacity-80" style={{ ['--dch-color']: '#fde68a' }} />
+              <Link to="/english" className="underline-offset-4 hover:underline hover:text-parchment">
+                {text(KAA.englishShort)}
               </Link>
-            </div>
-          </div>
+            </p>
+          </PageEnter>
         </section>
 
         {/* Play doors — soft SaaS / qp-play-card grid */}
-        <section className="relative mx-auto max-w-5xl px-6 py-16 md:px-10">
+        <section className="relative mx-auto max-w-5xl px-6 py-16 md:px-10 motion-rise">
           <div className="qp-section-head">
             <div>
               <p className="mb-2 text-[0.7rem] uppercase tracking-[0.22em] text-ink/40">
@@ -311,7 +335,13 @@ export default function Home() {
 
         {/* Qiziqarli madaniy bilim */}
         <section className="relative mx-auto max-w-5xl px-6 pb-12 md:px-10">
-          <div className="qp-surface overflow-hidden p-6 md:p-8">
+          <motion.div
+            className="qp-surface overflow-hidden p-6 md:p-8"
+            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
             <p className="mb-2 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-teal-800/65">
               {text(KAA.qaraqalpaqTili)}
             </p>
@@ -326,7 +356,7 @@ export default function Home() {
               {text(KAA.qiziqarliHomeCta)}
               <AnimChevron count={2} className="opacity-80" style={{ ['--dch-color']: '#ecfdf5' }} />
             </Link>
-          </div>
+          </motion.div>
         </section>
 
         {/* Soft Bugun — glass welcome strip */}
@@ -382,59 +412,101 @@ export default function Home() {
             </button>
           </div>
 
-          {wordOfDay && (
+          <div
+            id="kun-sozi"
+            className="qp-panel relative mt-10 scroll-mt-28 overflow-hidden motion-rise"
+          >
             <div
-              id="kun-sozi"
-              className="qp-panel relative mt-10 scroll-mt-28 overflow-hidden"
-            >
-              <div
-                className="pointer-events-none absolute -left-6 top-0 h-28 w-28 rounded-full bg-amber-300/20 blur-2xl"
-                aria-hidden
-              />
-              <p className="mb-2 text-[0.65rem] uppercase tracking-[0.18em] text-amber-800/70">
-                {text(KAA.kunSozi)}
-              </p>
-              <Link to={`/dictionary/${wordOfDay.id}`} className="block">
-                <p className="font-display text-3xl text-ink hover:text-teal-900">
-                  {text(wordOfDay.soz)}
-                </p>
-                {wordOfDay.birinshi_aniqlama && (
-                  <p className="mt-2 line-clamp-2 text-ink/65">{text(wordOfDay.birinshi_aniqlama)}</p>
-                )}
-              </Link>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                {checkin?.claimedToday ? (
-                  <span className={`${anim.checkinPop} qp-chip bg-teal-50 text-teal-900`}>
-                    <Icon name="check" /> {text(KAA.kunSoziBelgilegen)}
-                    {!claimFlash && checkin.pointsToday ? ` · +${checkin.pointsToday}` : ''}
-                  </span>
-                ) : (
+              className="pointer-events-none absolute -left-6 top-0 h-28 w-28 rounded-full bg-amber-300/20 blur-2xl"
+              aria-hidden
+            />
+            <p className="mb-2 text-[0.65rem] uppercase tracking-[0.18em] text-amber-800/70">
+              {text(KAA.kunSozi)}
+            </p>
+            {wordOfDay ? (
+              <>
+                <Link to={`/dictionary/${wordOfDay.id}`} className="block">
+                  <p className="font-display text-3xl text-ink hover:text-teal-900">
+                    {text(wordOfDay.soz)}
+                  </p>
+                  {wordOfDay.birinshi_aniqlama && (
+                    <p className="mt-2 line-clamp-2 text-ink/65">{text(wordOfDay.birinshi_aniqlama)}</p>
+                  )}
+                </Link>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  {checkin?.claimedToday ? (
+                    <MotionDiv
+                      variants={scaleIn}
+                      className={`${anim.checkinPop} qp-chip bg-teal-50 text-teal-900`}
+                    >
+                      <Icon name="check" /> {text(KAA.kunSoziBelgilegen)}
+                      {!claimFlash && checkin.pointsToday ? (
+                        <>
+                          {' · +'}
+                          <CountUp value={checkin.pointsToday} durationMs={500} />
+                        </>
+                      ) : null}
+                    </MotionDiv>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={onClaimCheckin}
+                      disabled={claiming}
+                      className="inline-flex items-center gap-2 rounded-full bg-amber-500 px-4 py-2 text-xs font-bold text-ink shadow-sm transition hover:bg-amber-400 disabled:opacity-60"
+                    >
+                      <Icon name="bolt" />
+                      {claiming
+                        ? text('…')
+                        : `${text(KAA.kunSoziBelgilaw)}${
+                            checkin?.nextPoints ? ` · +${checkin.nextPoints}` : ''
+                          }`}
+                    </button>
+                  )}
+                  {claimFlash && (
+                    <span
+                      className={
+                        claimError
+                          ? 'rounded-full border border-rose-400/30 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-900'
+                          : anim.pointsFloat
+                      }
+                    >
+                      {claimFlash}
+                    </span>
+                  )}
+                  <Link
+                    to={wodPlayHref}
+                    className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}
+                  >
+                    <Icon name="gamepad" />
+                    {text(KAA.homeWodPlay)}
+                    <AnimChevron count={2} className="opacity-80" />
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-ink/55">{text(KAA.kunSoziUnavailable)}</p>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
                   <button
                     type="button"
-                    onClick={onClaimCheckin}
-                    disabled={claiming}
-                    className="inline-flex items-center gap-2 rounded-full bg-amber-500 px-4 py-2 text-xs font-bold text-ink shadow-sm transition hover:bg-amber-400 disabled:opacity-60"
+                    onClick={reload}
+                    className="inline-flex items-center gap-2 rounded-full border border-ink/15 bg-white px-4 py-2 text-xs font-bold text-ink/70"
                   >
-                    <Icon name="bolt" />
-                    {claiming
-                      ? text('…')
-                      : `${text(KAA.kunSoziBelgilaw)}${
-                          checkin?.nextPoints ? ` · +${checkin.nextPoints}` : ''
-                        }`}
+                    <Icon name="sparkle" /> {text(KAA.kunSoziRetry)}
                   </button>
-                )}
-                {claimFlash && <span className={anim.pointsFloat}>{claimFlash}</span>}
-                <Link
-                  to={wodPlayHref}
-                  className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}
-                >
-                  <Icon name="gamepad" />
-                  {text(KAA.homeWodPlay)}
-                  <AnimChevron count={2} className="opacity-80" />
-                </Link>
-              </div>
-            </div>
-          )}
+                  <Link
+                    to="/dictionary"
+                    className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}
+                  >
+                    <Icon name="book" /> {text(KAA.sozlik)}
+                  </Link>
+                  <Link to="/games" className="qp-btn-ghost !px-4 !py-2 !text-xs">
+                    <Icon name="trophy" /> {text(KAA.oyinlar)}
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
         </section>
 
         {!isAuthenticated && (

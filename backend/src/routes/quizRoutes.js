@@ -435,12 +435,4 @@ router.get('/:id', optionalActor, async (req, res, next) => {
   }
 });
 
-/** Legacy answer-key submit disabled — use attempt-bound grading only. */
-router.post('/:id/submit', (_req, res) => {
-  res.status(410).json({
-    success: false,
-    message: 'Eski submit óshirilgen. /start + /attempts/.../answer endpointlerin qollanıń.',
-  });
-});
-
 export default router;

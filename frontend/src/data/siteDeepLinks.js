@@ -91,6 +91,8 @@ export const FOOTER_NAV = [
       { to: '/community', labelKey: 'jamiyet' },
       { to: '/faq', labelKey: 'faqShort' },
       { to: '/about', labelKey: 'aboutShort' },
+      { to: '/privacy', labelKey: 'privacyShort' },
+      { to: '/terms', labelKey: 'termsShort' },
       { to: '/settings', labelKey: 'sazlawlar' },
     ],
   },

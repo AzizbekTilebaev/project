@@ -292,9 +292,7 @@ export default function CrosswordPage() {
           )}
 
           {completed && (
-            <div
-              className="mb-6 quiz-result-pop rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-50/90 via-white/80 to-amber-50/50 px-6 py-7 text-center"
-            >
+            <div className="mb-6 quiz-result-pop motion-success rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-50/90 via-white/80 to-amber-50/50 px-6 py-7 text-center">
               <Icon name="trophy" className="mx-auto mb-3 text-3xl text-amber-600" />
               <h2 className="font-display text-3xl tracking-tight text-ink">
                 {text(KAA.crosswordComplete)}
@@ -370,6 +368,7 @@ export default function CrosswordPage() {
               onCellDataChange={setCellData}
               onGuess={handleGuess}
               hideReset
+              celebrate={Boolean(completed)}
             />
           </ProtectedContent>
         </section>

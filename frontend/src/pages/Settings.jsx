@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import DictShell from '../components/dictionary/DictShell';
 import usePageMeta from '../hooks/usePageMeta';
@@ -12,6 +12,7 @@ import { KAA } from '../i18n/kaa';
 import GuestSoftContinue from '../components/GuestSoftContinue';
 import FreePlayCtaRow from '../components/FreePlayCtaRow';
 import { FOOTER_FREE_LINKS } from '../data/siteDeepLinks';
+import { resetFirstRunExperience } from '../lib/firstRunProgress';
 
 const THEME_META = {
   day: { label: KAA.kundiz, hint: KAA.kundizHint, swatch: 'linear-gradient(135deg, #f7f2e9, #efe8db 60%, #0f5c56)' },
@@ -30,6 +31,7 @@ const fieldClass =
 
 export default function Settings() {
   const { text } = useUiScript();
+  const navigate = useNavigate();
   const { isAuthenticated, user, loginSuccess } = useAuth();
   const { theme, setTheme, quizAdvanceMode, setQuizAdvanceMode } = useAppSettings();
   usePageMeta(text(KAA.sazlawlar), text(KAA.sazlawlarTush));
@@ -43,6 +45,7 @@ export default function Settings() {
   const [sessMsg, setSessMsg] = useState('');
   const [sessErr, setSessErr] = useState('');
   const [sessBusy, setSessBusy] = useState(false);
+  const [firstRunMsg, setFirstRunMsg] = useState('');
 
   const hasPassword = Boolean(user?.hasPassword);
 
@@ -112,6 +115,29 @@ export default function Settings() {
               </div>
             </div>
           )}
+
+          <section>
+            <h2 className="mb-3 text-sm font-semibold text-ink">{text(KAA.firstRunResetTitle)}</h2>
+            <div className="space-y-3 qp-card qp-card--static p-4">
+              <p className="text-xs text-ink/50">{text(KAA.firstRunResetBody)}</p>
+              {firstRunMsg ? (
+                <p className="rounded-xl bg-teal-50 px-3 py-2 text-sm text-teal-900" role="status">
+                  {text(firstRunMsg)}
+                </p>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => {
+                  resetFirstRunExperience();
+                  setFirstRunMsg(KAA.firstRunResetDone);
+                  navigate('/');
+                }}
+                className="rounded-full border border-ink/15 bg-white/80 px-5 py-2.5 text-sm font-semibold text-ink/80 hover:border-teal-700/40 hover:text-teal-900"
+              >
+                {text(KAA.firstRunResetBtn)}
+              </button>
+            </div>
+          </section>
 
           <section>
             <h2 className="mb-3 text-sm font-semibold text-ink">{text(KAA.mavzu)}</h2>

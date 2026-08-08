@@ -14,7 +14,7 @@ import { fetchGooglePeopleProfile, GOOGLE_PEOPLE_SCOPES } from './googlePeopleSe
 import { sanitizeAvatarUrl } from '../utils/safeUrl.js';
 
 const db = pools.users;
-const SESSION_DAYS = Math.min(Math.max(Number(process.env.AUTH_SESSION_DAYS) || 14, 1), 30);
+const SESSION_DAYS = Math.min(Math.max(Number(process.env.AUTH_SESSION_DAYS) || 30, 1), 30);
 const TOTP_CHALLENGE_MS = 5 * 60 * 1000;
 
 function hashToken(token) {

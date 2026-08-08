@@ -259,6 +259,11 @@ export async function deleteActorData(actorId) {
     await conn.query(`DELETE FROM ${DB.statistika}.point_transactions WHERE actor_id = ?`, [actorId]).catch(() => {});
     await conn.query(`DELETE FROM ${DB.statistika}.answer_review_unlocks WHERE actor_id = ?`, [actorId]).catch(() => {});
     await conn.query(`DELETE FROM ${DB.statistika}.actor_wallets WHERE actor_id = ?`, [actorId]).catch(() => {});
+    await conn.query(`DELETE FROM ${DB.statistika}.word_of_day_checkins WHERE actor_id = ?`, [actorId]).catch(() => {});
+    await conn.query(`DELETE FROM ${DB.statistika}.word_of_day_freeze WHERE actor_id = ?`, [actorId]).catch(() => {});
+    await conn.query(`DELETE FROM ${DB.statistika}.loyalty_combo_chests WHERE actor_id = ?`, [actorId]).catch(() => {});
+    await conn.query(`DELETE FROM ${DB.quiz}.adaptive_sessions WHERE actor_id = ?`, [actorId]).catch(() => {});
+    await conn.query(`DELETE FROM ${DB.users}.device_tokens WHERE actor_id = ?`, [actorId]).catch(() => {});
     await conn.query('DELETE FROM anonymous_actors WHERE id = ?', [actorId]);
     await conn.commit();
     return { deleted: true };

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Route, useLocation } from 'react-router-dom'
 import Header from './components/Header'
 import TutorReminderBanner from './components/TutorReminderBanner'
 import ExitSurveyModal from './components/ExitSurveyModal'
@@ -9,6 +9,7 @@ import SiteFooter from './components/SiteFooter'
 import OfflineBanner from './components/OfflineBanner'
 import AppErrorBoundary from './components/AppErrorBoundary'
 import ContentProtection from './components/ContentProtection'
+import AnimatedRoutes from './components/PageTransition'
 import Home from './pages/Home'
 import { UiScriptProvider } from './contexts/UiScriptContext'
 import { AppSettingsProvider } from './contexts/AppSettingsContext'
@@ -63,6 +64,7 @@ const Tutor = lazy(() => import('./pages/Tutor'))
 const PracticeHub = lazy(() => import('./pages/PracticeHub'))
 const ImmersionAdmin = lazy(() => import('./pages/ImmersionAdmin'))
 const UsersAdmin = lazy(() => import('./pages/UsersAdmin'))
+const DictionaryAdmin = lazy(() => import('./pages/DictionaryAdmin'))
 const AdminPanel = lazy(() => import('./pages/AdminPanel'))
 const QuizzesAdmin = lazy(() => import('./pages/QuizzesAdmin'))
 const JumbaqlarAdmin = lazy(() => import('./pages/JumbaqlarAdmin'))
@@ -75,6 +77,8 @@ const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 const Faq = lazy(() => import('./pages/Faq'))
 const About = lazy(() => import('./pages/About'))
+const Privacy = lazy(() => import('./pages/Privacy'))
+const Terms = lazy(() => import('./pages/Terms'))
 const Qoidalar = lazy(() => import('./pages/Qoidalar'))
 const English = lazy(() => import('./pages/English'))
 const CultureFacts = lazy(() => import('./pages/CultureFacts'))
@@ -115,7 +119,7 @@ function AppShell() {
         <ExitSurveyModal />
         <AppErrorBoundary>
           <Suspense fallback={<RouteFallback />}>
-            <Routes>
+            <AnimatedRoutes>
               <Route path="/" element={<Home />} />
               <Route path="/quiz" element={<Bound><Quiz /></Bound>} />
               <Route path="/quiz/adaptive" element={<Bound><AdaptiveQuiz /></Bound>} />
@@ -130,6 +134,8 @@ function AppShell() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/faq" element={<Faq />} />
               <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
               <Route path="/qoidalar" element={<Qoidalar />} />
               <Route path="/english" element={<English />} />
               <Route path="/facts" element={<CultureFacts />} />
@@ -164,6 +170,7 @@ function AppShell() {
               <Route path="/admin/crosswords" element={<CrosswordsAdmin />} />
               <Route path="/admin/immersion" element={<ImmersionAdmin />} />
               <Route path="/admin/users" element={<UsersAdmin />} />
+              <Route path="/admin/dictionary" element={<DictionaryAdmin />} />
               <Route path="/admin/quizzes" element={<QuizzesAdmin />} />
               <Route path="/admin/jumbaqlar" element={<JumbaqlarAdmin />} />
               <Route path="/admin/writers" element={<WritersAdmin />} />
@@ -183,7 +190,7 @@ function AppShell() {
               <Route path="/admin/lessons" element={<ReadingLessonsAdmin />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="*" element={<NotFound />} />
-            </Routes>
+            </AnimatedRoutes>
           </Suspense>
         </AppErrorBoundary>
         <SiteFooter />

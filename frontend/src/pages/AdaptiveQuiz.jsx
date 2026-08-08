@@ -25,8 +25,7 @@ import { recordQuizPracticeComplete, readQuizPractice } from '../lib/quizProgres
 import { quizPracticeHref } from '../lib/readingPractice';
 import ShareResultButton from '../components/ShareResultButton';
 import GuestSoftContinue from '../components/GuestSoftContinue';
-import FreePlayCtaRow from '../components/FreePlayCtaRow';
-import { FOOTER_FREE_LINKS } from '../data/siteDeepLinks';
+import SoftNextRow from '../components/SoftNextRow';
 import { useAuth } from '../contexts/AuthContext';
 import {
   DUE_TUTOR_HREF,
@@ -291,7 +290,7 @@ export default function AdaptiveQuiz() {
             </Link>
 
             {phase === 'empty' && emptyState && (
-              <div className="qp-surface px-7 py-10 text-center">
+              <div className="qp-surface motion-rise px-7 py-10 text-center">
                 <Icon name="sparkle" className="mb-3 text-3xl text-amber-700" />
                 <h1 className="mb-2 font-display text-3xl text-ink">
                   {text(KAA.adaptiveEmptyTitle)}
@@ -622,7 +621,7 @@ export default function AdaptiveQuiz() {
             )}
 
             {phase === 'done' && result && (
-              <div className="quiz-result-pop qp-surface px-7 py-10 text-center">
+              <div className="quiz-result-pop motion-success qp-surface px-7 py-10 text-center">
                 <Icon name="trophy" className="mb-4 text-4xl text-amber-600" />
                 <h2 className="mb-2 font-display text-3xl">{text('Tamamlandı')}</h2>
                 <p className="mb-2 text-ink/60">
@@ -778,7 +777,15 @@ export default function AdaptiveQuiz() {
                       <p className="mt-5 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
                         {text(KAA.adaptiveDoneFree)}
                       </p>
-                      <FreePlayCtaRow links={FOOTER_FREE_LINKS} justify="center" className="mt-3" />
+                      <SoftNextRow
+                        className="mt-3"
+                        primaryTo="/games"
+                        primaryIcon="trophy"
+                        primaryLabelKey="oyinlar"
+                        secondaryTo="/literature"
+                        secondaryIcon="scroll"
+                        secondaryLabelKey="adebiyat"
+                      />
                     </>
                   );
                 })()}

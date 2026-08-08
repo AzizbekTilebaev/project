@@ -149,6 +149,7 @@ cd frontend && npm test && npm run lint && npm run build
 
 ## Keyingi o‘qish
 
-- Arxitektura / API: [`d.md`](d.md)
-- Backend batafsil: [`backend/README.md`](backend/README.md)
-- Ingliz kontent: [`fordata/english/ENGLISH.md`](fordata/english/ENGLISH.md)
+- **Qanday ishlaydi:** [`docs/QANDAY-ISHLAYDI.md`](docs/QANDAY-ISHLAYDI.md)
+- Indeks: [`docs/INDEX.md`](docs/INDEX.md)
+- API batafsil: [`d.md`](d.md)
+- Backend: [`backend/README.md`](backend/README.md)

@@ -31,7 +31,7 @@ import ProtectedContent from '../components/ProtectedContent';
 import { useUiScript } from '../contexts/UiScriptContext';
 import { useAppSettings } from '../contexts/AppSettingsContext';
 import { useGuestQuota } from '../hooks/useGuestQuota';
-import { AnimIconDivider, AnimChevron, anim } from '../animations';
+import { AnimIconDivider, AnimChevron, anim, PageEnter } from '../animations';
 import { KAA } from '../i18n/kaa';
 import { formatDurationMs, formatCountdownSec } from '../lib/formatDuration';
 import useResumeTick from '../hooks/useResumeTick';
@@ -115,38 +115,6 @@ const OPTION_STYLES = [
     hover: 'hover:border-sky-500/60 hover:bg-sky-50/70',
   },
 ];
-
-const CONFETTI_COLORS = ['#0f5c56', '#f59e0b', '#8b5cf6', '#f43f5e', '#0ea5e9', '#10b981'];
-
-function Confetti() {
-  const pieces = useMemo(
-    () =>
-      Array.from({ length: 18 }, (_, i) => ({
-        id: i,
-        left: `${4 + Math.random() * 92}%`,
-        delay: `${Math.random() * 0.7}s`,
-        color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
-        rotate: `${Math.random() * 360}deg`,
-      })),
-    []
-  );
-  return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-28 overflow-hidden" aria-hidden>
-      {pieces.map((p) => (
-        <span
-          key={p.id}
-          className="quiz-confetti"
-          style={{
-            left: p.left,
-            animationDelay: p.delay,
-            backgroundColor: p.color,
-            transform: `rotate(${p.rotate})`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
 
 function ScoreRing({ score, total, status }) {
   const { text } = useUiScript();
@@ -741,7 +709,7 @@ export default function Quiz() {
             backHref="/games"
             backLabel={text(KAA.oyinlar)}
           >
-          <>
+          <PageEnter>
             <p className="text-[0.7rem] uppercase tracking-[0.22em] text-teal-800/70 mb-2">
               {text('Oynaw')}
             </p>
@@ -852,7 +820,7 @@ export default function Quiz() {
             </div>
 
             {quizzes.length === 0 && (
-              <div className="mb-8 qp-surface border-dashed px-6 py-10 text-center">
+              <div className="mb-8 qp-surface motion-rise border-dashed px-6 py-10 text-center">
                 <p className="text-ink/55">{text('Házirshe test joq.')}</p>
                 <p className="mt-2 text-sm text-ink/45">{text(KAA.quizColdEmptyHint)}</p>
                 <Link
@@ -996,7 +964,7 @@ export default function Quiz() {
                 })}
               </ul>
             </div>
-          </>
+          </PageEnter>
           </PageGate>
         )}
 
@@ -1096,10 +1064,10 @@ export default function Quiz() {
                   let cls = `quiz-option rounded-2xl border-2 border-ink/[0.08] bg-white/60 cursor-pointer px-5 py-4 text-left leading-relaxed ${style.hover} disabled:opacity-50 disabled:cursor-not-allowed`;
                   if (isCorrectOpt && lastAnswer) {
                     cls =
-                      'quiz-option quiz-option--picked rounded-2xl border-2 border-emerald-600 bg-gradient-to-r from-emerald-700 to-teal-700 text-parchment px-5 py-4 text-left shadow-lg shadow-emerald-900/25';
+                      'quiz-option quiz-option--picked quiz-option--correct-pop rounded-2xl border-2 border-emerald-600 bg-gradient-to-r from-emerald-700 to-teal-700 text-parchment px-5 py-4 text-left shadow-lg shadow-emerald-900/25';
                   } else if (isWrongPick) {
                     cls =
-                      'quiz-option quiz-option--picked rounded-2xl border-2 border-rose-500 bg-gradient-to-r from-rose-700 to-rose-800 text-parchment px-5 py-4 text-left shadow-lg shadow-rose-900/25';
+                      'quiz-option quiz-option--picked quiz-option--wrong rounded-2xl border-2 border-rose-500 bg-gradient-to-r from-rose-700 to-rose-800 text-parchment px-5 py-4 text-left shadow-lg shadow-rose-900/25';
                   } else if (isPicked && !lastAnswer) {
                     cls =
                       'quiz-option quiz-option--picked rounded-2xl border-2 border-teal-600 bg-gradient-to-r from-teal-800 to-emerald-800 text-parchment px-5 py-4 text-left shadow-lg shadow-teal-900/25';
@@ -1203,8 +1171,7 @@ export default function Quiz() {
 
         {report && (
           <div>
-            <div className="relative overflow-hidden qp-surface px-7 py-10 md:px-10 text-center mb-10 shadow-[0_28px_70px_-32px_rgba(15,92,86,0.4)]">
-              {report.score === report.total && report.status !== 'partial' && <Confetti />}
+            <div className="relative overflow-hidden qp-surface motion-success px-7 py-10 md:px-10 text-center mb-10 shadow-[0_28px_70px_-32px_rgba(15,92,86,0.4)]">
               <p className="text-[0.7rem] uppercase tracking-[0.22em] text-ink/55 mb-5">
                 {text(report.title)}
               </p>

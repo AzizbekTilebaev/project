@@ -9,7 +9,10 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "build:frontend": "cd frontend && npm run build",
-    "start:prod": "npm run build:frontend && cd backend && npm run start:prod"
+    "start:prod": "npm run build:frontend && cd backend && npm run start:prod",
+    "ready": "node scripts/ready-check.mjs",
+    "check:docs-routes": "node scripts/check-docs-routes.mjs",
+    "sim:prod-local": "node scripts/local-prod-sim.mjs"
   },
   "keywords": ["qaraqalpaq", "language", "learning", "education"],
   "author": "",

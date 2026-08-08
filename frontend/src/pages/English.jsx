@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 import DictShell from '../components/dictionary/DictShell';
+import Icon from '../components/Icon';
 import { useUiScript } from '../contexts/UiScriptContext';
 import { KAA } from '../i18n/kaa';
-import { AnimIconDivider } from '../animations';
+import { AnimIconDivider, AnimChevron, anim, PageEnter, TabCrossfade } from '../animations';
 import { ENGLISH_BOOKS, englishBookHtml } from '../lib/englishContent';
 
 const PROSE = [
@@ -42,6 +44,7 @@ export default function English() {
   return (
     <DictShell className="pt-24 pb-24">
       <section className="relative mx-auto max-w-3xl px-5 md:px-8">
+        <PageEnter>
         <p className="mb-2 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-sky-800/65">
           {text(KAA.englishEyebrow)}
         </p>
@@ -51,6 +54,22 @@ export default function English() {
         <p className="mt-3 max-w-xl text-base leading-relaxed text-ink/55">
           {text(KAA.englishLead)}
         </p>
+
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <Link
+            to="/quiz"
+            className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}
+          >
+            <Icon name="trophy" /> {text(KAA.faqTryQuiz)}
+            <AnimChevron count={2} className="opacity-80" style={{ ['--dch-color']: '#ecfdf5' }} />
+          </Link>
+          <Link
+            to="/dictionary/game"
+            className="inline-flex items-center gap-1.5 rounded-full border border-sky-700/25 bg-white px-4 py-2 text-xs font-bold text-sky-950"
+          >
+            <Icon name="gamepad" /> {text(KAA.dictStatsStartGame)}
+          </Link>
+        </div>
 
         <AnimIconDivider className="my-8" />
 
@@ -73,20 +92,43 @@ export default function English() {
           ))}
         </div>
 
-        <article className="qp-surface p-6 md:p-8">
-          <header className="mb-6 border-b border-ink/10 pb-5">
-            <p className="mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-sky-800/60">
-              {text(book.label)}
-            </p>
-            <h2 className="font-display text-2xl tracking-tight text-ink sm:text-3xl">
-              {text(book.title)}
-            </h2>
-            {book.subtitle ? (
-              <p className="mt-1 text-ink/55">{text(book.subtitle)}</p>
-            ) : null}
-          </header>
-          <div className={PROSE} dangerouslySetInnerHTML={{ __html: html }} />
-        </article>
+        <TabCrossfade tabKey={book.id}>
+          <article className="qp-surface p-6 md:p-8">
+            <header className="mb-6 border-b border-ink/10 pb-5">
+              <p className="mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-sky-800/60">
+                {text(book.label)}
+              </p>
+              <h2 className="font-display text-2xl tracking-tight text-ink sm:text-3xl">
+                {text(book.title)}
+              </h2>
+              {book.subtitle ? (
+                <p className="mt-1 text-ink/55">{text(book.subtitle)}</p>
+              ) : null}
+            </header>
+            <div className={PROSE} dangerouslySetInnerHTML={{ __html: html }} />
+            <div className="mt-10 border-t border-ink/10 pt-6">
+              <p className="mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-sky-800/55">
+                {text(KAA.learnPracticeHint)}
+              </p>
+              <p className="mb-4 text-sm text-ink/55">{text(KAA.learnPracticeBody)}</p>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  to="/quiz"
+                  className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}
+                >
+                  <Icon name="trophy" /> {text(KAA.faqTryQuiz)}
+                </Link>
+                <Link
+                  to="/crossword"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/35 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-950"
+                >
+                  <Icon name="grammar" /> {text(KAA.faqTryCrossword)}
+                </Link>
+              </div>
+            </div>
+          </article>
+        </TabCrossfade>
+        </PageEnter>
       </section>
     </DictShell>
   );

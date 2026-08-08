@@ -10,7 +10,8 @@ import useDictionaryFavorites from '../hooks/useDictionaryFavorites';
 import useRecentWords from '../hooks/useRecentWords';
 import { fetchWordOfDay } from '../api/tusindirme';
 import { KAA } from '../i18n/kaa';
-import { AnimIconDivider, AnimChevron, anim } from '../animations';
+import { AnimIconDivider, AnimChevron, anim, PageEnter } from '../animations';
+import SoftNextRow from '../components/SoftNextRow';
 import { readReadingPractice } from '../lib/readingProgress';
 import {
   readingPracticeHref,
@@ -203,6 +204,7 @@ export default function PracticeHub() {
     <PageGate status={status} error={error} onRetry={reload} backHref="/" backLabel={text(KAA.basBet)}>
       <DictShell className="pt-24 pb-28">
         <section className="relative mx-auto max-w-2xl px-5 pt-6 sm:px-6 md:px-10 md:pt-8">
+          <PageEnter>
           <p className="mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-teal-800/70">
             {text(KAA.practiceEyebrow)}
           </p>
@@ -251,7 +253,7 @@ export default function PracticeHub() {
             <AnimChevron count={2} className="opacity-80" style={{ ['--dch-color']: '#ecfdf5' }} />
           </Link>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="motion-chip-stagger grid gap-3 sm:grid-cols-2">
             {playCards.map((card) => (
               <Link
                 key={card.to}
@@ -289,11 +291,25 @@ export default function PracticeHub() {
             )}
           </div>
 
+          <p className="mt-8 text-center text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
+            {text(KAA.learnPracticeHint)}
+          </p>
+          <SoftNextRow
+            className="mt-3"
+            primaryTo="/games"
+            primaryIcon="trophy"
+            primaryLabelKey="oyinlar"
+            secondaryTo="/literature"
+            secondaryIcon="scroll"
+            secondaryLabelKey="adebiyat"
+          />
+
           {!isAuthenticated && (
             <div className="mt-8">
               <GuestSoftContinue titleKey="authGuestFreeTitle" />
             </div>
           )}
+          </PageEnter>
         </section>
       </DictShell>
     </PageGate>

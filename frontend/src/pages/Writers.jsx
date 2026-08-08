@@ -11,7 +11,7 @@ import { pickWriterName } from '../components/literature/litUtils';
 import { t } from '../components/literature/litLabels';
 import { useUiScript } from '../contexts/UiScriptContext';
 import { fetchWriters } from '../api/literature';
-import { AnimIconDivider, AnimChevron } from '../animations';
+import { AnimIconDivider, AnimChevron, anim, PageEnter } from '../animations';
 import { KAA } from '../i18n/kaa';
 import FreePlayCtaRow from '../components/FreePlayCtaRow';
 import { FOOTER_FREE_LINKS } from '../data/siteDeepLinks';
@@ -137,6 +137,7 @@ export default function Writers() {
             <Icon name="left" /> {t('literatureBack', script)}
           </Link>
 
+          <PageEnter>
           <div className="qp-section-head">
             <div>
               <p className="mb-1 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-amber-800/60">
@@ -259,13 +260,19 @@ export default function Writers() {
           )}
 
           {writers.length === 0 ? (
-            <div className="qp-surface border-dashed px-6 py-16 text-center">
+            <div className="qp-surface motion-rise border-dashed px-6 py-16 text-center">
               <p className="font-display text-2xl text-ink/60">{t('notFound', script)}</p>
               <p className="mt-2 text-sm text-ink/45">{t('notFoundHint', script)}</p>
               <p className="mt-3 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
                 {text(KAA.notFoundFreeEyebrow)}
               </p>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                <Link
+                  to="/tutor/practice?from=reading"
+                  className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}
+                >
+                  <Icon name="bolt" /> {text(KAA.practiceNav)}
+                </Link>
                 <Link
                   to="/books"
                   className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-white px-4 py-2 text-xs font-bold text-ink/70"
@@ -354,6 +361,7 @@ export default function Writers() {
               </button>
             </nav>
           )}
+          </PageEnter>
         </section>
       </DictShell>
     </PageGate>

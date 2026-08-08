@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 import DictShell from '../components/dictionary/DictShell';
+import Icon from '../components/Icon';
 import { useUiScript } from '../contexts/UiScriptContext';
 import { KAA } from '../i18n/kaa';
-import { AnimIconDivider } from '../animations';
+import { AnimIconDivider, AnimChevron, anim, PageEnter, TabCrossfade } from '../animations';
 import { GRAMMAR_BOOKS, JOQARI_BOOKS, grammarBookHtml } from '../lib/grammarContent';
 import { MORPH_EXAMPLES } from '../data/morphExamples';
 
@@ -144,6 +146,7 @@ export default function Qoidalar() {
   return (
     <DictShell className="pt-24 pb-28">
       <section className="relative mx-auto max-w-3xl px-5 pt-8 sm:px-6 md:px-10">
+        <PageEnter>
         <p className="mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-teal-800/70">
           {text(KAA.qoidalarEyebrow)}
         </p>
@@ -151,9 +154,24 @@ export default function Qoidalar() {
           {text(KAA.qoidalarTitle)}
         </h1>
         <AnimIconDivider amber className="mb-4" />
-        <p className="mb-8 max-w-xl text-lg leading-relaxed text-ink/60">
+        <p className="mb-5 max-w-xl text-lg leading-relaxed text-ink/60">
           {text(KAA.qoidalarLead)}
         </p>
+        <div className="mb-8 flex flex-wrap items-center gap-2">
+          <Link
+            to="/quiz"
+            className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}
+          >
+            <Icon name="trophy" /> {text(KAA.faqTryQuiz)}
+            <AnimChevron count={2} className="opacity-80" style={{ ['--dch-color']: '#ecfdf5' }} />
+          </Link>
+          <Link
+            to="/tutor/practice"
+            className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/25 bg-white px-4 py-2 text-xs font-bold text-teal-950"
+          >
+            <Icon name="bolt" /> {text(KAA.practiceNav)}
+          </Link>
+        </div>
 
         <div
           className="sticky top-[4.5rem] z-10 -mx-1 mb-3 flex flex-wrap gap-1.5 bg-parchment/90 px-1 py-2 backdrop-blur-md"
@@ -216,21 +234,59 @@ export default function Qoidalar() {
           </div>
         ) : null}
 
-        {mode === 'morph' ? (
-          <MorphExamples text={text} />
-        ) : mode === 'joqari' ? (
-          <BookView
-            book={joqariBook}
-            eyebrow={text(KAA.joqariEyebrow)}
-            html={joqariHtml}
-          />
-        ) : (
-          <BookView
-            book={schoolBook}
-            eyebrow={`${schoolBook.label} klass`}
-            html={schoolHtml}
-          />
-        )}
+        <TabCrossfade
+          tabKey={
+            mode === 'morph'
+              ? 'morph'
+              : mode === 'joqari'
+                ? `joqari-${joqariBook.id}`
+                : `books-${schoolBook.id}`
+          }
+        >
+          {mode === 'morph' ? (
+            <MorphExamples text={text} />
+          ) : mode === 'joqari' ? (
+            <BookView
+              book={joqariBook}
+              eyebrow={text(KAA.joqariEyebrow)}
+              html={joqariHtml}
+            />
+          ) : (
+            <BookView
+              book={schoolBook}
+              eyebrow={`${schoolBook.label} klass`}
+              html={schoolHtml}
+            />
+          )}
+        </TabCrossfade>
+
+        <div className="mt-10 qp-panel motion-rise px-5 py-5">
+          <p className="mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
+            {text(KAA.learnPracticeHint)}
+          </p>
+          <p className="mb-4 text-sm text-ink/55">{text(KAA.learnPracticeBody)}</p>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              to="/quiz"
+              className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}
+            >
+              <Icon name="trophy" /> {text(KAA.faqTryQuiz)}
+            </Link>
+            <Link
+              to="/crossword"
+              className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/35 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-950"
+            >
+              <Icon name="grammar" /> {text(KAA.faqTryCrossword)}
+            </Link>
+            <Link
+              to="/dictionary"
+              className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-white px-4 py-2 text-xs font-bold text-ink/70"
+            >
+              <Icon name="book" /> {text(KAA.sozlik)}
+            </Link>
+          </div>
+        </div>
+        </PageEnter>
       </section>
     </DictShell>
   );

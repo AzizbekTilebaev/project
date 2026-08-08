@@ -17,6 +17,7 @@ import PageGate from '../components/PageGate';
 import ProtectedContent from '../components/ProtectedContent';
 import DictShell from '../components/dictionary/DictShell';
 import WordCard, { HomonymGroupCard } from '../components/dictionary/WordCard';
+import LayoutResults from '../components/dictionary/LayoutResults';
 import Icon from '../components/Icon';
 import { useUiScript } from '../contexts/UiScriptContext';
 import { t as litT } from '../components/literature/litLabels';
@@ -541,7 +542,7 @@ export default function DictionaryAll() {
         )}
 
         {!error && mode === 'search' && results.length === 0 && !searching && (
-          <div className="mb-10">
+          <div className="mb-10 motion-rise">
             <p className="mb-2 text-center font-display text-xl text-ink/60">
               {text(`“${query}” boyınsha hesh nárse tabılmadı`)}
             </p>
@@ -572,19 +573,22 @@ export default function DictionaryAll() {
                 <p className="mb-4 text-[0.7rem] uppercase tracking-[0.18em] text-ink/40">
                   {text(searchMeta.message || 'Bálkim bular?')}
                 </p>
-                <ul className="mb-6 space-y-4">
-                  {suggestions.map((entry, idx) => (
-                    <li key={entry.id} style={{ animationDelay: `${idx * 40}ms` }} className="animate-dict-row">
-                      <WordCard
-                        entry={entry}
-                        query={query}
-                        favoriteActive={favorites.has(entry.id)}
-                        onFavoriteToggle={favorites.toggle}
-                        from={fromJumbaq ? 'jumbaq' : null}
-                      />
-                    </li>
-                  ))}
-                </ul>
+                <LayoutResults
+                  id="dict-suggestions-list"
+                  className="mb-6 space-y-4"
+                  items={suggestions}
+                  getKey={(entry) => entry.id}
+                >
+                  {(entry) => (
+                    <WordCard
+                      entry={entry}
+                      query={query}
+                      favoriteActive={favorites.has(entry.id)}
+                      onFavoriteToggle={favorites.toggle}
+                      from={fromJumbaq ? 'jumbaq' : null}
+                    />
+                  )}
+                </LayoutResults>
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   <Link
                     to={practiceCta}
@@ -606,7 +610,7 @@ export default function DictionaryAll() {
         )}
 
         {!error && results.length === 0 && mode !== 'search' && !searching && (
-          <div className="qp-surface border-dashed px-6 py-12 text-center">
+          <div className="qp-surface motion-rise border-dashed px-6 py-12 text-center">
             <p className="text-ink/55">{text('Hesh qanday sóz tabılmadı.')}</p>
             <p className="mt-2 text-sm text-ink/45">{text(KAA.dictBrowseEmptyHint)}</p>
             <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
@@ -636,37 +640,32 @@ export default function DictionaryAll() {
           </div>
         )}
 
-        <ul id="dict-results-list" className="space-y-6">
-          {groups.map((group, idx) => (
-            <li
-              key={group.items[0].id}
-              id={`dict-result-${idx}`}
-              ref={activeIdx === idx ? activeRef : null}
-              style={{ animationDelay: `${Math.min(idx, 10) * 45}ms` }}
-              className={`animate-dict-row rounded-2xl transition-shadow ${
-                activeIdx === idx ? 'ring-2 ring-teal-700/60 ring-offset-2 ring-offset-transparent' : ''
-              }`}
-            >
-              {group.items.length > 1 ? (
-                <HomonymGroupCard
-                  group={group}
-                  query={query}
-                  favoriteActive={favorites.has(group.items[0].id)}
-                  onFavoriteToggle={favorites.toggle}
-                  from={fromJumbaq ? 'jumbaq' : null}
-                />
-              ) : (
-                <WordCard
-                  entry={group.items[0]}
-                  query={query}
-                  favoriteActive={favorites.has(group.items[0].id)}
-                  onFavoriteToggle={favorites.toggle}
-                  from={fromJumbaq ? 'jumbaq' : null}
-                />
-              )}
-            </li>
-          ))}
-        </ul>
+        <LayoutResults
+          items={groups}
+          getKey={(group) => group.items[0].id}
+          activeIdx={activeIdx}
+          activeRef={activeRef}
+        >
+          {(group) =>
+            group.items.length > 1 ? (
+              <HomonymGroupCard
+                group={group}
+                query={query}
+                favoriteActive={favorites.has(group.items[0].id)}
+                onFavoriteToggle={favorites.toggle}
+                from={fromJumbaq ? 'jumbaq' : null}
+              />
+            ) : (
+              <WordCard
+                entry={group.items[0]}
+                query={query}
+                favoriteActive={favorites.has(group.items[0].id)}
+                onFavoriteToggle={favorites.toggle}
+                from={fromJumbaq ? 'jumbaq' : null}
+              />
+            )
+          }
+        </LayoutResults>
 
         {showPager && (
           <nav className="mt-12 flex items-center justify-between gap-4" aria-label={text('Bet')}>

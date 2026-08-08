@@ -15,6 +15,32 @@ function httpError(message, statusCode = 400) {
   return err;
 }
 
+let blockedColReady = false;
+export async function ensureActorBlockedColumn() {
+  if (blockedColReady) return;
+  await db
+    .query(
+      `ALTER TABLE anonymous_actors
+       ADD COLUMN is_blocked TINYINT(1) NOT NULL DEFAULT 0`
+    )
+    .catch(() => {});
+  blockedColReady = true;
+}
+
+/** Owner: actor bloklash / ochish */
+export async function setUserStatus(id, { active }) {
+  await ensureActorBlockedColumn();
+  const actorId = Number(id);
+  if (!Number.isInteger(actorId) || actorId <= 0) throw httpError('ID nadurıs');
+  const [[actor]] = await db.query(`SELECT id FROM anonymous_actors WHERE id = ? LIMIT 1`, [
+    actorId,
+  ]);
+  if (!actor) throw httpError('Paydalanıwshı tabılmadı', 404);
+  const blocked = active === false || active === 0 || active === 'false' ? 1 : 0;
+  await db.query(`UPDATE anonymous_actors SET is_blocked = ? WHERE id = ?`, [blocked, actorId]);
+  return { id: actorId, active: !blocked, blocked: Boolean(blocked) };
+}
+
 /** Umumiy ko‘rsatkichlar paneli. */
 export async function usersOverview() {
   const [[totals]] = await db.query(
@@ -109,6 +135,8 @@ export async function listUsers({
     params
   );
 
+  await ensureActorBlockedColumn();
+
   const [rows] = await db.query(
     `SELECT
        a.id,
@@ -117,6 +145,7 @@ export async function listUsers({
        a.age_consent AS ageConsent,
        a.created_at AS createdAt,
        a.last_seen_at AS lastSeenAt,
+       COALESCE(a.is_blocked, 0) AS isBlocked,
        (SELECT COUNT(*) FROM ${DB.quiz}.quiz_attempts qa WHERE qa.actor_id = a.id) AS quizAttempts,
        (SELECT COUNT(*) FROM ${DB.statistika}.learning_events le WHERE le.actor_id = a.id) AS events,
        (SELECT COUNT(*) FROM ${DB.statistika}.book_progress bp WHERE bp.actor_id = a.id) AS booksInProgress,
@@ -134,6 +163,8 @@ export async function listUsers({
     users: rows.map((r) => ({
       ...r,
       ageConsent: Boolean(r.ageConsent),
+      isBlocked: Boolean(r.isBlocked),
+      active: !r.isBlocked,
       quizAttempts: Number(r.quizAttempts),
       events: Number(r.events),
       booksInProgress: Number(r.booksInProgress),

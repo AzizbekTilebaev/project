@@ -16,7 +16,7 @@ import { fetchWordImmersion, seedImmersionListen, submitImmersionProduce } from 
 import { useUiScript } from '../contexts/UiScriptContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useGuestQuota } from '../hooks/useGuestQuota';
-import { AnimIconDivider, anim, AnimChevron } from '../animations';
+import { AnimIconDivider, anim, AnimChevron, PageEnter } from '../animations';
 import { KAA } from '../i18n/kaa';
 import {
   applyImmersionPracticeResults,
@@ -2273,6 +2273,12 @@ export default function WordDetail() {
   const totalSenses = homonyms
     ? homonyms.reduce((n, h) => n + (h.aniqlamalar?.length || 0), 0)
     : senses.length;
+  const leadSense = homonyms
+    ? (homonyms.find((h) => h.id === word.id || h.soz === word.soz)?.aniqlamalar ||
+        homonyms[0]?.aniqlamalar ||
+        [])[0]
+    : senses[0];
+  const leadGloss = leadSense?.description ? String(leadSense.description).trim() : '';
 
   return (
     <ProtectedContent>
@@ -2297,7 +2303,8 @@ export default function WordDetail() {
           </Link>
         </div>
 
-        <header className="mb-12 animate-dict-rise">
+        <PageEnter>
+        <header className="mb-12">
           <div className="flex items-start justify-between gap-4 mb-3">
             <div className="min-w-0">
               <h1 className="font-display text-5xl md:text-7xl text-ink tracking-tight">
@@ -2348,6 +2355,15 @@ export default function WordDetail() {
               </span>
             )}
           </div>
+          {leadGloss ? (
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink/65 motion-reveal">
+              {text(leadGloss.length > 180 ? `${leadGloss.slice(0, 177)}…` : leadGloss)}
+            </p>
+          ) : (
+            <p className="mt-5 text-sm text-ink/45 motion-reveal">
+              {text('Anıqlama ele qosılmaǵan — morfologiya hám awdarmalardı kóriń.')}
+            </p>
+          )}
         </header>
 
         <AnimIconDivider wide amber icon="✦" />
@@ -2591,6 +2607,7 @@ export default function WordDetail() {
             )}
           </nav>
         )}
+        </PageEnter>
       </article>
     </main>
     </>

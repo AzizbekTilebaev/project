@@ -10,19 +10,21 @@ import GuestSoftContinue from './GuestSoftContinue';
 
 const ACTIVE_NAV = 'bg-teal-900 text-white font-semibold shadow-sm';
 
-/** Asosiy eshiklar — Ádebiyat, Oyınlar va yengil Statistika. */
+/** Asosiy eshiklar — Sózlik / Oyın / Ádebiyat / Qoida (mobil tab + desktop). */
 const PLAY_NAV = [
-  { path: '/', label: KAA.basBet, icon: 'home' },
-  { path: '/literature', label: KAA.adebiyat, icon: 'scroll' },
+  { path: '/dictionary', label: KAA.sozlik, icon: 'book' },
   { path: '/games', label: KAA.oyinlar, icon: 'bolt' },
-  { path: '/quiz/statistics', label: KAA.statistika, icon: 'chart' },
+  { path: '/literature', label: KAA.adebiyat, icon: 'scroll' },
+  { path: '/qoidalar', label: KAA.qoidalarShort, icon: 'grammar' },
 ];
 
-/** Sidebar «Yana» — minimal. */
+/** Sidebar «Yana» — bas bet, mashq, statistika, boshqa. */
 const MORE_NAV = [
+  { path: '/', label: KAA.basBet, icon: 'home' },
+  { path: '/tutor/practice', label: KAA.practiceNav, icon: 'bolt' },
+  { path: '/quiz/statistics', label: KAA.statistika, icon: 'chart' },
   { path: '/profile', label: KAA.profil, icon: 'user' },
   { path: '/community', label: KAA.jamiyet, icon: 'user' },
-  { path: '/qoidalar', label: KAA.qoidalarShort, icon: 'book' },
   { path: '/english', label: KAA.englishShort, icon: 'grammar' },
   { path: '/facts', label: KAA.qiziqarliShort, icon: 'sparkle' },
   { path: '/faq', label: KAA.faqShort, icon: 'sparkle' },
@@ -56,14 +58,18 @@ export default function Header() {
   }, [location.pathname]);
 
   const isActive = (path) => {
+    if (path === '/dictionary') {
+      return (
+        location.pathname.startsWith('/dictionary') &&
+        !location.pathname.startsWith('/dictionary/game')
+      );
+    }
     if (path === '/literature') {
       return (
         location.pathname.startsWith('/literature') ||
         location.pathname.startsWith('/writers') ||
         location.pathname.startsWith('/books') ||
-        location.pathname.startsWith('/jumbaqlar') ||
-        (location.pathname.startsWith('/dictionary') &&
-          !location.pathname.startsWith('/dictionary/game'))
+        location.pathname.startsWith('/jumbaqlar')
       );
     }
     if (path === '/games') {
@@ -75,6 +81,9 @@ export default function Header() {
         location.pathname.startsWith('/dictionary/game') ||
         location.pathname.startsWith('/tutor')
       );
+    }
+    if (path === '/tutor/practice') {
+      return location.pathname.startsWith('/tutor/practice');
     }
     if (path === '/quiz/statistics') {
       return location.pathname.startsWith('/quiz/statistics');

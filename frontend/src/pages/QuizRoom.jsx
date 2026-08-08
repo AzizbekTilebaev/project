@@ -288,7 +288,7 @@ export default function QuizRoom() {
           >
             <Icon name="left" /> {text(KAA.testler)}
           </Link>
-          <div className="qp-surface px-7 py-10 text-center shadow-lg">
+          <div className="qp-surface motion-success quiz-result-pop px-7 py-10 text-center shadow-lg">
             <Icon name="trophy" className="mx-auto mb-4 text-4xl text-amber-600" />
             <h1 className="font-display text-3xl text-ink mb-2">{text(KAA.quizRoomDone)}</h1>
             <p className="text-ink/60 mb-2">
@@ -482,34 +482,51 @@ export default function QuizRoom() {
           </p>
         ) : null}
 
-        <label className="mb-6 block">
-          <span className="text-sm text-ink/60">{text('Test saylań')}</span>
-          <select
-            value={selectedQuizId}
-            onChange={(e) => setSelectedQuizId(e.target.value)}
-            className="mt-1 w-full qp-card qp-card--static px-4 py-3"
-          >
-            {quizzes.map((q) => (
-              <option key={q.id} value={q.id}>
-                {text(q.title)} ({q.questionCount} {text('soraw')})
-              </option>
-            ))}
-          </select>
-        </label>
+        {quizzes.length === 0 ? (
+          <div className="mb-8 qp-surface motion-rise border-dashed px-6 py-10 text-center">
+            <p className="text-ink/55">{text('Házirshe test joq.')}</p>
+            <p className="mt-2 text-sm text-ink/45">{text(KAA.quizColdEmptyHint)}</p>
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              <Link to="/games" className={`${anim.shine} qp-btn-primary !px-4 !py-2 !text-xs`}>
+                <Icon name="trophy" /> {text(KAA.oyinlar)}
+              </Link>
+              <Link to="/quiz" className="qp-btn-ghost !px-4 !py-2 !text-xs">
+                {text(KAA.testler)}
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <>
+            <label className="mb-6 block">
+              <span className="text-sm text-ink/60">{text('Test saylań')}</span>
+              <select
+                value={selectedQuizId}
+                onChange={(e) => setSelectedQuizId(e.target.value)}
+                className="mt-1 w-full qp-card qp-card--static px-4 py-3"
+              >
+                {quizzes.map((q) => (
+                  <option key={q.id} value={q.id}>
+                    {text(q.title)} ({q.questionCount} {text('soraw')})
+                  </option>
+                ))}
+              </select>
+            </label>
 
-        <GameLobby
-          gameType="quiz"
-          modes={modesForLobby}
-          contentId={selectedQuizId}
-          contentLabel={selectedQuiz?.title ? text(selectedQuiz.title) : selectedQuiz?.title}
-          initialCode={routeCode || ''}
-          initialMode={rematchMode}
-          basePath="/quiz/room"
-          onBeforePlay={requireQuiz}
-          onQuotaBlocked={() => openGate('quiz')}
-          onRoomChange={setRoom}
-          onStarted={handleStarted}
-        />
+            <GameLobby
+              gameType="quiz"
+              modes={modesForLobby}
+              contentId={selectedQuizId}
+              contentLabel={selectedQuiz?.title ? text(selectedQuiz.title) : selectedQuiz?.title}
+              initialCode={routeCode || ''}
+              initialMode={rematchMode}
+              basePath="/quiz/room"
+              onBeforePlay={requireQuiz}
+              onQuotaBlocked={() => openGate('quiz')}
+              onRoomChange={setRoom}
+              onStarted={handleStarted}
+            />
+          </>
+        )}
         {error && <p className="mt-4 text-sm text-rose-700">{text(error)}</p>}
         {GateModal}
       </section>

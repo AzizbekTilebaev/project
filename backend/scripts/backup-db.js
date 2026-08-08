@@ -57,4 +57,32 @@ const names = ALL_DB_NAMES.length ? ALL_DB_NAMES : [
 for (const dbName of names) {
   dumpDatabase(dbName);
 }
+
+/** uploads/ — PDF, audio, avatar (MySQL da emas) */
+function archiveUploads() {
+  const uploadsRoot = path.join(__dirname, '..', 'public', 'uploads');
+  if (!fs.existsSync(uploadsRoot)) {
+    console.log('ℹ️  public/uploads yo‘q — skip');
+    return;
+  }
+  const tarFile = path.join(outDir, `uploads-${stamp}.tar.gz`);
+  const r = spawnSync(
+    'tar',
+    ['-czf', tarFile, '-C', path.join(__dirname, '..', 'public'), 'uploads'],
+    { encoding: 'utf8' }
+  );
+  if (r.error) {
+    console.warn('⚠️  tar uploads:', r.error.message);
+    return;
+  }
+  if (r.status !== 0) {
+    console.warn('⚠️  tar uploads xato:', r.stderr || r.stdout);
+    return;
+  }
+  const size = fs.statSync(tarFile).size;
+  console.log(`✅ uploads: ${tarFile} (${Math.round(size / 1024)} KB)`);
+}
+
+archiveUploads();
 console.log('\nBackup tamamlandı. Fayllar: backend/backups/');
+console.log('Eslatma: backups/ ni tashqi disk yoki S3 ga nusxalang; uploads + SQL birga.');

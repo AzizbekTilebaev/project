@@ -310,9 +310,36 @@ getIdiomDesc = async(idiomIds) => {
     return rows;
   };
 
+  /** Prefiks — indeks do‘stona (`soz%`); avvalo shu, keyin contains. */
+  prefixSearch = async (query, limit, foldedQuery = null) => {
+    const eq = escapeLike(query);
+    const folded = escapeLike(foldedQuery || query.toLowerCase());
+    const [rows] = await db.query(
+      `SELECT s.id, s.soz, s.normalized, s.st_let, s.views_count, s.created_at,
+              (SELECT d.description FROM description d
+               WHERE d.titles_id = s.id ORDER BY d.sort_order LIMIT 1) AS birinshi_aniqlama,
+              (SELECT c.name FROM description d
+               LEFT JOIN categorys c ON d.categorys_id = c.id
+               WHERE d.titles_id = s.id ORDER BY d.sort_order LIMIT 1) AS category
+       FROM titles s
+       WHERE s.status = 1
+         AND (s.soz LIKE ? ESCAPE '!' OR s.normalized LIKE ? ESCAPE '!' OR s.search_key LIKE ? ESCAPE '!')
+       ORDER BY CHAR_LENGTH(s.soz), s.\`order\`
+       LIMIT ?`,
+      [`${eq}%`, `${escapeLike((foldedQuery || query).toLowerCase())}%`, `${folded}%`, limit]
+    );
+    return rows;
+  };
+
   likeSearch = async (query, limit, foldedQuery = null) => {
     const eq = escapeLike(query);
     const folded = escapeLike(foldedQuery || query.toLowerCase());
+    // Avvalo prefiks (LIKE 'kitap%') — full table scan emas
+    if (String(query).trim().length >= 2) {
+      const prefixRows = await this.prefixSearch(query, limit, foldedQuery);
+      if (prefixRows.length >= Math.min(limit, 8)) return prefixRows;
+      if (prefixRows.length > 0 && String(query).trim().length <= 3) return prefixRows;
+    }
     const q = `%${eq}%`;
     const fq = `%${folded}%`;
     const [rows] = await db.query(

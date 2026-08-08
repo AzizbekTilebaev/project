@@ -16,6 +16,7 @@ import { fetchWordOfDayCheckin, claimComboChest } from '../api/tusindirme';
 import { fetchMyPoints, fetchPointsHistory } from '../api/points';
 import { KAA } from '../i18n/kaa';
 import { AnimChevron, AnimChevronToggle, anim } from '../animations';
+import CountUp from '../components/CountUp';
 import { safeMediaUrl } from '../lib/safeUrl';
 import { getGuestLocalSummary } from '../lib/guestLocalSummary';
 import useResumeTick from '../hooks/useResumeTick';
@@ -593,9 +594,11 @@ export default function Profile() {
                     {text(KAA.walletStripTitle)}
                   </p>
                   <h2 className="font-display text-3xl tracking-tight text-ink">
-                    {walletLoading && wallet == null
-                      ? '…'
-                      : (wallet?.balance ?? 0).toLocaleString('kk')}
+                    {walletLoading && wallet == null ? (
+                      '…'
+                    ) : (
+                      <CountUp value={wallet?.balance ?? 0} durationMs={700} />
+                    )}
                     <span className="ml-2 font-sans text-base font-semibold text-ink/40">
                       {text(KAA.dareje)} {wallet?.level ?? '—'}
                     </span>
@@ -621,9 +624,11 @@ export default function Profile() {
                   to="/quiz/statistics#wallet"
                   eyebrow={text(KAA.walletSeeAll)}
                   title={
-                    walletLoading && wallet == null
-                      ? '…'
-                      : (wallet?.balance ?? 0).toLocaleString('kk')
+                    walletLoading && wallet == null ? (
+                      '…'
+                    ) : (
+                      <CountUp value={wallet?.balance ?? 0} durationMs={700} />
+                    )
                   }
                   meta={
                     walletHistory[0]
@@ -641,7 +646,12 @@ export default function Profile() {
                     pendingChests.length > 0
                       ? `${pendingChests.length} · ${text(KAA.comboChestAshiw)}`
                       : guestCheckin?.streak
-                        ? `${guestCheckin.streak} ${text(KAA.kun).toLowerCase()}`
+                        ? (
+                            <>
+                              <CountUp value={guestCheckin.streak} durationMs={550} />{' '}
+                              {text(KAA.kun).toLowerCase()}
+                            </>
+                          )
                         : text(KAA.comboChestKeepStreak)
                   }
                   tone="amber"

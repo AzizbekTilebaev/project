@@ -4,6 +4,7 @@ import App from './App'
 import './index.css'
 import './animations/loyalty.css'
 import './animations/kit.css'
+import './animations/motion.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

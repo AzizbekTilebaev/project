@@ -26,9 +26,38 @@ function httpError(message, statusCode = 400) {
   return err;
 }
 
+/** tzOffset faqat ko‘rsatish / «bugun» — ±14 soat oralig‘iga siqiladi */
+function clampTzOffset(offsetMinutes = 0) {
+  const n = Number(offsetMinutes) || 0;
+  return Math.max(-14 * 60, Math.min(14 * 60, n));
+}
+
 function localDateString(offsetMinutes = 0) {
-  const now = new Date(Date.now() + offsetMinutes * 60 * 1000);
+  const now = new Date(Date.now() + clampTzOffset(offsetMinutes) * 60 * 1000);
   return now.toISOString().slice(0, 10);
+}
+
+/** Soatni oldinga-orqaga surib bir necha «kun» claim qilishni to‘sadi */
+const MIN_CLAIM_INTERVAL_MS = Number(process.env.WOD_MIN_CLAIM_HOURS || 20) * 60 * 60 * 1000;
+
+async function assertUtcClaimCooldown(actorIds) {
+  const ids = [...new Set((actorIds || []).map(Number).filter(Boolean))];
+  if (!ids.length) return;
+  const ph = ids.map(() => '?').join(',');
+  const [[row]] = await db.query(
+    `SELECT created_at AS createdAt
+     FROM word_of_day_checkins
+     WHERE actor_id IN (${ph})
+     ORDER BY created_at DESC
+     LIMIT 1`,
+    ids
+  );
+  if (!row?.createdAt) return;
+  const elapsed = Date.now() - new Date(row.createdAt).getTime();
+  if (elapsed < MIN_CLAIM_INTERVAL_MS) {
+    const waitMin = Math.ceil((MIN_CLAIM_INTERVAL_MS - elapsed) / 60000);
+    throw httpError(`Júdá tez. Shama ${waitMin} minutdan keyin urınıń.`, 429);
+  }
 }
 
 function shiftDate(isoDay, deltaDays) {
@@ -203,7 +232,7 @@ async function attachChest(actorId, streak) {
 
 export async function getWordOfDayCheckinStatus(actorId, { timezoneOffsetMinutes = 0, actorIds = null } = {}) {
   await ensureWordOfDayCheckinSchema();
-  const day = localDateString(Number(timezoneOffsetMinutes) || 0);
+  const day = localDateString(timezoneOffsetMinutes);
   const scope = (actorIds?.length ? actorIds : [actorId]).map(Number).filter(Boolean);
   const freeze = await getFreezeState(actorId, day);
   const today = await getCheckinAny(scope, day);
@@ -264,7 +293,7 @@ export async function getWordOfDayCheckinStatus(actorId, { timezoneOffsetMinutes
  */
 export async function claimWordOfDay(actorId, { timezoneOffsetMinutes = 0, actorIds = null } = {}) {
   await ensureWordOfDayCheckinSchema();
-  const offset = Number(timezoneOffsetMinutes) || 0;
+  const offset = clampTzOffset(timezoneOffsetMinutes);
   const day = localDateString(offset);
   const freeze = await getFreezeState(actorId, day);
   const scope = (actorIds?.length ? actorIds : [actorId]).map(Number).filter(Boolean);
@@ -299,6 +328,9 @@ export async function claimWordOfDay(actorId, { timezoneOffsetMinutes = 0, actor
 
   const word = await wordService.getWordOfDay();
   if (!word?.id) throw httpError('Búginlik sóz tabılmadı', 404);
+
+  // tzOffset firibgarligi: UTC bo‘yicha oxirgi claim dan kamida ~20 soat
+  await assertUtcClaimCooldown(scope);
 
   const yesterday = await getCheckinAny(scope, shiftDate(day, -1));
   const latest = yesterday || (await getLatestCheckinAny(scope, day));
@@ -343,9 +375,10 @@ export async function claimWordOfDay(actorId, { timezoneOffsetMinutes = 0, actor
 
   try {
     const { recordEvent } = await import('./actorService.js');
-    await recordEvent(actorId, 'word_of_day_claimed', {
-      payload: { day, titleId: word.id, streak, earned: award.amount, freezeUsed: useFreeze },
-    });
+    const payload = { day, titleId: word.id, streak, earned: award.amount, freezeUsed: useFreeze };
+    await recordEvent(actorId, 'word_of_day_claimed', { payload });
+    // Funnel alias (C-faza): check-in → o‘yin o‘tishini o‘lchash
+    await recordEvent(actorId, 'checkin_done', { payload });
   } catch {
     /* optional */
   }

@@ -98,6 +98,14 @@ const MODULES = [
     color: 'bg-rose-50 border-rose-200 text-rose-900',
     icon: '🎬',
   },
+  {
+    path: '/admin/dictionary',
+    title: 'Sózlik',
+    description: 'Sóz izlew, jańa sóz, atın ózgertiw, jasıriw / qaytarıw.',
+    permission: ['moderate_community'],
+    color: 'bg-indigo-50 border-indigo-200 text-indigo-900',
+    icon: '📕',
+  },
 ];
 
 function formatNumber(value) {
@@ -585,6 +593,47 @@ export default function AdminPanel() {
                     }
                     detail={`Paydalı: ${formatNumber(dashboard.summary.exitFeedbackHelpful)} / ${formatNumber(dashboard.summary.exitFeedbackTotal)}`}
                   />
+                  <StatCard
+                    label="Funnel 7k · check-in"
+                    value={formatNumber(dashboard.summary.funnelCheckin)}
+                    detail={
+                      dashboard.summary.funnelCheckinToGamePct != null
+                        ? `→ oyın: ${dashboard.summary.funnelCheckinToGamePct}% (${formatNumber(dashboard.summary.funnelWodGame)})`
+                        : `Oyın start: ${formatNumber(dashboard.summary.funnelWodGame)}`
+                    }
+                  />
+                  <StatCard
+                    label="Funnel 7k · quiz"
+                    value={formatNumber(dashboard.summary.funnelQuiz)}
+                    detail="quiz_completed event"
+                  />
+                </div>
+              )}
+              {canViewDashboard && dashboard?.funnel?.daily?.length > 0 && (
+                <div className="qp-card qp-card--static overflow-x-auto p-4">
+                  <h3 className="mb-3 font-display text-lg text-ink">Funnel — sońǵı 7 kún</h3>
+                  <table className="w-full min-w-[28rem] text-left text-sm">
+                    <thead className="text-xs uppercase tracking-wide text-ink/40">
+                      <tr>
+                        <th className="pb-2 pr-3">Kún</th>
+                        <th className="pb-2 pr-3">Check-in</th>
+                        <th className="pb-2 pr-3">WoD oyın</th>
+                        <th className="pb-2">Quiz</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dashboard.funnel.daily.map((row) => (
+                        <tr key={String(row.day)} className="border-t border-ink/5">
+                          <td className="py-2 pr-3 font-mono text-xs">
+                            {String(row.day).slice(0, 10)}
+                          </td>
+                          <td className="py-2 pr-3">{formatNumber(row.checkinDone)}</td>
+                          <td className="py-2 pr-3">{formatNumber(row.wodGameStarted)}</td>
+                          <td className="py-2">{formatNumber(row.quizCompleted)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
 
@@ -858,11 +907,19 @@ export default function AdminPanel() {
 
           {tab === 'new-word' && canModerate && (
             <div className="mt-6 qp-panel p-5">
-              <div className="mb-4">
-                <h2 className="font-display text-xl text-ink">{text('Jańa sóz qosıw')}</h2>
-                <p className="mt-1 text-xs text-ink/50">
-                  {text('Public sózlikke status=1 menen shıǵadı. Birinshi anıqlama májburiy.')}
-                </p>
+              <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h2 className="font-display text-xl text-ink">{text('Jańa sóz qosıw')}</h2>
+                  <p className="mt-1 text-xs text-ink/50">
+                    {text('Public sózlikke status=1 menen shıǵadı. Birinshi anıqlama májburiy.')}
+                  </p>
+                </div>
+                <Link
+                  to="/admin/dictionary"
+                  className="rounded-full border border-teal-700/25 bg-white px-4 py-2 text-xs font-bold text-teal-950"
+                >
+                  {text('Tolıq sózlik admin →')}
+                </Link>
               </div>
               <form onSubmit={submitNewWord} className="mx-auto max-w-xl space-y-4">
                 <label className="block">

@@ -7,6 +7,8 @@ Qaraqalpaq tilini o‘rganish uchun **full-stack** web-platforma: túsinirme soz
 | **Repo** | https://github.com/AzizbekTilebaev/project |
 | **Stack** | React 18 + Vite + Tailwind · Express + mysql2 + Socket.IO · MySQL (`kk_*`) |
 | **Dev** | Frontend `:3000` · Backend `:5000` |
+| **Qanday ishlaydi** | [`docs/QANDAY-ISHLAYDI.md`](docs/QANDAY-ISHLAYDI.md) |
+| **Hujjatlar indeksi** | [`docs/INDEX.md`](docs/INDEX.md) |
 | **To‘liq ma’lumotnoma** | [`d.md`](d.md) |
 | **O‘rnatish** | [`SETUP.md`](SETUP.md) · [`backend/README.md`](backend/README.md) |
 
@@ -65,15 +67,13 @@ Batafsil: [`SETUP.md`](SETUP.md).
 project/
 ├── backend/          # Express API, Socket.IO, skriptlar, testlar
 ├── frontend/         # React SPA (Vite port 3000)
-├── fordata/          # Import manbasi (sozlik, kitob, grammar, english MD)
-├── grammar-site/     # Alohida grammar Vite prototipi (ixtiyoriy)
-├── animations/       # CSSKit / motion aktivlar
+├── fordata/          # grammar + english MD (sayt); tools/
+├── docs/             # Hujjatlar indeksi
 ├── .github/workflows # CI
-├── d.md              # To‘liq arxitektura va API ma’lumotnomasi
-├── SETUP.md          # O‘rnatish qo‘llanmasi
-├── README.md         # Shu fayl
-└── package.json      # Root helper skriptlar
+├── d.md · SETUP.md · README.md · CONTRIBUTING.md
+└── package.json
 ```
+# Ortiqcha manbalar: ~/proyekt2-trash-20260807/
 
 ### Ma’lumotlar bazasi (10 ta)
 
@@ -112,14 +112,23 @@ API prefikslar: `/api/tusindirme`, `/api/quizzes`, `/api/books`, `/api/auth`, `/
 
 ## Hujjatlar xaritasi
 
+**Indeks:** [`docs/INDEX.md`](docs/INDEX.md) · **Asosiy:** [`docs/QANDAY-ISHLAYDI.md`](docs/QANDAY-ISHLAYDI.md)
+
 | Fayl | Mazmun |
 |------|--------|
-| [`d.md`](d.md) | Arxitektura, API, DB, realtime, xavfsizlik, features |
+| [`docs/QANDAY-ISHLAYDI.md`](docs/QANDAY-ISHLAYDI.md) | Qayer–nima–qanday (UI ↔ API ↔ DB) |
+| [`docs/API-MOBILE.md`](docs/API-MOBILE.md) | Backend API (mobil ilova) |
+| [`docs/FOYDALANISH.md`](docs/FOYDALANISH.md) | Oddiy foydalanuvchi |
+| [`docs/ROADMAP.md`](docs/ROADMAP.md) | Keyingi rivojlantirish |
+| [`d.md`](d.md) | Kengaytirilgan API / features |
 | [`SETUP.md`](SETUP.md) | Clone → env → MySQL → ishga tushirish |
 | [`backend/README.md`](backend/README.md) | Backend, ball, RBAC, skriptlar |
+| [`frontend/README.md`](frontend/README.md) | SPA marshrutlar, proxy, MD kontent |
+| [`fordata/README.md`](fordata/README.md) | Import + grammar/english |
 | [`fordata/english/ENGLISH.md`](fordata/english/ENGLISH.md) | Ingliz sabaqlıqlar registry |
+| [`fordata/grammar/README.md`](fordata/grammar/README.md) | QQ qoidalar MD |
 | [`fordata/ANIMATSIYA-REJA.md`](fordata/ANIMATSIYA-REJA.md) | Motion reja |
-| [`CLEANUP_REPORT.md`](CLEANUP_REPORT.md) | Tozalash hisoboti (tarixiy) |
+| Trash | `/home/azizbek/proyekt2-trash-20260807/` — ortiqcha manbalar |
 
 ---
 

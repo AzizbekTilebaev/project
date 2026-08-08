@@ -17,10 +17,18 @@
     "setup-crosswords": "node scripts/setup-crosswords-db.js",
     "backup": "node scripts/backup-db.js",
     "restore": "node scripts/restore-db.js",
+    "restore-drill": "node scripts/restore-drill.mjs",
+    "migrate:aiven": "node scripts/migrate-to-remote-mysql.mjs",
+    "migrate:aiven:dry": "DRY_RUN=1 node scripts/migrate-to-remote-mysql.mjs",
     "lint": "eslint .",
     "setup-roles": "node scripts/setup-roles.js",
     "setup-points": "node scripts/setup-points.js",
+    "seed-curated-db": "node scripts/seed-curated-from-db.mjs",
+    "ensure-search-indexes": "node scripts/ensure-search-indexes.mjs",
+    "check:prod-env": "node scripts/check-prod-env.mjs",
+    "prepare:prod": "node scripts/seed-curated-from-db.mjs",
     "start:prod": "NODE_ENV=production node src/server.js",
+    "start:prod:seed": "npm run prepare:prod; NODE_ENV=production node src/server.js",
     "test": "node --test --test-force-exit test/searchFold.test.js test/health.test.js test/quizRoutes.test.js test/quizSession.test.js test/community.test.js test/books.test.js test/gameRooms.test.js test/irt.test.js test/adaptiveQuiz.test.js test/localTutorAi.test.js test/qqScript.test.js test/readingLessonEngine.test.js test/literatureApi.test.js test/rbac.test.js test/points.test.js test/quizDictBridge.test.js test/tutorMistakeBank.test.js test/dictGameMistakeBank.test.js test/readingSrsFidelity.test.js test/quizCrossSourceSrs.test.js test/tutorProduce.test.js test/mistakeBankResolvedReactivation.test.js"
   },
   "keywords": [
