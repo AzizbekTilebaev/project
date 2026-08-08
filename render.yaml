@@ -37,6 +37,8 @@ services:
         sync: false
       - key: DB_SSL
         value: REQUIRED
+      - key: DB_NAME
+        value: kk_tusindirme
       - key: JWT_SECRET
         generateValue: true
       - key: ACTOR_HMAC_SECRET
