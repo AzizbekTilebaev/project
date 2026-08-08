@@ -140,7 +140,7 @@ frontend/src/
 ├── hooks/
 ├── lib/                 # grammarContent, englishContent, mdToHtml, gameSocket
 ├── i18n/kaa.js          # Lotin ↔ kirill
-└── animations/          # UI motion komponentlar
+└── animations/          # UI motion (frontend/src/animations)
 ```
 
 ### Sahifa → API → baza (asosiy)

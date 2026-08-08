@@ -1,7 +1,7 @@
 /**
  * Product animation class names + components.
  * CSS: loyalty.css (rewards) + kit.css (UI chrome) + motion.css (page/reveal).
- * Source kit: animations/csskit-ab2rahman-main/src/animations/
+ * Motion: motion.css + kit.css + loyalty.css (+ framer-motion)
  */
 export { default as AnimIconDivider } from './AnimIconDivider';
 export { default as AnimChevron, AnimChevronToggle } from './AnimChevron';

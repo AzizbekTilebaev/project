@@ -502,8 +502,8 @@ MySQL ← asosiy runtime ma’lumot (import manbalari trashda)
 | `fordata/grammar/README.md` | QQ qoidalar MD |
 | `fordata/tools/README.md` | Import tool’lar |
 | `fordata/ANIMATSIYA-REJA.md` | Motion reja |
-| `CLEANUP_REPORT.md` | 2026-07 tozalash |
-| `animations/README.md` | CSSKit mapping |
+| `frontend/src/animations/` | UI motion |
+| `docs/deploy/DEPLOY.md` | Docker / VPS deploy |
 
 ---
 
