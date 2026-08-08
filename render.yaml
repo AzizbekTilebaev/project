@@ -1,0 +1,51 @@
+# Render Blueprint — Free Web Service
+# https://dashboard.render.com → New → Blueprint → shu repo
+#
+# Chiroyli URL: Settings → Name = qaraqalpaq-til
+#   → https://qaraqalpaq-til.onrender.com
+#
+# MySQL: Aiven (DB_* env). Free web 15 daq inactivity dan keyin uxlaydi.
+
+services:
+  - type: web
+    name: qaraqalpaq-til
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: TRUST_PROXY
+        value: "1"
+      - key: DB_POOL_LIMIT
+        value: "3"
+      - key: ACTOR_WRITE_LIMIT
+        value: "40"
+      # Dashboardda to‘ldiring (sync: false):
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_SSL
+        value: REQUIRED
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ACTOR_HMAC_SECRET
+        generateValue: true
+      - key: ADMIN_SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: SITE_ORIGIN
+        sync: false

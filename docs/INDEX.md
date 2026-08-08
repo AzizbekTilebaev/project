@@ -22,7 +22,7 @@
 |------|--------|
 | [deploy/OPS.md](deploy/OPS.md) | Ops checklist |
 | [deploy/AIVEN-MYSQL.md](deploy/AIVEN-MYSQL.md) | Aiven free MySQL — `kk_*` migratsiya |
-| [deploy/DEPLOY.md](deploy/DEPLOY.md) | Docker / VPS deploy (Aiven + Node) |
+| [deploy/DEPLOY.md](deploy/DEPLOY.md) | Deploy — **Render Free** + Docker / VPS |
 | [deploy/qp-api.service](deploy/qp-api.service) | systemd (`ensure-search-indexes` + seed) |
 | [deploy/nginx.example.conf](deploy/nginx.example.conf) | Nginx namuna |
 
