@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-const TOKEN_TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
+const TOKEN_TTL_MS = 24 * 60 * 60 * 1000; // 1 day
 
 function timingSafeEqual(a, b) {
   const bufA = Buffer.from(String(a));

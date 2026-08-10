@@ -147,6 +147,12 @@ export default function Qoidalar() {
     <DictShell className="pt-24 pb-28">
       <section className="relative mx-auto max-w-3xl px-5 pt-8 sm:px-6 md:px-10">
         <PageEnter>
+        <Link
+          to="/literature/qaraqalpaq-tili"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-ink/45 transition-colors hover:text-teal-900"
+        >
+          <Icon name="left" /> {text(KAA.qoidalarEyebrow)}
+        </Link>
         <p className="mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-teal-800/70">
           {text(KAA.qoidalarEyebrow)}
         </p>

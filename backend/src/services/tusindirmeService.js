@@ -16,6 +16,7 @@ import {
   getSenseRelationsForTitle,
   getCompoundsForTitle,
 } from './communityService.js';
+import { parseNumberedSenses } from '../utils/glossStructure.js';
 
 const db = pools.tusindirme;
 const idGen = new IdGenerator();
@@ -23,7 +24,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CURATED_META = path.resolve(__dirname, '../../../fordata/curated/premium-50.meta.json');
 const CURATED_IMPORT = path.resolve(__dirname, '../../../fordata/curated/premium-50.import.json');
 
-// Havola-yozuv (к./қ. = «qara») ni aniqlash: {target} yoki null
+// Havola-yozuv (к./қ. = «qara» / «қараң») ni aniqlash: {target} yoki null
+// Qabıl etiledi:
+//   cat=к.|қ. + nishon
+//   "к. фантастикалық." / "қ. егер"
+//   "к фантастикалық." (nuqtasız OCR)
 function detectReference(category, description) {
   const cat = (category || '').trim().toLowerCase();
   let desc = (description || '').trim();
@@ -31,15 +36,25 @@ function detectReference(category, description) {
 
   // qavs ichidagi variantlarni olib tashlash: "(ӘГӘРКИ) қ. егер де."
   const cleaned = desc.replace(/\([^)]*\)/g, '').trim();
-  const m = cleaned.match(/^(?:[кқ]\.\s*)?(.+?)\.?$/su);
-  if (!m) return null;
-  const target = cleanOcrReference(m[1]);
+
+  // "к е л." / "к ел." = кел. (POS OCR) — havola emes
+  if (/^[кқ]\s+е\s*л\s*\./iu.test(cleaned)) return null;
+  // "қ ағыў фейилиниң..." = grammatika — havola emes
+  if (/^[кқ]\s+\S+\s+фейил/iu.test(cleaned)) return null;
 
   const isRefCat = cat === 'к.' || cat === 'қ.';
-  const startsWithRef = /^[кқ]\.\s+/u.test(cleaned);
+  const refPrefix = cleaned.match(/^(?:[кқ]\.\s+|[кқ]\s+|қараң[\s.:]+|каран[\s.:]+|qarań[\s.:]+)/iu);
+  const startsWithRef = Boolean(refPrefix);
   if (!isRefCat && !startsWithRef) return null;
+
+  let target = cleaned;
+  if (refPrefix) target = cleaned.slice(refPrefix[0].length);
+  target = cleanOcrReference(target.replace(/\.+$/u, '').trim());
+
   // nishon — qisqa so'z/ibora bo'lishi kerak (to'liq ta'rif emas)
   if (!target || target.length > 30 || target.split(/\s+/).length > 3) return null;
+  // POS qoldiqlari
+  if (/^(ат|ф|кел|рәў|алм|сан|лин)\.?$/iu.test(target)) return null;
   return target;
 }
 
@@ -135,6 +150,8 @@ class TusindirmeService {
   };
   #TAXONOMY_TTL_MS = 5 * 60_000;
   #wordOfDayCache = { date: null, data: null };
+  #curatedCache = { at: 0, data: null };
+  static #CURATED_TTL_MS = 5 * 60 * 1000;
 
   //Hamme sozler (paginatsiya) — ixtiyoriy pos/theme filtri
   getAllSozler = async (page = 1, limit = 50, { pos, theme } = {}) => {
@@ -309,6 +326,35 @@ class TusindirmeService {
         for (const a of aniqlamalar) {
           a.idioms = idiomsMap[a.id] || [];
         }
+
+        // Legacy: bir description ichida "1. … 2. … 3. …" qolgan bo'lsa — UI da alohida ma'nolarga ajratish
+        const expanded = [];
+        for (const a of aniqlamalar) {
+          const parts = parseNumberedSenses(a.description || '');
+          const canSplit =
+            parts.length >= 2 &&
+            parts[0].n === 1 &&
+            parts.some((p) => p.n === 2) &&
+            /(^|\s)1[.)]\s/.test(String(a.description || '')) &&
+            /(^|\s)2[.)]\s/.test(String(a.description || ''));
+          if (!canSplit) {
+            expanded.push(a);
+            continue;
+          }
+          parts.forEach((p, i) => {
+            expanded.push({
+              ...a,
+              id: i === 0 ? a.id : `${a.id}__sense${p.n}`,
+              description: p.text,
+              sort_order: (Number(a.sort_order) || 1) * 100 + i,
+              examples: i === 0 ? a.examples : [],
+              idioms: i === 0 ? a.idioms : [],
+              virtualSense: i > 0,
+            });
+          });
+        }
+        aniqlamalar.length = 0;
+        aniqlamalar.push(...expanded);
 
         // Havola-yozuvlarni aniqlash va nishon so'zga bog'lash
         for (const a of aniqlamalar) {
@@ -728,10 +774,20 @@ class TusindirmeService {
 
   // Curated (premium-50) — endi MySQL `curated_words` jadvalidan o‘qiladi.
   // fordata/curated fayllari faqat migratsiyagacha fallback bo‘lib qoladi.
+  // Aiven: 4 ta round-trip ~2s — 5 daqiqa memory cache.
   getCurated = async () => {
+    const now = Date.now();
+    if (
+      this.#curatedCache.data &&
+      now - this.#curatedCache.at < TusindirmeService.#CURATED_TTL_MS
+    ) {
+      return this.#curatedCache.data;
+    }
     let sozList = await this.model.getCuratedSozList();
     if (!sozList.length) sozList = this.readCuratedFromFile();
-    return this.getCuratedSozler(sozList);
+    const result = await this.getCuratedSozler(sozList);
+    this.#curatedCache = { at: now, data: result };
+    return result;
   };
 
   // Legacy fallback: fordata mavjud bo‘lsa fayldan o‘qiydi (bazada seed yo‘q holat uchun)

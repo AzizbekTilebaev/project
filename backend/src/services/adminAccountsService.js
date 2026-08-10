@@ -76,7 +76,7 @@ export async function loginAdminAccount(email, password) {
   return { token, admin: { id: row.id, email: row.email, role: row.role } };
 }
 
-function createScopedAdminToken({ sub, email, role }, ttlMs = 8 * 60 * 60 * 1000) {
+function createScopedAdminToken({ sub, email, role }, ttlMs = 24 * 60 * 60 * 1000) {
   const secret = process.env.ADMIN_SESSION_SECRET || process.env.JWT_SECRET || '';
   if (!secret || secret.length < 24) throw httpError('Admin session sazlanbaǵan', 503);
   const payload = { sub, email, role, exp: Date.now() + ttlMs };

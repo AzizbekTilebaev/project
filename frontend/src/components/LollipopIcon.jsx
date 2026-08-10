@@ -112,6 +112,8 @@ export const NAV_ICON_BY_PATH = {
   '/quiz': 'bolt',
   '/crossword': 'bolt',
   '/quiz/statistics': 'chart',
+  '/literature/qaraqalpaq-tili': 'grammar',
+  '/literature/qagiydalar': 'grammar',
   '/qoidalar': 'grammar',
   '/english': 'grammar',
   '/settings': 'settings',

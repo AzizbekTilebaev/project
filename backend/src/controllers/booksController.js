@@ -42,7 +42,7 @@ export async function adminLogin(req, res, next) {
     // email berilsa — akkaunt login (rol bilan); aks holda legacy parol
     const { loginLegacyOrAccount } = await import('../services/adminAccountsService.js');
     const result = await loginLegacyOrAccount(req.body || {});
-    res.json({ success: true, ...result, expiresInHours: 8 });
+    res.json({ success: true, ...result, expiresInHours: 24 });
   } catch (err) {
     next(err);
   }

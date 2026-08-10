@@ -9,10 +9,10 @@ import ProtectedContent from '../components/ProtectedContent';
 import ScriptToggle from '../components/literature/ScriptToggle';
 import SafeParagraphs from '../components/literature/SafeParagraphs';
 import WriterFacts from '../components/literature/WriterFacts';
+import WriterRoleChips from '../components/literature/WriterRoleChips';
 import WriterTimeline from '../components/literature/WriterTimeline';
 import TimeMachineGallery from '../components/literature/TimeMachineGallery';
 import CreativeWorksPanel from '../components/literature/CreativeWorksPanel';
-import BirthplaceMap from '../components/literature/BirthplaceMap';
 import {
   pickWriterBio,
   pickWriterName,
@@ -106,12 +106,6 @@ export default function WriterDetail() {
   const name = pickWriterName(writer, script);
   const life = writer?.lifeSpan || writer?.life_span || '';
   const paragraphs = pickWriterBio(writer, script);
-  const birthplaceLabel =
-    script === 'latin'
-      ? writer?.birthplaceLatin || writer?.birthplace
-      : writer?.birthplaceCyrillic ||
-        writer?.birthplaceOriginal ||
-        writer?.birthplace;
   const readingMeta = useMemo(() => getReadingLessonMeta(), []);
   const firstBook = books[0];
   const firstBookId = firstBook?.id || firstBook?.bookId;
@@ -155,6 +149,7 @@ export default function WriterDetail() {
                 <h1 className="font-display text-3xl tracking-tight text-ink md:text-4xl">
                   {name || '—'}
                 </h1>
+                <WriterRoleChips roles={writer?.roles} script={script} />
                 {writer?.birthYear ? (
                   <LifeTimeline writer={writer} script={script} />
                 ) : life ? (
@@ -171,12 +166,6 @@ export default function WriterDetail() {
                 </div>
                 <TimeMachineGallery photos={photos} writer={writer} script={script} />
                 <WriterTimeline facts={writer?.facts} script={script} />
-                <BirthplaceMap
-                  coordinates={writer?.coordinates}
-                  label={birthplaceLabel}
-                  geocodeStatus={writer?.geocodeStatus}
-                  script={script}
-                />
               </div>
             </article>
 

@@ -31,6 +31,7 @@ const fieldClass =
 
 const PRIMARY_FIELDS = [
   ['displayName', KAA.atiniz, 'text'],
+  ['username', KAA.loginUsername, 'text'],
   ['bio', KAA.bio, 'textarea'],
 ];
 
@@ -75,6 +76,7 @@ export default function Profile() {
 
   const [form, setForm] = useState({
     displayName: '',
+    username: '',
     bio: '',
     location: '',
     phone: '',
@@ -103,6 +105,7 @@ export default function Profile() {
     if (!user) return;
     setForm({
       displayName: user.displayName || '',
+      username: user.username || '',
       bio: user.bio || '',
       location: user.location || '',
       phone: user.phone || '',
@@ -445,6 +448,7 @@ export default function Profile() {
     try {
       await updateProfile({
         displayName: form.displayName,
+        username: form.username,
         bio: form.bio,
         location: form.location,
         phone: form.phone,
@@ -504,8 +508,8 @@ export default function Profile() {
     }
   };
 
-  const initial = (user.displayName || user.email || '?').slice(0, 1).toUpperCase();
-  const displayTitle = user.displayName || text(KAA.paydalaniwshi);
+  const initial = (user.displayName || user.username || user.email || '?').slice(0, 1).toUpperCase();
+  const displayTitle = user.displayName || (user.username ? `@${user.username}` : text(KAA.paydalaniwshi));
   const resume = guestLocal.primary;
   const pendingChests = loyalty?.pending || [];
   const avatarSrc = safeMediaUrl(user.avatarUrl);
@@ -513,6 +517,7 @@ export default function Profile() {
   const goalPct = Math.min(100, Math.round((goal.doneCount / 2) * 100));
 
   const badges = [];
+  if (user.username) badges.push(`@${user.username}`);
   if (user.googleLinked) badges.push(text(KAA.googleBaylanǵan));
   if (user.totpEnabled) badges.push(text(KAA.totpQosılǵan));
   if (wallet?.level != null) badges.push(`${text(KAA.dareje)} ${wallet.level}`);
@@ -533,10 +538,21 @@ export default function Profile() {
         <input
           type={type}
           value={form[key]}
-          onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
+          onChange={(e) => {
+            const raw = e.target.value;
+            const next = key === 'username' ? raw.toLowerCase().replace(/[^a-z0-9._]/g, '') : raw;
+            setForm((f) => ({ ...f, [key]: next }));
+          }}
+          autoComplete={key === 'username' ? 'username' : undefined}
+          minLength={key === 'username' ? 3 : undefined}
+          maxLength={key === 'username' ? 30 : undefined}
           className={fieldClass}
+          placeholder={key === 'username' ? 'azizbek' : undefined}
         />
       )}
+      {key === 'username' ? (
+        <span className="mt-1 block text-[0.7rem] text-ink/35">{text(KAA.loginUsernameHint)}</span>
+      ) : null}
     </label>
   );
 

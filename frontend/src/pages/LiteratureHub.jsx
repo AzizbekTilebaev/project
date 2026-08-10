@@ -7,7 +7,7 @@ import ProtectedContent from '../components/ProtectedContent';
 import DictShell from '../components/dictionary/DictShell';
 import Icon from '../components/Icon';
 import ScriptToggle from '../components/literature/ScriptToggle';
-import { t } from '../components/literature/litLabels';
+import { t, genreLabel, sourceLabel } from '../components/literature/litLabels';
 import {
   getContinueBook,
   pickWriterName,
@@ -29,6 +29,7 @@ import { KAA } from '../i18n/kaa';
 import useResumeTick from '../hooks/useResumeTick';
 import GuestSoftContinue from '../components/GuestSoftContinue';
 import { useAuth } from '../contexts/AuthContext';
+import { pickFeaturedBooks } from '../data/featuredBooks';
 
 function bookDisplay(book, script) {
   if (!book) return { title: '', author: '' };
@@ -44,20 +45,60 @@ function bookDisplay(book, script) {
   };
 }
 
+const COVER_THEMES = {
+  dastan: 'from-amber-200 via-orange-100 to-rose-200 text-amber-950',
+  klassik: 'from-teal-200 via-emerald-50 to-cyan-200 text-teal-950',
+  zamanagoy: 'from-teal-200 via-cyan-50 to-emerald-100 text-teal-950',
+  roman: 'from-sky-200 via-teal-50 to-cyan-100 text-teal-950',
+  ertek: 'from-orange-200 via-amber-50 to-yellow-100 text-amber-950',
+  other: 'from-stone-200 via-neutral-50 to-zinc-200 text-stone-950',
+};
+
+function FeaturedBookCover({ book, script }) {
+  const disp = bookDisplay(book, script);
+  return (
+    <div
+      className={`relative h-40 w-full overflow-hidden rounded-2xl bg-gradient-to-br shadow-[0_18px_32px_-22px_rgba(28,42,36,0.55)] ${
+        COVER_THEMES[book.genre] || COVER_THEMES.other
+      }`}
+    >
+      <span className="absolute -right-8 -top-7 h-24 w-24 rounded-full border-[14px] border-white/25" />
+      <span className="absolute -bottom-10 -left-8 h-28 w-28 rounded-full bg-white/25" />
+      <span className="relative flex h-full flex-col justify-between p-4">
+        <span className="text-[0.55rem] font-bold uppercase tracking-[0.18em] opacity-55">
+          {t('litHeritageCover', script)}
+        </span>
+        <span>
+          <span className="block font-display text-xl leading-tight">{disp.title}</span>
+          {disp.author ? (
+            <span className="mt-1.5 block text-[0.7rem] font-semibold opacity-65">{disp.author}</span>
+          ) : null}
+        </span>
+        <span className="text-[0.55rem] font-bold uppercase tracking-[0.16em] opacity-50">
+          {book.sourceType
+            ? sourceLabel(book.sourceType, script)
+            : genreLabel(book.genre, script) || book.genre}
+        </span>
+      </span>
+    </div>
+  );
+}
+
+/** Kitapxana eshikleri — sózlik tiykarǵı menyuda. */
 const LINKS = [
-  {
-    to: '/dictionary',
-    titleKey: 'dictCard',
-    descKey: 'dictCardDesc',
-    icon: 'book',
-    tone: 'from-teal-600 to-cyan-700',
-  },
   {
     to: '/books',
     titleKey: 'books',
     descKey: 'booksCardDesc',
     icon: 'book',
     tone: 'from-teal-600 to-emerald-700',
+  },
+  {
+    to: '/literature/qaraqalpaq-tili',
+    titleKey: 'qaraqalpaqTili',
+    descKey: 'qaraqalpaqTiliCardDesc',
+    icon: 'grammar',
+    tone: 'from-amber-500 to-orange-600',
   },
   {
     to: '/writers',
@@ -67,11 +108,11 @@ const LINKS = [
     tone: 'from-amber-500 to-orange-600',
   },
   {
-    to: '/jumbaqlar',
-    titleKey: 'jumbaqlar',
-    descKey: 'jumbaqCardDesc',
-    icon: 'sparkle',
-    tone: 'from-sky-500 to-teal-600',
+    to: '/literature/ertekler',
+    titleKey: 'ertekler',
+    descKey: 'erteklerCardDesc',
+    icon: 'book',
+    tone: 'from-orange-500 to-amber-600',
   },
   {
     to: '/literature/naqillar',
@@ -81,11 +122,11 @@ const LINKS = [
     tone: 'from-rose-500 to-orange-600',
   },
   {
-    to: '/literature/ertekler',
-    titleKey: 'ertekler',
-    descKey: 'erteklerCardDesc',
-    icon: 'book',
-    tone: 'from-orange-500 to-amber-600',
+    to: '/jumbaqlar',
+    titleKey: 'jumbaqlar',
+    descKey: 'jumbaqCardDesc',
+    icon: 'sparkle',
+    tone: 'from-sky-500 to-teal-600',
   },
 ];
 
@@ -124,7 +165,7 @@ export default function LiteratureHub() {
   );
 
   const books = data?.books || [];
-  const featuredBooks = books.slice(0, 6);
+  const featuredBooks = useMemo(() => pickFeaturedBooks(books, 6), [books]);
   const primaryBook = featuredBooks[0] || null;
   const writersBundle = data?.writers || { items: [], total: 0 };
   const featuredWriters = (writersBundle.items || []).slice(0, 6);
@@ -345,39 +386,44 @@ export default function LiteratureHub() {
           </div>
 
           {featuredBooks.length > 0 && (
-            <div className="mb-10">
-              <div className="qp-section-head mb-3">
-                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-teal-800/60">
-                  {t('featuredBooks', script)}
-                </p>
-                <Link
-                  to="/books"
-                  className="qp-chip text-teal-900 no-underline"
-                >
+            <div className="mb-12">
+              <div className="qp-section-head mb-2">
+                <div>
+                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-teal-800/65">
+                    {t('featuredBooks', script)}
+                  </p>
+                  <p className="mt-1 max-w-md text-sm text-ink/50">
+                    {t('featuredBooksDesc', script)}
+                  </p>
+                </div>
+                <Link to="/books" className="qp-chip text-teal-900 no-underline">
                   {t('seeAllBooks', script)}
                   <AnimChevron count={2} className="opacity-50" />
                 </Link>
               </div>
-              <ul className="grid gap-2 sm:grid-cols-2">
+              <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {featuredBooks.map((book) => {
                   const disp = bookDisplay(book, script);
                   return (
                     <li key={book.id}>
                       <Link
                         to={`/books/${encodeURIComponent(book.id)}`}
-                        className="group flex items-center justify-between gap-3 qp-card px-4 py-3.5 transition hover:-translate-y-0.5 hover:border-teal-700/25 hover:bg-white/90"
+                        className="group block qp-card p-3.5 no-underline transition hover:-translate-y-0.5 hover:border-teal-700/25 hover:bg-white/90"
                       >
-                        <span className="min-w-0">
-                          <span className="block truncate font-display text-lg text-ink group-hover:text-teal-900">
-                            {disp.title}
+                        <FeaturedBookCover book={book} script={script} />
+                        <span className="mt-3 flex items-center justify-between gap-2 px-0.5">
+                          <span className="min-w-0">
+                            <span className="block truncate font-display text-lg text-ink group-hover:text-teal-900">
+                              {disp.title}
+                            </span>
+                            {disp.author ? (
+                              <span className="text-xs text-ink/45">{disp.author}</span>
+                            ) : null}
                           </span>
-                          {disp.author ? (
-                            <span className="text-xs text-ink/45">{disp.author}</span>
-                          ) : null}
-                        </span>
-                        <span className="inline-flex shrink-0 items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wide text-teal-800/70">
-                          {t('startThisBook', script)}
-                          <AnimChevron count={2} className="opacity-60" />
+                          <span className="inline-flex shrink-0 items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wide text-teal-800/70">
+                            {t('startThisBook', script)}
+                            <AnimChevron count={2} className="opacity-60" />
+                          </span>
                         </span>
                       </Link>
                     </li>
@@ -386,6 +432,35 @@ export default function LiteratureHub() {
               </ul>
             </div>
           )}
+
+          <div className="mb-4">
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-ink/40">
+              {t('librarySections', script)}
+            </p>
+          </div>
+
+          <Stagger variants={staggerFast} className="mb-12 grid gap-4 sm:grid-cols-2">
+            {LINKS.map((item) => (
+              <MotionDiv key={item.titleKey || item.to} variants={slideUp}>
+                <Link
+                  to={item.to}
+                  className="qp-door group relative block overflow-hidden rounded-[1.75rem] p-6"
+                >
+                  <span className={`qp-icon-tile mb-5 bg-gradient-to-br ${item.tone}`}>
+                    <Icon name={item.icon} />
+                  </span>
+                  <h2 className="font-display text-2xl tracking-tight text-ink group-hover:text-teal-900">
+                    {t(item.titleKey, script)}
+                  </h2>
+                  <p className="mt-2 text-sm leading-6 text-ink/55">{t(item.descKey, script)}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-teal-800/70">
+                    {t('openWord', script)}
+                    <AnimChevron count={2} className="opacity-70" />
+                  </span>
+                </Link>
+              </MotionDiv>
+            ))}
+          </Stagger>
 
           {featuredWriters.length > 0 && (
             <div className="mb-10">
@@ -427,7 +502,7 @@ export default function LiteratureHub() {
           )}
 
           {jumbaqCats.length > 0 && (
-            <div className="mb-10">
+            <div className="mb-4">
               <div className="qp-section-head mb-3">
                 <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-sky-900/55">
                   {t('jumbaqPeek', script)}
@@ -464,29 +539,6 @@ export default function LiteratureHub() {
               </div>
             </div>
           )}
-
-          <Stagger variants={staggerFast} className="grid gap-4 sm:grid-cols-2">
-            {LINKS.map((item) => (
-              <MotionDiv key={item.titleKey || item.to} variants={slideUp}>
-                <Link
-                  to={item.to}
-                  className="qp-door group relative overflow-hidden rounded-[1.75rem] p-6 block"
-                >
-                  <span className={`qp-icon-tile mb-5 bg-gradient-to-br ${item.tone}`}>
-                    <Icon name={item.icon} />
-                  </span>
-                  <h2 className="font-display text-2xl tracking-tight text-ink group-hover:text-teal-900">
-                    {t(item.titleKey, script)}
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-ink/55">{t(item.descKey, script)}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-teal-800/70">
-                    {t('openWord', script)}
-                    <AnimChevron count={2} className="opacity-70" />
-                  </span>
-                </Link>
-              </MotionDiv>
-            ))}
-          </Stagger>
           </PageEnter>
         </section>
       </DictShell>

@@ -27,6 +27,29 @@ import { favoritesEmptySoftHref } from '../lib/readingPractice';
 import { readFavoritesPractice } from '../lib/favoritesProgress';
 import { DictHubCards } from '../components/dictionary/LinkedDictPanels';
 import useResumeTick from '../hooks/useResumeTick';
+import { formatViewedAt } from '../lib/formatViewedAt';
+
+const ALPHABET_KEY = 'dictionary:alphabetVisible';
+const LANDING_RECENT = 5;
+const LANDING_TOP = 4;
+
+function readAlphabetVisible() {
+  try {
+    // Default: jasırılıw — álipbe kóp orın aladı
+    return localStorage.getItem(ALPHABET_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function writeAlphabetVisible(visible) {
+  try {
+    localStorage.setItem(ALPHABET_KEY, visible ? '1' : '0');
+  } catch {
+    /* ignore */
+  }
+  return visible;
+}
 
 export default function DictionaryLanding() {
   const navigate = useNavigate();
@@ -35,6 +58,7 @@ export default function DictionaryLanding() {
   const { count: favCount } = useDictionaryFavorites();
   const { items: recentWords, clear: clearRecent } = useRecentWords();
   const [checkin, setCheckin] = useState(null);
+  const [alphabetVisible, setAlphabetVisible] = useState(readAlphabetVisible);
 
   const { status, data, error, reload } = usePageData(
     () =>
@@ -69,7 +93,7 @@ export default function DictionaryLanding() {
 
   usePageMeta(
     null,
-    text('Qaraqalpaq tiliniń túsindirme sózligi — álipbe, túrkimler hám temalar.')
+    text('Qaraqalpaq tiliniń túsindirme sózligi — izlew, kún sózi hám reyting.')
   );
 
   const dash = data?.dash;
@@ -83,6 +107,10 @@ export default function DictionaryLanding() {
     }
   };
 
+  const toggleAlphabet = () => {
+    setAlphabetVisible((prev) => writeAlphabetVisible(!prev));
+  };
+
   const wordOfDay = dash?.wordOfDay;
   const totalWords = dash?.totalWords ?? 0;
   const immersionMeta = useMemo(() => getImmersionListenMeta(), []);
@@ -90,6 +118,8 @@ export default function DictionaryLanding() {
   const continueImmersion = useMemo(() => getContinueImmersion(), [resumeTick]);
   const readingMeta = useMemo(() => getReadingLessonMeta(), []);
   const recentPlayHref = recentPracticeHref(recentWords);
+  const landingRecent = recentWords.slice(0, LANDING_RECENT);
+  const topWords = (dash?.topWords || []).slice(0, LANDING_TOP);
   const favEmptySoftHref = useMemo(
     () => favoritesEmptySoftHref(recentWords, { practice: readFavoritesPractice() }),
     [recentWords, resumeTick]
@@ -104,12 +134,53 @@ export default function DictionaryLanding() {
           {text('Sózlik')}
         </h1>
         <p className="max-w-xl text-ink/65 text-lg md:text-xl leading-relaxed mb-8 animate-dict-rise-delay">
-          {text('Álipbe, sóz túrkimleri hám temalar — izleń hám oynań.')}
+          {text('Izleń, kún sózin oqıń hám oynań.')}
         </p>
 
         <div className="mb-6 animate-dict-rise-delay-2">
           <SearchAutocomplete />
         </div>
+
+        {wordOfDay ? (
+          <section className="mb-10 animate-dict-rise-delay-2">
+            <p className="mb-4 inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.22em] text-amber-700/80">
+              <Icon name="sparkle" className="text-amber-500" /> {text('Kún sózi')}
+            </p>
+            <Link
+              to={`/dictionary/${wordOfDay.id}`}
+              className="group relative block overflow-hidden qp-surface px-7 py-8 md:px-10 md:py-10 transition-all duration-300 hover:shadow-[0_22px_55px_-25px_rgba(180,120,40,0.45)]"
+            >
+              <span
+                className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-amber-400/15 blur-2xl"
+                aria-hidden
+              />
+              <div className="mb-4 flex flex-wrap items-baseline gap-4">
+                <span className="font-display text-4xl tracking-tight text-ink transition-colors group-hover:text-teal-900 md:text-5xl">
+                  {text(wordOfDay.soz)}
+                </span>
+              </div>
+              {wordOfDay.birinshi_aniqlama ? (
+                <p className="mb-5 max-w-2xl text-lg leading-relaxed text-ink/75">
+                  {text(wordOfDay.birinshi_aniqlama)}
+                </p>
+              ) : null}
+              {wordOfDay.birinshi_misal?.example ? (
+                <figure className="border-l-2 border-teal-800/25 pl-5">
+                  <blockquote>
+                    <p className="font-display italic leading-relaxed text-ink/70">
+                      “{text(wordOfDay.birinshi_misal.example)}”
+                    </p>
+                  </blockquote>
+                  {wordOfDay.birinshi_misal.author ? (
+                    <figcaption className="mt-2 text-sm text-teal-900/70">
+                      — {text(wordOfDay.birinshi_misal.author)}
+                    </figcaption>
+                  ) : null}
+                </figure>
+              ) : null}
+            </Link>
+          </section>
+        ) : null}
 
         <div className="mb-10 animate-dict-rise-delay-2">
           <DictHubCards />
@@ -212,19 +283,6 @@ export default function DictionaryLanding() {
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 mb-14">
           <Link
-            to={wordOfDay ? `/dictionary/${wordOfDay.id}` : '/dictionary/all'}
-            className="group qp-card px-5 py-5"
-          >
-            <span className="qp-icon-tile mb-3 !h-9 !w-9 !rounded-xl !text-lg bg-gradient-to-br from-teal-500 to-emerald-700 transition-transform duration-300 group-hover:scale-110">
-              <Icon name="sparkle" />
-            </span>
-            <p className="text-[0.65rem] uppercase tracking-[0.18em] text-teal-800/80 mb-1.5">{text('Kún sózi')}</p>
-            <p className="font-display text-2xl text-ink tracking-tight truncate inline-flex items-center gap-2 max-w-full">
-              <span className="truncate">{wordOfDay?.soz ? text(wordOfDay.soz) : '—'}</span>
-              <AnimChevron count={2} className="opacity-45 shrink-0" />
-            </p>
-          </Link>
-          <Link
             to="/dictionary/all"
             className="group qp-card px-5 py-5"
           >
@@ -295,18 +353,29 @@ export default function DictionaryLanding() {
             </p>
             <AnimIconDivider compact className="mt-2" />
           </div>
-          <button
-            type="button"
-            onClick={goRandom}
-            className="qp-chip text-teal-900"
-          >
-            {text('Qálegen sóz')}
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleAlphabet}
+              aria-expanded={alphabetVisible}
+              className="qp-chip text-xs font-semibold text-ink/55 hover:text-teal-900"
+            >
+              <Icon name={alphabetVisible ? 'up' : 'down'} />
+              {alphabetVisible ? text('Álipbeni jasırıw') : text('Álipbeni kórsetiw')}
+            </button>
+            <button
+              type="button"
+              onClick={goRandom}
+              className="qp-chip text-teal-900"
+            >
+              {text('Qálegen sóz')}
+            </button>
+          </div>
         </div>
-        <AlphabetCalendar letters={dash?.alphabet} />
+        {alphabetVisible ? <AlphabetCalendar letters={dash?.alphabet} /> : null}
       </section>
 
-      {recentWords.length > 0 && (
+      {landingRecent.length > 0 ? (
         <section className="relative max-w-4xl mx-auto px-6 md:px-10 mb-16">
           <div className="qp-section-head">
             <div>
@@ -317,14 +386,17 @@ export default function DictionaryLanding() {
               <AnimIconDivider compact amber className="mt-2" />
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              {recentPlayHref && (
+              {recentPlayHref ? (
                 <Link
                   to={recentPlayHref}
                   className={`${anim.shine} qp-btn-primary !px-3.5 !py-1.5 !text-xs`}
                 >
                   <Icon name="bolt" /> {text(KAA.mashqEtiw)}
                 </Link>
-              )}
+              ) : null}
+              <Link to="/dictionary/recent" className="qp-chip text-teal-900">
+                {text('Hammasi')}
+              </Link>
               <button
                 type="button"
                 onClick={clearRecent}
@@ -334,81 +406,49 @@ export default function DictionaryLanding() {
               </button>
             </div>
           </div>
-          <ul className="flex flex-wrap gap-2.5">
-            {recentWords.map((item) => (
+          <ul className="divide-y divide-ink/10 border-t border-ink/10">
+            {landingRecent.map((item) => (
               <li key={item.id}>
                 <Link
                   to={`/dictionary/${item.id}`}
-                  className="group inline-flex items-baseline gap-2 rounded-full border border-ink/[0.1] bg-white/45 hover:bg-teal-900 hover:text-parchment px-4 py-2 transition-colors"
+                  className="flex items-center justify-between gap-3 py-3 no-underline transition-colors hover:text-teal-900"
                 >
-                  <span className="font-display text-lg tracking-tight">{text(item.soz)}</span>
-                  {item.category && (
-                    <span className="text-[0.6rem] uppercase tracking-[0.14em] text-teal-800/70 group-hover:text-parchment/60">
-                      {text(item.category)}
+                  <span className="min-w-0">
+                    <span className="block truncate font-display text-xl tracking-tight text-ink">
+                      {text(item.soz)}
                     </span>
-                  )}
+                    {item.viewedAt ? (
+                      <span className="mt-0.5 block text-xs tabular-nums text-ink/40">
+                        {formatViewedAt(item.viewedAt, text)}
+                      </span>
+                    ) : null}
+                  </span>
+                  <AnimChevron count={2} className="shrink-0 opacity-35" />
                 </Link>
               </li>
             ))}
           </ul>
+          {recentWords.length > LANDING_RECENT ? (
+            <Link
+              to="/dictionary/recent"
+              className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-teal-900 hover:underline"
+            >
+              {text('Barlıq jaqında kórilgenler')}
+              <AnimChevron count={1} className="opacity-60" />
+            </Link>
+          ) : null}
         </section>
-      )}
+      ) : null}
 
-      {wordOfDay && (
-        <section className="relative max-w-4xl mx-auto px-6 md:px-10 mb-16">
-          <p className="text-[0.7rem] uppercase tracking-[0.22em] text-amber-700/80 mb-5 inline-flex items-center gap-2">
-            <Icon name="sparkle" className="text-amber-500" /> {text('Búgin')}
-          </p>
-          <Link
-            to={`/dictionary/${wordOfDay.id}`}
-            className="group relative block overflow-hidden qp-surface px-7 py-8 md:px-10 md:py-10 transition-all duration-300 hover:shadow-[0_22px_55px_-25px_rgba(180,120,40,0.45)]"
-          >
-            <span
-              className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-amber-400/15 blur-2xl"
-              aria-hidden
-            />
-            <div className="flex flex-wrap items-baseline gap-4 mb-4">
-              <span className="font-display text-4xl md:text-5xl text-ink tracking-tight group-hover:text-teal-900 transition-colors">
-                {text(wordOfDay.soz)}
-              </span>
-              {wordOfDay.category && (
-                <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-amber-800">
-                  {text(wordOfDay.category)}
-                </span>
-              )}
-            </div>
-            {wordOfDay.birinshi_aniqlama && (
-              <p className="text-ink/75 text-lg leading-relaxed mb-5 max-w-2xl">
-                {text(wordOfDay.birinshi_aniqlama)}
-              </p>
-            )}
-            {wordOfDay.birinshi_misal?.example && (
-              <figure className="pl-5 border-l-2 border-teal-800/25">
-                <blockquote>
-                  <p className="font-display italic text-ink/70 leading-relaxed">
-                    “{text(wordOfDay.birinshi_misal.example)}”
-                  </p>
-                </blockquote>
-                {wordOfDay.birinshi_misal.author && (
-                  <figcaption className="mt-2 text-sm text-teal-900/70">
-                    — {text(wordOfDay.birinshi_misal.author)}
-                  </figcaption>
-                )}
-              </figure>
-            )}
-          </Link>
-        </section>
-      )}
-
-      {(dash?.topWords || []).length > 0 && (
-        <section className="relative max-w-4xl mx-auto px-6 md:px-10 mb-16">
+      {topWords.length > 0 ? (
+        <section className="relative max-w-4xl mx-auto px-6 md:px-10 mb-8">
           <p className="text-[0.7rem] uppercase tracking-[0.22em] text-ink/40 mb-2">{text('Reyting')}</p>
           <p className="font-display text-2xl md:text-3xl text-ink tracking-tight mb-2">
             {text('Kóp kórilgen sózler')}
           </p>
           <AnimIconDivider className="mb-6" />
-          <ol className="grid sm:grid-cols-2 gap-x-8 gap-y-1">
-            {dash.topWords.map((item, idx) => {
+          <ol className="grid gap-x-8 gap-y-1 sm:grid-cols-2">
+            {topWords.map((item, idx) => {
               const rankCls =
                 idx === 0
                   ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md'
@@ -421,17 +461,17 @@ export default function DictionaryLanding() {
                 <li key={item.id}>
                   <Link
                     to={`/dictionary/${item.id}`}
-                    className="group flex items-center gap-3.5 py-2.5 border-b border-ink/[0.07] hover:border-teal-800/30 transition-colors"
+                    className="group flex items-center gap-3.5 border-b border-ink/[0.07] py-2.5 transition-colors hover:border-teal-800/30"
                   >
                     <span
                       className={`inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums ${rankCls}`}
                     >
                       {idx + 1}
                     </span>
-                    <span className="font-display text-xl text-ink tracking-tight group-hover:text-teal-900 transition-colors truncate">
+                    <span className="truncate font-display text-xl tracking-tight text-ink transition-colors group-hover:text-teal-900">
                       {text(item.soz)}
                     </span>
-                    <span className="ml-auto shrink-0 inline-flex items-center gap-1 rounded-full bg-sky-50 px-2 py-0.5 text-xs text-sky-700">
+                    <span className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full bg-sky-50 px-2 py-0.5 text-xs text-sky-700">
                       <Icon name="eye" /> {item.views_count}
                     </span>
                   </Link>
@@ -440,82 +480,7 @@ export default function DictionaryLanding() {
             })}
           </ol>
         </section>
-      )}
-
-      <section className="relative max-w-4xl mx-auto px-6 md:px-10 mb-16">
-        <p className="text-[0.7rem] uppercase tracking-[0.22em] text-ink/40 mb-2">{text('Sóz túrkimleri')}</p>
-        <p className="font-display text-2xl md:text-3xl text-ink tracking-tight mb-6">
-          {text('Grammatikalıq bólim')}
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {(dash?.pos || []).map((p, i) => {
-            const accents = [
-              'hover:bg-teal-800 border-t-teal-500',
-              'hover:bg-amber-600 border-t-amber-500',
-              'hover:bg-cyan-700 border-t-cyan-500',
-              'hover:bg-emerald-700 border-t-emerald-500',
-              'hover:bg-sky-700 border-t-sky-500',
-              'hover:bg-teal-700 border-t-teal-600',
-            ];
-            return (
-              <Link
-                key={p.slug}
-                to={`/dictionary/all?pos=${encodeURIComponent(p.slug)}`}
-                className={`group qp-card border-t-4 px-5 py-5 hover:text-parchment ${
-                  accents[i % accents.length]
-                }`}
-              >
-                <p className="font-display text-xl tracking-tight">{text(p.label)}</p>
-                <p className="text-sm mt-1 text-ink/45 group-hover:text-parchment/70">
-                  {p.count.toLocaleString('kk')} {text('sóz')}
-                </p>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="relative max-w-4xl mx-auto px-6 md:px-10">
-        <p className="text-[0.7rem] uppercase tracking-[0.22em] text-ink/40 mb-2">{text('Temalar')}</p>
-        <p className="font-display text-2xl md:text-3xl text-ink tracking-tight mb-6">
-          {text('Avtomatik toparlar')}
-        </p>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {(dash?.themes || []).map((t, i) => {
-            const accents = [
-              'border-l-teal-500 hover:border-teal-600/40',
-              'border-l-amber-500 hover:border-amber-500/40',
-              'border-l-cyan-500 hover:border-cyan-500/40',
-              'border-l-emerald-500 hover:border-emerald-500/40',
-            ];
-            const chips = [
-              'bg-teal-100 text-teal-900',
-              'bg-amber-100 text-amber-800',
-              'bg-cyan-100 text-cyan-900',
-              'bg-emerald-100 text-emerald-800',
-            ];
-            return (
-              <Link
-                key={t.slug}
-                to={`/dictionary/all?theme=${encodeURIComponent(t.slug)}`}
-                className={`qp-card border-l-4 px-5 py-5 ${
-                  accents[i % accents.length]
-                }`}
-              >
-                <div className="flex items-baseline justify-between gap-3">
-                  <p className="font-display text-xl text-ink tracking-tight">{text(t.label)}</p>
-                  <span
-                    className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${chips[i % chips.length]}`}
-                  >
-                    {t.count}
-                  </span>
-                </div>
-                {t.blurb && <p className="text-sm text-ink/55 mt-2 leading-relaxed">{text(t.blurb)}</p>}
-              </Link>
-            );
-          })}
-        </div>
-      </section>
+      ) : null}
     </DictShell>
     </PageGate>
     </ProtectedContent>

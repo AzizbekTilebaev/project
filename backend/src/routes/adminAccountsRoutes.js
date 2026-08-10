@@ -49,7 +49,7 @@ const loginLimiter = rateLimit({
 router.post('/login', loginLimiter, async (req, res, next) => {
   try {
     const result = await loginLegacyOrAccount(req.body || {});
-    res.json({ success: true, ...result, expiresInHours: 8 });
+    res.json({ success: true, ...result, expiresInHours: 24 });
   } catch (err) {
     next(err);
   }

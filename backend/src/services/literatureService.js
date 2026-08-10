@@ -65,6 +65,18 @@ function romanCentury(century) {
   return out;
 }
 
+function parseRolesJson(raw) {
+  if (!raw) return [];
+  try {
+    const obj = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (Array.isArray(obj)) return obj.map(String).filter(Boolean);
+    if (Array.isArray(obj?.roles)) return obj.roles.map(String).filter(Boolean);
+    return [];
+  } catch {
+    return [];
+  }
+}
+
 function mapWriter(row, { script = 'cyrillic', includeBio = false } = {}) {
   if (!row) return null;
   const namePair = pickScriptPair(
@@ -91,6 +103,7 @@ function mapWriter(row, { script = 'cyrillic', includeBio = false } = {}) {
   const birthDay = row.birth_day != null ? Number(row.birth_day) : null;
   const century = centuryOf(birthYear);
   const bookCount = row.book_count != null ? Number(row.book_count) : undefined;
+  const roles = parseRolesJson(row.roles_json);
   const out = {
     id: row.id,
     sourceId: row.source_id,
@@ -121,6 +134,7 @@ function mapWriter(row, { script = 'cyrillic', includeBio = false } = {}) {
     age: birthYear && deathYear && deathYear > birthYear ? deathYear - birthYear : null,
     century,
     centuryRoman: romanCentury(century),
+    roles,
     ...(bookCount !== undefined ? { bookCount, hasBooks: bookCount > 0 } : {}),
     status: row.status,
   };
@@ -277,7 +291,7 @@ export async function listWriters({
   );
   const [rows] = await db.query(
     `SELECT id, source_id, slug, poet_name_original, poet_name_latin, life_span,
-            birth_year, death_year, status,
+            birth_year, death_year, status, roles_json,
             (SELECT COUNT(*) FROM ${DB.poets}.book_writers bw WHERE bw.writer_id = literature_writers.id)
               AS book_count
      FROM ${DB.poets}.literature_writers
@@ -337,7 +351,7 @@ export async function getWriterBySlug(slug, { script = 'original' } = {}) {
     `SELECT id, source_id, slug, poet_name_original, poet_name_latin, life_span,
             birth_year, death_year, birth_month, birth_day, birth_date, birth_precision,
             birthplace_original, birthplace_latin, birth_lat, birth_lng, geocode_status,
-            facts_json, biography_plain_original, biography_latin, status
+            facts_json, roles_json, biography_plain_original, biography_latin, status
      FROM ${DB.poets}.literature_writers
      WHERE slug = ? AND status = 'published'
      LIMIT 1`,
@@ -516,7 +530,7 @@ export async function listWorks({
   if (rows.length) {
     const [writerRows] = await db.query(
       `SELECT bw.book_id, w.id, w.source_id, w.slug, w.poet_name_original,
-              w.poet_name_latin, w.life_span, w.birth_year, w.death_year, w.status
+              w.poet_name_latin, w.life_span, w.birth_year, w.death_year, w.status, w.roles_json
        FROM ${DB.poets}.book_writers bw
        JOIN ${DB.poets}.literature_writers w ON w.id = bw.writer_id
        WHERE bw.book_id IN (?)

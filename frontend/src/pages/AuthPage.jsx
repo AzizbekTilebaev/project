@@ -13,6 +13,7 @@ import {
   loginWithPhoneOtp,
   registerWithEmail,
   requestPhoneLoginOtp,
+  checkUsernameAvailable,
 } from '../api/auth';
 import { postAuthDestination } from '../lib/postAuthDestination';
 import { KAA } from '../i18n/kaa';
@@ -29,8 +30,10 @@ export default function AuthPage({ mode = 'login' }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [usernameHint, setUsernameHint] = useState('');
   const [error, setError] = useState('');
   const [shakeKey, setShakeKey] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -121,8 +124,8 @@ export default function AuthPage({ mode = 'login' }) {
         return;
       }
       const data = isRegister
-        ? await registerWithEmail({ email, password, displayName })
-        : await loginWithEmail({ email, password });
+        ? await registerWithEmail({ email, password, displayName, username })
+        : await loginWithEmail({ login: email, email, password });
       afterAuth(data);
     } catch (err) {
       setError(err.message || KAA.qatelik);
@@ -273,26 +276,66 @@ export default function AuthPage({ mode = 'login' }) {
           ) : (
             <>
               {isRegister && (
-                <label className="block">
-                  <span className="text-xs font-medium text-ink/50">{text(KAA.atiniz)}</span>
-                  <input
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    autoComplete="name"
-                    className={fieldClass}
-                  />
-                </label>
+                <>
+                  <label className="block">
+                    <span className="text-xs font-medium text-ink/50">{text(KAA.atiniz)}</span>
+                    <input
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      autoComplete="name"
+                      className={fieldClass}
+                      placeholder={text(KAA.atiniz)}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-medium text-ink/50">{text(KAA.loginUsername)}</span>
+                    <input
+                      value={username}
+                      onChange={(e) => {
+                        const v = e.target.value.toLowerCase().replace(/[^a-z0-9._]/g, '');
+                        setUsername(v);
+                        setUsernameHint('');
+                      }}
+                      onBlur={async () => {
+                        if (!username || username.length < 3) {
+                          setUsernameHint(text(KAA.usernameRequired));
+                          return;
+                        }
+                        try {
+                          const res = await checkUsernameAvailable(username);
+                          setUsernameHint(
+                            res.available ? text(KAA.usernameAvailable) : text(KAA.usernameTaken)
+                          );
+                        } catch {
+                          setUsernameHint('');
+                        }
+                      }}
+                      autoComplete="username"
+                      required
+                      minLength={3}
+                      maxLength={30}
+                      className={fieldClass}
+                      placeholder="azizbek"
+                    />
+                    <span className="mt-1 block text-[0.7rem] text-ink/35">
+                      {usernameHint || text(KAA.loginUsernameHint)}
+                    </span>
+                  </label>
+                </>
               )}
               <label className="block">
-                <span className="text-xs font-medium text-ink/50">Email</span>
+                <span className="text-xs font-medium text-ink/50">
+                  {text(isRegister ? 'Email' : KAA.loginOrEmail)}
+                </span>
                 <input
-                  type="email"
+                  type={isRegister ? 'email' : 'text'}
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                  inputMode="email"
+                  autoComplete={isRegister ? 'email' : 'username'}
+                  inputMode={isRegister ? 'email' : 'text'}
                   className={fieldClass}
+                  placeholder={isRegister ? 'email@…' : text(KAA.loginOrEmailPlaceholder)}
                 />
               </label>
               <label className="block">

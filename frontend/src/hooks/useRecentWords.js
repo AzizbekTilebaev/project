@@ -8,7 +8,8 @@ import {
 } from '../api/recentWords';
 
 const STORAGE_KEY = 'dictionary:recent:v1';
-const MAX_ITEMS = 12;
+/** Landing’da 5, to‘liq tarix sahifası ushın kóbirek saqlanadı */
+const MAX_ITEMS = 48;
 
 function readStore() {
   try {
@@ -16,7 +17,14 @@ function readStore() {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter((x) => x && typeof x.id === 'string' && typeof x.soz === 'string');
+    return parsed
+      .filter((x) => x && typeof x.id === 'string' && typeof x.soz === 'string')
+      .map((x) => ({
+        id: x.id,
+        soz: x.soz,
+        category: x.category || null,
+        viewedAt: typeof x.viewedAt === 'number' ? x.viewedAt : Date.parse(x.viewedAt) || null,
+      }));
   } catch {
     return [];
   }

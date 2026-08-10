@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import {
   fetchWordById,
@@ -12,30 +12,13 @@ import ProtectedContent from '../components/ProtectedContent';
 import FavoriteButton from '../components/dictionary/FavoriteButton';
 import Icon from '../components/Icon';
 import CommunitySuggestPanel from '../components/CommunitySuggestPanel';
-import { fetchWordImmersion, seedImmersionListen, submitImmersionProduce } from '../api/immersion';
+import { fetchWordImmersion } from '../api/immersion';
 import { useUiScript } from '../contexts/UiScriptContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useGuestQuota } from '../hooks/useGuestQuota';
 import { AnimIconDivider, anim, AnimChevron, PageEnter } from '../animations';
 import { KAA } from '../i18n/kaa';
-import {
-  applyImmersionPracticeResults,
-  clearImmersionContinue,
-  getContinueImmersion,
-  getImmersionListenStreak,
-  isImmersionWordQueued,
-  recordImmersionListen,
-  touchImmersionContinue,
-} from '../lib/immersionProgress';
-import { gradeImmersionProduceLocal } from '../lib/produceGrade';
-import useResumeTick from '../hooks/useResumeTick';
 import { safeMediaUrl } from '../lib/safeUrl';
-import { MODEL_VIEWER } from '../lib/vendorIntegrity';
-import { focusedPracticeHref, jumbaqPracticeHref } from '../lib/readingPractice';
-import { readJumbaqPractice } from '../lib/jumbaqProgress';
-import GuestSoftContinue from '../components/GuestSoftContinue';
-import FreePlayCtaRow from '../components/FreePlayCtaRow';
-import { FOOTER_FREE_LINKS } from '../data/siteDeepLinks';
 import { t as litT } from '../components/literature/litLabels';
 import { MorphologyPanel, TranslationsPanel } from '../components/dictionary/LinkedDictPanels';
 import {
@@ -65,162 +48,26 @@ import {
 
 const FAV_GUEST_TIP_KEY = 'qp_fav_guest_tip_seen';
 
-function WordNextSteps({
-  word,
-  isFavorite,
-  onToggleFavorite,
-  related = [],
-  nextWord = null,
-  fromJumbaq = false,
-}) {
-  const { text, script } = useUiScript();
-  const lemma = word.homonyms ? word.base_soz : word.soz;
-  const playHref =
-    focusedPracticeHref(
-      [word.id, ...related.map((r) => r?.id)].filter(Boolean),
-      { exit: fromJumbaq ? 'jumbaq' : null }
-    ) || `/dictionary/${encodeURIComponent(word.id)}`;
-  const practiceHref = fromJumbaq
-    ? jumbaqPracticeHref(readJumbaqPractice()) || '/tutor/practice?from=jumbaq'
-    : `/tutor/practice?from=stats`;
-  const relatedOne = related[0] || null;
-
-  return (
-    <aside className="mt-14 mb-4 qp-surface px-5 py-6 md:px-7">
-      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-teal-800/60">
-        {text(KAA.wordNextEyebrow)}
-      </p>
-      <h2 className="mt-1 font-display text-2xl tracking-tight text-ink">
-        {text(KAA.wordNextTitle)}
-      </h2>
-      <p className="mt-1 text-sm text-ink/50">{text(lemma)}</p>
-
-      <div className="mt-5 flex flex-wrap gap-3">
-        <button
-          type="button"
-          onClick={onToggleFavorite}
-          className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition ${
-            isFavorite
-              ? 'border border-teal-700/25 bg-white text-teal-900'
-              : 'bg-teal-800 text-white hover:-translate-y-0.5'
-          }`}
-        >
-          <Icon name="heart" filled={isFavorite} />
-          {text(isFavorite ? KAA.wordNextFavDone : KAA.wordNextFav)}
-        </button>
-
-        <Link
-          to={playHref}
-          className={`${anim.shine} inline-flex items-center gap-2 rounded-full border border-teal-700/25 bg-white px-5 py-2.5 text-sm font-bold text-teal-900 transition hover:-translate-y-0.5`}
-        >
-          <Icon name="gamepad" />
-          {text(KAA.wordNextPlay)}
-          <AnimChevron count={2} className="opacity-70" />
-        </Link>
-
-        <Link
-          to={practiceHref}
-          className="inline-flex items-center gap-2 rounded-full border border-amber-500/35 bg-amber-50 px-5 py-2.5 text-sm font-bold text-amber-950 transition hover:-translate-y-0.5"
-        >
-          <Icon name="bolt" />
-          {text(KAA.wordNextHub)}
-        </Link>
-
-        {relatedOne ? (
-          <Link
-            to={`/dictionary/${relatedOne.id}`}
-            className="inline-flex items-center gap-2 qp-chip text-ink/70 hover:text-teal-900"
-          >
-            {text(KAA.wordNextRelated)}: {text(relatedOne.soz)}
-          </Link>
-        ) : nextWord ? (
-          <Link
-            to={`/dictionary/${nextWord.id}`}
-            className="inline-flex items-center gap-2 qp-chip text-ink/70 hover:text-teal-900"
-          >
-            {text(KAA.wordNextAlpha)}: {text(nextWord.soz)}
-            <AnimChevron count={2} className="opacity-60" />
-          </Link>
-        ) : null}
-      </div>
-
-      <div className="mt-4 border-t border-teal-700/10 pt-4">
-        <p className="mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/50">
-          {text(KAA.wordNextFree)}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <Link
-            to="/quiz"
-            className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/20 bg-white px-3.5 py-1.5 text-xs font-bold text-teal-950"
-          >
-            <Icon name="trophy" /> {text(KAA.faqTryQuiz)}
-          </Link>
-          <Link
-            to="/crossword"
-            className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-50/80 px-3.5 py-1.5 text-xs font-bold text-amber-950"
-          >
-            <Icon name="grammar" /> {text(KAA.faqTryCrossword)}
-          </Link>
-          <Link
-            to="/dictionary/immersion"
-            className="inline-flex items-center gap-1.5 rounded-full border border-cyan-600/25 bg-cyan-50/80 px-3.5 py-1.5 text-xs font-bold text-cyan-950"
-          >
-            <Icon name="sparkle" /> {text(KAA.dawisliSozler)}
-          </Link>
-          {fromJumbaq ? (
-            <Link
-              to="/jumbaqlar"
-              className="inline-flex items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-50/80 px-3.5 py-1.5 text-xs font-bold text-sky-950"
-            >
-              <Icon name="sparkle" /> {litT('jumbaqBackList', script)}
-            </Link>
-          ) : null}
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-function ImmersionBlock({ titleId, soz = '' }) {
+/** Tek audio bolsa — tıńlaw; oyın/test/reklama joq. Audio joq bolsa hesh nárse. */
+function WordAudioOnly({ titleId }) {
   const { text } = useUiScript();
-  const { isAuthenticated } = useAuth();
-  const [assets, setAssets] = useState([]);
+  const [audioAssets, setAudioAssets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [listened, setListened] = useState(false);
-  const [streak, setStreak] = useState(0);
-  const [produceText, setProduceText] = useState('');
-  const [produceBusy, setProduceBusy] = useState(false);
-  const [produceResult, setProduceResult] = useState(null);
-  const [guestSoft, setGuestSoft] = useState(false);
-  const markedRef = useRef(false);
-  const skipTouchRef = useRef(false);
-  const resumeTick = useResumeTick();
-  const isContinueWord = useMemo(() => {
-    const cur = getContinueImmersion();
-    return Boolean(cur && String(cur.id) === String(titleId || ''));
-  }, [titleId, resumeTick]);
-
-  useEffect(() => {
-    skipTouchRef.current = false;
-  }, [titleId]);
 
   useEffect(() => {
     if (!titleId) return undefined;
     let cancelled = false;
     setLoading(true);
-    const queued = isImmersionWordQueued(titleId);
-    setListened(queued);
-    markedRef.current = queued;
-    setStreak(getImmersionListenStreak());
-    setProduceText('');
-    setProduceResult(null);
-    setGuestSoft(false);
     fetchWordImmersion(titleId)
       .then((d) => {
-        if (!cancelled) setAssets(d.assets || []);
+        if (cancelled) return;
+        const list = (d.assets || []).filter(
+          (a) => a.kind === 'audio' && safeMediaUrl(a.fileAccess?.url)
+        );
+        setAudioAssets(list);
       })
       .catch(() => {
-        if (!cancelled) setAssets([]);
+        if (!cancelled) setAudioAssets([]);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -230,387 +77,24 @@ function ImmersionBlock({ titleId, soz = '' }) {
     };
   }, [titleId]);
 
-  useEffect(() => {
-    if (!titleId || !assets.length || skipTouchRef.current) return;
-    touchImmersionContinue({ id: titleId, soz });
-  }, [titleId, soz, assets.length]);
-
-  useEffect(() => {
-    const has3d = assets.some((a) => a.kind === 'model3d' && safeMediaUrl(a.fileAccess?.url));
-    if (!has3d || customElements.get('model-viewer')) return undefined;
-    if (document.getElementById('model-viewer-local')) return undefined;
-    const script = document.createElement('script');
-    script.id = 'model-viewer-local';
-    script.type = 'module';
-    script.src = MODEL_VIEWER.js;
-    script.integrity = MODEL_VIEWER.jsIntegrity;
-    script.crossOrigin = 'anonymous';
-    document.head.appendChild(script);
-    return undefined;
-  }, [assets]);
-
-  const markListened = () => {
-    if (!titleId || markedRef.current) return;
-    markedRef.current = true;
-    const res = recordImmersionListen(titleId, { soz });
-    setListened(true);
-    setStreak(res.streak);
-    // Authed: server SRS seed; guest/qáte — local queue jetkilikli
-    seedImmersionListen(titleId, { prompt: soz || null }).catch(() => {});
-  };
-
-  const onTimeUpdate = (e) => {
-    const t = e.currentTarget?.currentTime;
-    if (Number(t) >= 2) markListened();
-  };
-
-  const onProduceSubmit = async (event) => {
-    event?.preventDefault?.();
-    if (!titleId || produceBusy || produceResult?.correct) return;
-    const answer = String(produceText || '').trim();
-    if (!answer) return;
-    markListened();
-    setProduceBusy(true);
-    setGuestSoft(false);
-
-    if (!isAuthenticated) {
-      const graded = gradeImmersionProduceLocal({ lemma: soz, answer });
-      setProduceResult({
-        correct: graded.correct,
-        nearMiss: graded.nearMiss,
-        correctLemma: soz || null,
-      });
-      applyImmersionPracticeResults([
-        { id: String(titleId), correct: Boolean(graded.correct) },
-      ]);
-      setGuestSoft(true);
-      setProduceBusy(false);
-      return;
-    }
-
-    try {
-      const res = await submitImmersionProduce(titleId, {
-        answer,
-        prompt: soz || null,
-      });
-      setProduceResult({
-        correct: Boolean(res.correct),
-        nearMiss: Boolean(res.nearMiss),
-        correctLemma: res.correctLemma || soz || null,
-      });
-      if (res.correct) {
-        applyImmersionPracticeResults([{ id: String(titleId), correct: true }]);
-      } else {
-        applyImmersionPracticeResults([{ id: String(titleId), correct: false }]);
-      }
-    } catch {
-      // Offline — server produceGrade parity (fold + soft nearMiss)
-      const graded = gradeImmersionProduceLocal({ lemma: soz, answer });
-      setProduceResult({
-        correct: graded.correct,
-        nearMiss: graded.nearMiss,
-        correctLemma: soz || null,
-      });
-      applyImmersionPracticeResults([
-        { id: String(titleId), correct: Boolean(graded.correct) },
-      ]);
-      setGuestSoft(true);
-    } finally {
-      setProduceBusy(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <section className="mb-12 rounded-3xl border border-teal-700/15 bg-teal-50/40 px-5 py-8 text-center">
-        <Icon name="loader" className="animate-spin text-2xl text-teal-700" />
-        <p className="mt-2 text-sm text-ink/45">{text('Immersiya media júklenip atır...')}</p>
-      </section>
-    );
-  }
-
-  if (!assets.length) {
-    return (
-      <section className="mb-12 overflow-hidden rounded-[2rem] border border-dashed border-teal-700/20 bg-gradient-to-br from-teal-50/40 via-white/70 to-sky-50/40 px-5 py-7 md:px-7">
-        <p className="mb-1 text-[0.65rem] uppercase tracking-[0.22em] text-teal-800/70">
-          {text('Immersiya')}
-        </p>
-        <h2 className="mb-2 font-display text-2xl tracking-tight text-ink">
-          {text('Sózdi seziw')}
-        </h2>
-        <p className="mb-5 max-w-lg text-sm leading-relaxed text-ink/55">
-          {text(
-            'Bul sóz ushın audio / video / 3D házirshe joq. Tayyar dawıslı sózlerdi kóriń yamasa oyın menen úyreniń.'
-          )}
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            to="/dictionary/immersion"
-            className="qp-btn-primary !px-4 !py-2"
-          >
-            {text('Dawıslı sózler')}
-          </Link>
-          <Link
-            to="/dictionary/game"
-            className="inline-flex rounded-full border border-teal-700/30 px-4 py-2 text-sm font-semibold text-teal-900"
-          >
-            {text('Sóz oyını')}
-          </Link>
-        </div>
-        <p className="mt-5 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
-          {text(KAA.wordSenseEmptyFree)}
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <Link
-            to="/tutor/practice"
-            className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/35 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-950"
-          >
-            <Icon name="bolt" /> {text(KAA.practiceNav)}
-          </Link>
-          <Link
-            to="/quiz"
-            className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/25 bg-white px-4 py-2 text-xs font-bold text-teal-950"
-          >
-            <Icon name="trophy" /> {text(KAA.faqTryQuiz)}
-          </Link>
-          <Link
-            to="/crossword"
-            className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-50/80 px-4 py-2 text-xs font-bold text-amber-950"
-          >
-            <Icon name="grammar" /> {text(KAA.faqTryCrossword)}
-          </Link>
-        </div>
-      </section>
-    );
-  }
-
-  const kindMeta = {
-    audio: { label: 'Audio', icon: 'sparkle', tone: 'from-sky-100 to-teal-50' },
-    video: { label: 'Video', icon: 'eye', tone: 'from-amber-100 to-orange-50' },
-    model3d: { label: '3D', icon: 'layers', tone: 'from-teal-100 to-cyan-50' },
-  };
-  const playHref =
-    focusedPracticeHref([titleId], { exit: 'immersion' }) ||
-    `/dictionary/game?source=focused&ids=${encodeURIComponent(titleId)}&exit=immersion`;
+  if (loading || !audioAssets.length) return null;
 
   return (
-    <section className="mb-12 overflow-hidden rounded-[2rem] border border-teal-700/15 bg-gradient-to-br from-teal-50/70 via-white/80 to-cyan-50/50 px-5 py-6 md:px-7">
-      <div className="mb-5 flex items-end justify-between gap-3">
-        <div>
-          <p className="text-[0.65rem] uppercase tracking-[0.22em] text-teal-800/70 mb-1">
-            {text('Immersiya')}
-          </p>
-          <h2 className="font-display text-2xl text-ink tracking-tight">{text('Sózdi seziw')}</h2>
-          <Link
-            to="/dictionary/immersion"
-            className="mt-1 inline-flex items-center gap-1.5 text-xs font-semibold text-teal-800 hover:underline"
-          >
-            {text('Basqa dawıslı sózler')}
-            <AnimChevron count={2} className="opacity-70" />
-          </Link>
-        </div>
-        <div className="flex flex-col items-end gap-1.5">
-          <span className="rounded-full bg-white/80 border border-teal-200 px-3 py-1 text-xs font-semibold text-teal-900">
-            {text(`${assets.length} media`)}
-          </span>
-          {streak > 0 && (
-            <Link
-              to="/tutor/practice?from=immersion"
-              className={`inline-flex items-center gap-1 rounded-full border border-amber-300/50 bg-amber-50 px-2.5 py-0.5 text-[11px] font-semibold text-amber-900 hover:bg-amber-100 ${anim.streakFlame}`}
-            >
-              <span className={anim.streakDot} aria-hidden />
-              {text(KAA.immersionBrowseStreakCta).replace('{n}', String(streak))}
-            </Link>
-          )}
-        </div>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        {assets.map((a) => {
+    <section className="mb-10 mt-10">
+      <p className="mb-3 text-[0.65rem] uppercase tracking-[0.18em] text-ink/35">
+        {text('Audio')}
+      </p>
+      <div className="space-y-3">
+        {audioAssets.map((a) => {
           const url = safeMediaUrl(a.fileAccess?.url);
           if (!url) return null;
-          const meta = kindMeta[a.kind] || kindMeta.video;
           return (
-            <article
-              key={a.id}
-              className={`overflow-hidden rounded-2xl border border-teal-200/70 bg-gradient-to-br ${meta.tone} shadow-sm transition hover:-translate-y-1 hover:shadow-lg`}
-            >
-              <div className="flex items-center justify-between px-4 pt-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-teal-900">
-                  <Icon name={meta.icon} /> {text(meta.label)}
-                </span>
-                {a.title && (
-                  <span className="truncate text-xs text-ink/45 max-w-[50%]">{text(a.title)}</span>
-                )}
-              </div>
-              <div className="p-4">
-                {a.kind === 'audio' && (
-                  <audio
-                    controls
-                    className="w-full"
-                    src={url}
-                    preload="none"
-                    onEnded={markListened}
-                    onTimeUpdate={onTimeUpdate}
-                  >
-                    <track kind="captions" />
-                  </audio>
-                )}
-                {a.kind === 'video' && (
-                  <video
-                    controls
-                    className="w-full rounded-xl bg-ink/5 aspect-video object-cover"
-                    src={url}
-                    preload="metadata"
-                    onEnded={markListened}
-                    onTimeUpdate={onTimeUpdate}
-                  />
-                )}
-                {a.kind === 'model3d' && (
-                  <div
-                    className="relative overflow-hidden rounded-xl bg-white/70 border border-teal-200"
-                    onPointerDown={markListened}
-                    role="presentation"
-                  >
-                    <model-viewer
-                      src={url}
-                      alt={text(a.title || '3D model')}
-                      camera-controls
-                      auto-rotate
-                      shadow-intensity="0.6"
-                      style={{ width: '100%', height: '220px', background: 'transparent' }}
-                    />
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="absolute bottom-3 right-3 rounded-full bg-teal-700 px-3 py-1.5 text-[11px] font-bold text-white"
-                    >
-                      {text('Ashıw')}
-                    </a>
-                  </div>
-                )}
-              </div>
-            </article>
+            <audio key={a.id} controls className="w-full max-w-md" src={url} preload="none">
+              <track kind="captions" />
+            </audio>
           );
         })}
       </div>
-
-      <div className="mt-5 qp-card qp-card--static px-4 py-4">
-        {listened ? (
-          <p className={`mb-3 text-sm font-semibold text-teal-950 ${anim.checkinPop}`}>
-            {produceResult?.correct
-              ? text(KAA.immersionProduceDone)
-              : text(KAA.immersionQueuedHint)}
-            {streak > 0 ? ` · ${text(KAA.immersionStreak)} ${streak}` : ''}
-          </p>
-        ) : (
-          <p className="mb-3 text-sm text-ink/55">{text(KAA.immersionListenHint)}</p>
-        )}
-
-        {listened && !produceResult?.correct ? (
-          <form onSubmit={onProduceSubmit} className="mb-4 space-y-2">
-            <p className="text-xs text-ink/50">{text(KAA.immersionProduceHint)}</p>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <input
-                type="text"
-                value={produceText}
-                onChange={(e) => setProduceText(e.target.value)}
-                disabled={produceBusy}
-                autoComplete="off"
-                spellCheck={false}
-                placeholder={text(KAA.immersionProducePlaceholder)}
-                className="min-w-0 flex-1 rounded-2xl border border-teal-700/25 bg-white px-4 py-2.5 text-sm text-ink outline-none ring-teal-600/25 focus:ring-2 disabled:opacity-50"
-              />
-              <button
-                type="submit"
-                disabled={produceBusy || !String(produceText || '').trim()}
-                className="qp-btn-primary disabled:opacity-50"
-              >
-                {text(KAA.immersionProduceSubmit)}
-              </button>
-            </div>
-            {produceResult && !produceResult.correct ? (
-              <p className="text-sm font-semibold text-rose-800" role="status">
-                {text(KAA.tutorWrongMsg)}
-                {produceResult.correctLemma ? (
-                  <span className="mt-1 block font-display text-base text-ink">
-                    {text(produceResult.correctLemma)}
-                  </span>
-                ) : null}
-              </p>
-            ) : null}
-          </form>
-        ) : null}
-
-        {produceResult?.correct ? (
-          <p
-            className={`mb-4 text-sm font-semibold text-emerald-800 ${anim.checkinPop}`}
-            role="status"
-          >
-            {produceResult.nearMiss
-              ? text(KAA.tutorNearMissMsg)
-              : text(KAA.tutorCorrectMsg)}
-          </p>
-        ) : null}
-
-        {guestSoft ? (
-          <GuestSoftContinue
-            className="mb-4 text-left"
-            titleKey={null}
-            bodyKey="immersionBrowseGuestProduce"
-            compact
-          />
-        ) : null}
-
-        <div className="flex flex-wrap gap-2">
-          <Link
-            to={playHref}
-            onClick={() => markListened()}
-            className={`${anim.shine} qp-btn-primary !px-4 !py-2`}
-          >
-            {streak > 0 && listened
-              ? text(KAA.immersionBrowseStreakCta).replace('{n}', String(streak))
-              : text(KAA.immersionPracticeNow)}
-            <AnimChevron count={2} className="opacity-80" style={{ ['--dch-color']: '#ecfdf5' }} />
-          </Link>
-          <Link
-            to="/quiz"
-            onClick={() => markListened()}
-            className="inline-flex rounded-full border border-teal-700/30 px-4 py-2 text-sm font-semibold text-teal-900"
-          >
-            {text(KAA.testler)}
-          </Link>
-          {isContinueWord && (
-            <button
-              type="button"
-              onClick={() => {
-                skipTouchRef.current = true;
-                clearImmersionContinue(titleId);
-              }}
-              className="rounded-full border border-ink/15 bg-white px-4 py-2 text-sm font-semibold text-ink/55 hover:text-teal-900"
-            >
-              {text(KAA.immersionAbandon)}
-            </button>
-          )}
-          <Link
-            to="/tutor/practice?from=immersion"
-            className="inline-flex items-center gap-1.5 rounded-full border border-ink/12 bg-white/80 px-4 py-2 text-xs font-bold text-ink/55"
-          >
-            <Icon name="bolt" /> {text(KAA.immersionLater)}
-          </Link>
-        </div>
-        {listened ? (
-          <>
-            <p className="mt-4 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
-              {text(KAA.immersionListenFree)}
-            </p>
-            <FreePlayCtaRow links={FOOTER_FREE_LINKS} justify="start" className="mt-2" compact />
-          </>
-        ) : null}
-      </div>
-      <p className="mt-4 text-[11px] text-ink/40">
-        {text('Dawıs — immersiya; video/3D admin júklewi menen kengen.')}
-      </p>
     </section>
   );
 }
@@ -1048,38 +532,7 @@ function ReferencePanel({ sense }) {
           })}
         </div>
       ) : (
-        <div>
-          <p className="text-ink/50">{text('Bul sózdiń anıqlaması ele qosılmaǵan.')}</p>
-          <p className="mt-4 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
-            {text(KAA.wordSenseEmptyFree)}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Link
-              to="/tutor/practice"
-              className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/35 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-950"
-            >
-              <Icon name="bolt" /> {text(KAA.practiceNav)}
-            </Link>
-            <Link
-              to="/quiz"
-              className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/25 bg-white px-4 py-2 text-xs font-bold text-teal-950"
-            >
-              <Icon name="trophy" /> {text(KAA.faqTryQuiz)}
-            </Link>
-            <Link
-              to="/crossword"
-              className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-50/80 px-4 py-2 text-xs font-bold text-amber-950"
-            >
-              <Icon name="grammar" /> {text(KAA.faqTryCrossword)}
-            </Link>
-            <Link
-              to="/dictionary/all"
-              className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-white px-4 py-2 text-xs font-bold text-ink/70"
-            >
-              <Icon name="book" /> {text(KAA.sozlik)}
-            </Link>
-          </div>
-        </div>
+        <p className="text-ink/50">{text('Bul sózdiń anıqlaması ele qosılmaǵan.')}</p>
       )}
     </section>
   );
@@ -1166,42 +619,11 @@ function GrammarRefPanel({ sense }) {
           })}
         </div>
       ) : (
-        <div>
-          <p className="text-ink/50">
-            {text('Asos sóz')}{' '}
-            <span className="font-display text-teal-950">{text(ref.base).toUpperCase()}</span>{' '}
-            {text('sózlikke ele qosılmaǵan.')}
-          </p>
-          <p className="mt-4 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
-            {text(KAA.grammarRefEmptyFree)}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Link
-              to={`/dictionary/all?q=${encodeURIComponent(String(ref.base || '').trim())}`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/25 bg-white px-4 py-2 text-xs font-bold text-teal-950"
-            >
-              <Icon name="book" /> {text(KAA.sozlik)}
-            </Link>
-            <Link
-              to="/tutor/practice"
-              className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/35 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-950"
-            >
-              <Icon name="bolt" /> {text(KAA.practiceNav)}
-            </Link>
-            <Link
-              to="/quiz"
-              className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/20 bg-white px-4 py-2 text-xs font-bold text-teal-950"
-            >
-              <Icon name="trophy" /> {text(KAA.faqTryQuiz)}
-            </Link>
-            <Link
-              to="/crossword"
-              className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-50/80 px-4 py-2 text-xs font-bold text-amber-950"
-            >
-              <Icon name="grammar" /> {text(KAA.faqTryCrossword)}
-            </Link>
-          </div>
-        </div>
+        <p className="text-ink/50">
+          {text('Asos sóz')}{' '}
+          <span className="font-display text-teal-950">{text(ref.base).toUpperCase()}</span>{' '}
+          {text('sózlikke ele qosılmaǵan.')}
+        </p>
       )}
     </section>
   );
@@ -1423,6 +845,7 @@ function SensePanel({ sense, index, total, canModerate = false, onSenseSaved }) 
   const { text } = useUiScript();
   const examples = Array.isArray(sense.examples) ? sense.examples : [];
   const idioms = Array.isArray(sense.idioms) ? sense.idioms : [];
+  const senseNo = Number(index) + 1;
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
   const [draftCategory, setDraftCategory] = useState('');
@@ -1540,11 +963,11 @@ function SensePanel({ sense, index, total, canModerate = false, onSenseSaved }) 
       <header className="sense-panel__head">
         <div className="flex items-center gap-3 mb-1">
           <span className="sense-num font-display" aria-hidden>
-            {String(index + 1).padStart(2, '0')}
+            {String(senseNo).padStart(2, '0')}
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-[0.65rem] uppercase tracking-[0.2em] text-ink/40">
-              {text(total > 1 ? `Anıqlama ${index + 1} / ${total}` : 'Anıqlama')}
+              {text(total > 1 ? `Anıqlama ${senseNo} / ${total}` : 'Anıqlama')}
             </p>
             {sense.category && (
               <p className="text-teal-800 text-sm font-medium mt-0.5">{text(sense.category)}</p>
@@ -2079,9 +1502,21 @@ function SenseLevelRelations({ senseRelations, canModerate = false, onSaved }) {
 
 function CompoundPanel({ compounds, titleId, canModerate = false, onSaved }) {
   const { text } = useUiScript();
-  const components = compounds?.components || [];
+  const rawComponents = compounds?.components || [];
   const usedIn = compounds?.usedIn || [];
+
+  // Placeholder / test ID lar (comp_*, uomi_*) — haqiqiy sóz emes
+  const isRealWord = (c) => {
+    const soz = String(c?.soz || '').trim();
+    if (!soz) return false;
+    if (/^(comp_|uomi_)/i.test(soz)) return false;
+    if (!canModerate && Number(c.status) !== 1) return false;
+    return true;
+  };
+  const components = rawComponents.filter(isRealWord);
+
   if (!canModerate && !components.length && !usedIn.length) return null;
+  if (!canModerate && !components.length && usedIn.length === 0) return null;
 
   async function removeComponent(relationId) {
     if (!relationId) return;
@@ -2095,32 +1530,44 @@ function CompoundPanel({ compounds, titleId, canModerate = false, onSaved }) {
       <p className="text-[0.65rem] uppercase tracking-[0.2em] text-teal-800/60 mb-2">
         {text('Qurma sóz')}
       </p>
+      <p className="mb-3 text-xs text-ink/45">
+        {text('Bul sóz qaysı bóleklerden qurılǵanın kórsetedi (mısalı: ana + til).')}
+      </p>
       {(components.length > 0 || canModerate) && (
         <div className="mb-4">
-          <p className="text-ink/70 mb-2">
-            {text('Quram bólekleri:')}{' '}
-            {components.map((c, i) => (
-              <span key={c.relationId || c.id} className="inline-flex items-center gap-1">
-                {i > 0 && ' + '}
-                {c.status === 1 ? (
-                  <Link to={`/dictionary/${c.id}`} className="text-teal-900 underline underline-offset-4">
-                    {text(c.soz)}
-                  </Link>
-                ) : (
-                  <span className="text-ink/50">{text(c.soz)}</span>
-                )}
-                {canModerate && c.relationId ? (
-                  <button
-                    type="button"
-                    onClick={() => removeComponent(c.relationId)}
-                    className="rounded-full border border-rose-300 px-1.5 text-[0.65rem] font-semibold text-rose-700"
-                  >
-                    ×
-                  </button>
-                ) : null}
-              </span>
-            ))}
-          </p>
+          {components.length > 0 ? (
+            <p className="text-ink/70 mb-2">
+              {text('Quram bólekleri:')}{' '}
+              {components.map((c, i) => (
+                <span key={c.relationId || c.id} className="inline-flex items-center gap-1">
+                  {i > 0 && ' + '}
+                  {c.status === 1 ? (
+                    <Link
+                      to={`/dictionary/${c.id}`}
+                      className="text-teal-900 underline underline-offset-4"
+                    >
+                      {text(c.soz)}
+                    </Link>
+                  ) : (
+                    <span className="text-ink/50">{text(c.soz)}</span>
+                  )}
+                  {canModerate && c.relationId ? (
+                    <button
+                      type="button"
+                      onClick={() => removeComponent(c.relationId)}
+                      className="rounded-full border border-rose-300 px-1.5 text-[0.65rem] font-semibold text-rose-700"
+                    >
+                      ×
+                    </button>
+                  ) : null}
+                </span>
+              ))}
+            </p>
+          ) : canModerate ? (
+            <p className="mb-2 text-sm text-ink/45">
+              {text('Házirshe anıq bólekler qosılmaǵan (yaki test jazıwlar jasırıldı).')}
+            </p>
+          ) : null}
           {canModerate && titleId ? (
             <RelationWordAdd
               placeholder="Bólek sóz…"
@@ -2250,8 +1697,8 @@ export default function WordDetail() {
       <PageGate
         status="error"
         error="Sóz tabılmadı"
-        backHref={fromJumbaq ? '/jumbaqlar' : '/dictionary'}
-        backLabel={fromJumbaq ? litT('jumbaqBackList', script) : 'Sózlikke qaytıw'}
+        backHref={fromJumbaq ? '/jumbaqlar' : '/dictionary/all'}
+        backLabel={fromJumbaq ? litT('jumbaqBackList', script) : 'Barlıq sózler'}
       />
     );
   }
@@ -2262,8 +1709,8 @@ export default function WordDetail() {
         status={status}
         error={error}
         onRetry={reload}
-        backHref={fromJumbaq ? '/jumbaqlar' : '/dictionary'}
-        backLabel={fromJumbaq ? litT('jumbaqBackList', script) : 'Sózlikke qaytıw'}
+        backHref={fromJumbaq ? '/jumbaqlar' : '/dictionary/all'}
+        backLabel={fromJumbaq ? litT('jumbaqBackList', script) : 'Barlıq sózler'}
       />
     );
   }
@@ -2273,12 +1720,19 @@ export default function WordDetail() {
   const totalSenses = homonyms
     ? homonyms.reduce((n, h) => n + (h.aniqlamalar?.length || 0), 0)
     : senses.length;
-  const leadSense = homonyms
-    ? (homonyms.find((h) => h.id === word.id || h.soz === word.soz)?.aniqlamalar ||
-        homonyms[0]?.aniqlamalar ||
-        [])[0]
-    : senses[0];
-  const leadGloss = leadSense?.description ? String(leadSense.description).trim() : '';
+
+  const goAllWords = () => {
+    if (fromJumbaq) {
+      navigate('/jumbaqlar');
+      return;
+    }
+    // Orqaga qaytıw sıyaqlı: tariyx bolsa -1, bolmasa barlıq sózler
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/dictionary/all');
+    }
+  };
 
   return (
     <ProtectedContent>
@@ -2288,38 +1742,39 @@ export default function WordDetail() {
       <div className="dict-atmosphere pointer-events-none absolute inset-0" aria-hidden />
 
       <article className="relative max-w-5xl mx-auto px-5 md:px-8 pt-10">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-10">
-          <Link
-            to={fromJumbaq ? '/jumbaqlar' : '/dictionary'}
-            className="inline-flex items-center gap-2 text-sm text-ink/45 hover:text-teal-900 transition-colors"
+        <div className="mb-8 flex items-start justify-between gap-4">
+          <button
+            type="button"
+            onClick={goAllWords}
+            className="text-sm text-ink/45 hover:text-teal-900 transition-colors"
           >
-            ← {fromJumbaq ? litT('jumbaqBackList', script) : text('Sózlik')}
-          </Link>
-          <Link
-            to={fromJumbaq ? '/dictionary/all?from=jumbaq' : '/dictionary/all'}
-            className="text-sm text-ink/40 hover:text-teal-900 transition-colors"
-          >
-            {text('Barlıq sózler')}
-          </Link>
+            ← {fromJumbaq ? litT('jumbaqBackList', script) : text('Barlıq sózler')}
+          </button>
+          <div className="flex flex-col items-end gap-1.5 text-[0.7rem] font-medium leading-tight">
+            {homonyms && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 border border-teal-500/20 px-2.5 py-1 text-teal-800 whitespace-nowrap">
+                <Icon name="layers" /> {text(`${homonyms.length} omonim`)}
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 border border-teal-600/20 px-2.5 py-1 text-teal-900 whitespace-nowrap">
+              <Icon name="book" />{' '}
+              {text(totalSenses > 0 ? `${totalSenses} anıqlama` : 'Anıqlama joq')}
+            </span>
+            {word.views_count != null && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 border border-sky-500/20 px-2.5 py-1 text-sky-800 whitespace-nowrap">
+                <Icon name="eye" /> {text(`${word.views_count} ret kórildi`)}
+              </span>
+            )}
+          </div>
         </div>
 
         <PageEnter>
-        <header className="mb-12">
-          <div className="flex items-start justify-between gap-4 mb-3">
-            <div className="min-w-0">
-              <h1 className="font-display text-5xl md:text-7xl text-ink tracking-tight">
-                {text(homonyms ? word.base_soz : word.soz)}
-              </h1>
-              {canModerate && (
-                <TitleRename
-                  titleId={word.id}
-                  word={word.soz}
-                  onSaved={reload}
-                  onDeactivated={() => navigate('/dictionary', { replace: true })}
-                />
-              )}
-            </div>
-            <div className="flex items-center gap-2.5 shrink-0">
+        <header className="mb-10">
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <h1 className="min-w-0 flex-1 font-display text-5xl md:text-7xl text-ink tracking-tight">
+              {text(homonyms ? word.base_soz : word.soz)}
+            </h1>
+            <div className="flex items-center gap-2.5 shrink-0 pt-1">
               <ShareButton word={homonyms ? word.base_soz : word.soz} />
               <FavoriteButton
                 size="lg"
@@ -2328,6 +1783,14 @@ export default function WordDetail() {
               />
             </div>
           </div>
+          {canModerate && (
+            <TitleRename
+              titleId={word.id}
+              word={word.soz}
+              onSaved={reload}
+              onDeactivated={() => navigate('/dictionary', { replace: true })}
+            />
+          )}
           {favFlash && (
             <p
               className={`mb-3 inline-flex items-center gap-2 rounded-full border border-rose-400/25 bg-rose-50 px-3.5 py-1.5 text-xs font-bold text-rose-900 ${anim.checkinPop}`}
@@ -2339,38 +1802,9 @@ export default function WordDetail() {
               </Link>
             </p>
           )}
-          <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
-            {homonyms && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 border border-teal-500/20 px-3 py-1.5 text-teal-800">
-                <Icon name="layers" /> {text(`${homonyms.length} omonim`)}
-              </span>
-            )}
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 border border-teal-600/20 px-3 py-1.5 text-teal-900">
-              <Icon name="book" />{' '}
-              {text(totalSenses > 0 ? `${totalSenses} anıqlama` : 'Anıqlama joq')}
-            </span>
-            {word.views_count != null && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 border border-sky-500/20 px-3 py-1.5 text-sky-800">
-                <Icon name="eye" /> {text(`${word.views_count} ret kórildi`)}
-              </span>
-            )}
-          </div>
-          {leadGloss ? (
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink/65 motion-reveal">
-              {text(leadGloss.length > 180 ? `${leadGloss.slice(0, 177)}…` : leadGloss)}
-            </p>
-          ) : (
-            <p className="mt-5 text-sm text-ink/45 motion-reveal">
-              {text('Anıqlama ele qosılmaǵan — morfologiya hám awdarmalardı kóriń.')}
-            </p>
-          )}
         </header>
 
         <AnimIconDivider wide amber icon="✦" />
-
-        <div className="mb-10">
-          <MorphologyPanel morphology={word.morphology} />
-        </div>
 
         {homonyms ? (
           <div className="space-y-16">
@@ -2409,38 +1843,7 @@ export default function WordDetail() {
                     <AddSenseForm titleId={h.id} onSaved={reload} />
                   )}
                   {hSenses.length === 0 && (
-                    <div>
-                      <p className="text-ink/55">{text('Anıqlama ele qosılmaǵan.')}</p>
-                      <p className="mt-4 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
-                        {text(KAA.wordSenseEmptyFree)}
-                      </p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <Link
-                          to="/tutor/practice"
-                          className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/35 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-950"
-                        >
-                          <Icon name="bolt" /> {text(KAA.practiceNav)}
-                        </Link>
-                        <Link
-                          to="/quiz"
-                          className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/25 bg-white px-4 py-2 text-xs font-bold text-teal-950"
-                        >
-                          <Icon name="trophy" /> {text(KAA.faqTryQuiz)}
-                        </Link>
-                        <Link
-                          to="/crossword"
-                          className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-50/80 px-4 py-2 text-xs font-bold text-amber-950"
-                        >
-                          <Icon name="grammar" /> {text(KAA.faqTryCrossword)}
-                        </Link>
-                        <Link
-                          to="/dictionary/all"
-                          className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-white px-4 py-2 text-xs font-bold text-ink/70"
-                        >
-                          <Icon name="book" /> {text(KAA.sozlik)}
-                        </Link>
-                      </div>
-                    </div>
+                    <p className="text-ink/55">{text('Anıqlama ele qosılmaǵan.')}</p>
                   )}
                 </section>
               );
@@ -2448,7 +1851,6 @@ export default function WordDetail() {
           </div>
         ) : (
           <>
-            <AnimIconDivider className="mb-8" />
             <div className="flex flex-wrap gap-6 md:gap-8 items-start">
               {senses.map((sense, i) => (
                 <SensePanel
@@ -2464,57 +1866,24 @@ export default function WordDetail() {
             {canModerate && <AddSenseForm titleId={word.id} onSaved={reload} />}
 
             {senses.length === 0 && (
-              <div>
-                <p className="text-ink/55">{text('Bul sóz ushın anıqlama ele qosılmaǵan.')}</p>
-                <p className="mt-4 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-800/55">
-                  {text(KAA.wordSenseEmptyFree)}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Link
-                    to="/tutor/practice"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/35 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-950"
-                  >
-                    <Icon name="bolt" /> {text(KAA.practiceNav)}
-                  </Link>
-                  <Link
-                    to="/quiz"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-teal-700/25 bg-white px-4 py-2 text-xs font-bold text-teal-950"
-                  >
-                    <Icon name="trophy" /> {text(KAA.faqTryQuiz)}
-                  </Link>
-                  <Link
-                    to="/crossword"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-50/80 px-4 py-2 text-xs font-bold text-amber-950"
-                  >
-                    <Icon name="grammar" /> {text(KAA.faqTryCrossword)}
-                  </Link>
-                  <Link
-                    to="/dictionary/all"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-white px-4 py-2 text-xs font-bold text-ink/70"
-                  >
-                    <Icon name="book" /> {text(KAA.sozlik)}
-                  </Link>
-                </div>
-              </div>
+              <p className="text-ink/55">{text('Bul sóz ushın anıqlama ele qosılmaǵan.')}</p>
             )}
           </>
         )}
 
-        <div className="mt-12 mb-10">
+        <div className="mt-12 mb-6">
+          <MorphologyPanel
+            morphology={word.morphology}
+            titleId={word.id}
+            soz={homonyms ? word.base_soz : word.soz}
+          />
+        </div>
+
+        <div className="mt-8 mb-10">
           <TranslationsPanel translations={word.translations} />
         </div>
 
-        <ImmersionBlock titleId={word.id} soz={word.homonyms ? word.base_soz : word.soz} />
-
-        <WordNextSteps
-          word={word}
-          isFavorite={favorites.has(word.id)}
-          onToggleFavorite={onFavoriteToggle}
-          related={Array.isArray(word.related) ? word.related : []}
-          nextWord={word.next || null}
-          fromJumbaq={fromJumbaq}
-        />
-
+        <WordAudioOnly titleId={word.id} />
 
         <LexicalRelations
           relations={word.relations}

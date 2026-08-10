@@ -234,6 +234,13 @@ export default function UsersAdmin() {
   const [busy, setBusy] = useState(false);
 
   const [newAcc, setNewAcc] = useState({ email: '', password: '', role: 'editor' });
+  const [showIp, setShowIp] = useState(() => {
+    try {
+      return localStorage.getItem('admin:showIp') === '1';
+    } catch {
+      return false;
+    }
+  });
 
   const limit = 25;
   const isOwner = me?.admin?.role === 'owner';
@@ -679,6 +686,22 @@ export default function UsersAdmin() {
               <span className="text-sm text-ink/50">
                 {text('Jámi')}: {total}
               </span>
+              <label className="inline-flex items-center gap-2 text-xs font-semibold text-ink/60">
+                <input
+                  type="checkbox"
+                  checked={showIp}
+                  onChange={(e) => {
+                    const on = e.target.checked;
+                    setShowIp(on);
+                    try {
+                      localStorage.setItem('admin:showIp', on ? '1' : '0');
+                    } catch {
+                      /* ignore */
+                    }
+                  }}
+                />
+                {text('IP kórsetiw')}
+              </label>
             </div>
 
             <div className="overflow-x-auto qp-panel">
@@ -686,12 +709,12 @@ export default function UsersAdmin() {
                 <thead>
                   <tr className="border-b border-ink/10 text-xs uppercase tracking-wide text-ink/45">
                     <th className="px-4 py-3">{text('ID')}</th>
+                    <th className="px-4 py-3">{text('At / Email')}</th>
+                    <th className="px-4 py-3">{text('Akkaunt')}</th>
+                    {showIp ? <th className="px-4 py-3">{text('IP')}</th> : null}
                     <th className="px-4 py-3">{text('Jası')}</th>
                     <th className="px-4 py-3">{text('Quiz')}</th>
                     <th className="px-4 py-3">{text('Eventler')}</th>
-                    <th className="px-4 py-3">{text('Kitap')}</th>
-                    <th className="px-4 py-3">{text('Krossvord')}</th>
-                    <th className="px-4 py-3">{text('Qosılǵan')}</th>
                     <th className="px-4 py-3">{text('Aqırǵı')}</th>
                     <th className="px-4 py-3" />
                   </tr>
@@ -700,12 +723,29 @@ export default function UsersAdmin() {
                   {users.map((u) => (
                     <tr key={u.id} className="border-b border-ink/5 last:border-0">
                       <td className="px-4 py-3 font-mono">#{u.id}</td>
+                      <td className="px-4 py-3">
+                        <div className="font-semibold text-ink">
+                          {u.displayName || u.nickname || text('Mehman')}
+                        </div>
+                        <div className="text-xs text-ink/50">
+                          {u.username ? `@${u.username}` : null}
+                          {u.username && u.email ? ' · ' : null}
+                          {u.email || (u.username ? null : '—')}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-ink/60">
+                        {u.userId
+                          ? u.googleLinked
+                            ? text('Google')
+                            : text('Email')
+                          : text('Mehman')}
+                      </td>
+                      {showIp ? (
+                        <td className="px-4 py-3 font-mono text-xs text-ink/55">{u.lastIp || '—'}</td>
+                      ) : null}
                       <td className="px-4 py-3">{u.ageConsent ? (u.ageYears ?? '—') : '—'}</td>
                       <td className="px-4 py-3">{u.quizAttempts}</td>
                       <td className="px-4 py-3">{u.events}</td>
-                      <td className="px-4 py-3">{u.booksInProgress}</td>
-                      <td className="px-4 py-3">{u.crosswordsDone}</td>
-                      <td className="px-4 py-3 text-ink/55">{fmtDate(u.createdAt)}</td>
                       <td className="px-4 py-3 text-ink/55">
                         {u.isBlocked ? (
                           <span className="rounded-full bg-rose-50 px-2 py-0.5 text-xs text-rose-700">
@@ -751,7 +791,7 @@ export default function UsersAdmin() {
                   ))}
                   {users.length === 0 && (
                     <tr>
-                      <td colSpan={9} className="px-4 py-8 text-center text-ink/45">
+                      <td colSpan={showIp ? 9 : 8} className="px-4 py-8 text-center text-ink/45">
                         {text('Paydalanıwshı tabılmadı')}
                       </td>
                     </tr>
@@ -803,6 +843,25 @@ export default function UsersAdmin() {
                     </p>
                     <ul className="space-y-1 text-sm text-ink/75">
                       <li>
+                        {text('At')}:{' '}
+                        {detail.user.displayName || detail.user.nickname || text('Mehman')}
+                      </li>
+                      <li>
+                        {text('Login')}:{' '}
+                        {detail.user.username ? `@${detail.user.username}` : '—'}
+                      </li>
+                      <li>
+                        {text('Email')}: {detail.user.email || '—'}
+                      </li>
+                      <li>
+                        {text('Akkaunt')}:{' '}
+                        {detail.user.userId
+                          ? detail.user.googleLinked
+                            ? text('Google')
+                            : text('Email')
+                          : text('Mehman')}
+                      </li>
+                      <li>
                         {text('Qosılǵan')}: {fmtDate(detail.user.createdAt)}
                       </li>
                       <li>
@@ -819,6 +878,20 @@ export default function UsersAdmin() {
                         {text('ózlestirilgen')}: {detail.mistakes.mastered})
                       </li>
                     </ul>
+                    {showIp && detail.recentSessions?.length > 0 ? (
+                      <div className="mt-4">
+                        <p className="mb-2 text-xs uppercase tracking-wide text-ink/45">
+                          {text('Sońǵı kiriwler')}
+                        </p>
+                        <ul className="space-y-1 text-xs text-ink/65">
+                          {detail.recentSessions.map((s) => (
+                            <li key={s.id} className="font-mono">
+                              {s.ip || '—'} · {fmtDate(s.createdAt)}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
                     {detail.ability?.length > 0 && (
                       <>
                         <p className="mb-1 mt-4 text-xs uppercase tracking-wide text-ink/45">

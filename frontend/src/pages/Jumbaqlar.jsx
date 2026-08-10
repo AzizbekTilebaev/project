@@ -153,7 +153,7 @@ function JumbaqCard({
       </div>
 
       <p className="whitespace-pre-line font-display text-lg leading-8 tracking-tight text-ink md:text-xl">
-        {item.jumbaq}
+        {text(item.jumbaq)}
       </p>
 
       <div className="mt-5 border-t border-ink/[0.06] pt-4">
@@ -198,7 +198,9 @@ function JumbaqCard({
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-emerald-800/60">
                 {t('answer', script)}
               </p>
-              <p className="mt-1 text-base font-semibold text-emerald-950">{item.juwap || '—'}</p>
+              <p className="mt-1 text-base font-semibold text-emerald-950">
+                {item.juwap ? text(item.juwap) : '—'}
+              </p>
             </div>
             <div className="rounded-xl border border-sky-500/20 bg-sky-50/70 px-4 py-3">
               <p className="mb-2 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-sky-800/60">

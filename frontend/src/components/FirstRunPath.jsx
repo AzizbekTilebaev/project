@@ -371,7 +371,7 @@ export function ContinueLearning({
   } else if (wordOfDay) {
     primary = {
       href: `/dictionary/${wordOfDay.id}`,
-      label: `${text(KAA.kunSozi)}: ${wordOfDay.soz}`,
+      label: `${text(KAA.kunSozi)}: ${text(wordOfDay.soz)}`,
       icon: null,
       tone: 'softAmber',
     };

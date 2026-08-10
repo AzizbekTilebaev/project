@@ -34,14 +34,14 @@ export const ABOUT = {
       to: '/quiz',
     },
     {
-      title: 'Ádebiyat',
-      body: 'Kitaplar, jazıwshılar, oqıw darsi.',
+      title: 'Kitapxana',
+      body: 'Tańlawlı kitaplar, jazıwshılar, oqıw darsi.',
       to: '/literature',
     },
     {
-      title: 'Til qoidaları',
-      body: '1–11 klass grammatika qoidaları — klass toparları boyınsha.',
-      to: '/qoidalar',
+      title: 'Qaraqalpaq tili',
+      body: 'Qaǵıydalar — 1–11 klass hám joqarı oqıw.',
+      to: '/literature/qaraqalpaq-tili',
     },
     {
       title: 'Inglis tili',
@@ -147,7 +147,7 @@ export const FAQ_ITEMS = [
   {
     id: 'books',
     q: 'Kitaplar hám oqıw darsi',
-    a: 'Ádebiyat bóliminde kitaplar hám jazıwshılar. Ayırım kitaplarda «úyreniw» (oqıw darsi) bar — qáteler mashq navbatına ótedi.',
+    a: 'Kitapxana bóliminde tańlawlı kitaplar hám jazıwshılar. Ayırım kitaplarda «úyreniw» (oqıw darsi) bar — qáteler mashq navbatına ótedi.',
   },
   {
     id: 'contribute',

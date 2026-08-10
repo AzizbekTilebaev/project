@@ -57,8 +57,39 @@ function makePool(database) {
     connectionLimit: POOL_LIMIT,
     queueLimit: 0,
     charset: 'utf8mb4',
+    // Aiven / remote: sovuq TLS ~1–2s; keep-alive keyingi so‘rovlarni tezlashtiradi
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 10_000,
+    connectTimeout: 15_000,
+    maxIdle: Math.min(2, POOL_LIMIT),
+    idleTimeout: 60_000,
     ...(SSL ? { ssl: SSL } : {}),
   });
+}
+
+/** Birinchi so‘rov sekin bo‘lmasin — har poolda 1 ta ulanishni isitadi. */
+export async function warmPools() {
+  const started = Date.now();
+  const results = await Promise.all(
+    Object.entries(pools).map(async ([key, pool]) => {
+      const t0 = Date.now();
+      try {
+        await pool.query('SELECT 1');
+        return { key, ok: true, ms: Date.now() - t0 };
+      } catch (err) {
+        return { key, ok: false, ms: Date.now() - t0, err: err.code || err.message };
+      }
+    })
+  );
+  const failed = results.filter((r) => !r.ok);
+  const slowest = Math.max(...results.map((r) => r.ms), 0);
+  console.log(
+    `🔥 DB warm: ${results.length - failed.length}/${results.length} ok · max ${slowest}ms · total ${Date.now() - started}ms`
+  );
+  if (failed.length) {
+    console.warn('⚠️  DB warm fail:', failed.map((f) => `${f.key}:${f.err}`).join(', '));
+  }
+  return results;
 }
 
 export const pools = {

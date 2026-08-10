@@ -30,9 +30,18 @@ import FreePlayCtaRow from '../components/FreePlayCtaRow';
 import { FOOTER_FREE_LINKS } from '../data/siteDeepLinks';
 import GuestSoftContinue from '../components/GuestSoftContinue';
 import { useAuth } from '../contexts/AuthContext';
+import { toCyrillic } from '../utils/qqScript';
 
 const PAGE_SIZE = 40;
 const SEARCH_DEBOUNCE_MS = 250;
+
+function sameLetter(a, b) {
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const ca = toCyrillic(String(a).charAt(0)).charAt(0).toLocaleUpperCase('kk');
+  const cb = toCyrillic(String(b).charAt(0)).charAt(0).toLocaleUpperCase('kk');
+  return ca === cb;
+}
 
 export default function DictionaryAll() {
   const navigate = useNavigate();
@@ -49,7 +58,10 @@ export default function DictionaryAll() {
   const practiceCta = fromJumbaq ? jumbaqPracticeCta : '/tutor/practice';
 
   const initialQ = searchParams.get('q') || '';
-  const initialLetter = searchParams.get('letter') || '';
+  const initialLetterRaw = searchParams.get('letter') || '';
+  const initialLetter = initialLetterRaw
+    ? toCyrillic(initialLetterRaw.charAt(0)).charAt(0).toLocaleUpperCase('kk') || initialLetterRaw
+    : '';
   const initialPos = searchParams.get('pos') || '';
   const initialTheme = searchParams.get('theme') || '';
   const initialPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1);
@@ -237,7 +249,10 @@ export default function DictionaryAll() {
   // Sync URL → local when back/forward
   useEffect(() => {
     setQuery(searchParams.get('q') || '');
-    setLetter(searchParams.get('letter') || '');
+    const lit = searchParams.get('letter') || '';
+    setLetter(
+      lit ? toCyrillic(lit.charAt(0)).charAt(0).toLocaleUpperCase('kk') || lit : ''
+    );
     setPos(searchParams.get('pos') || '');
     setTheme(searchParams.get('theme') || '');
     setPage(Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1));
@@ -278,7 +293,9 @@ export default function DictionaryAll() {
     setPos('');
     setTheme('');
     setPage(1);
-    setLetter(letter === lit ? '' : lit);
+    // URL / state da kirill hárip (F↔Ф, Q↔Қ adasıwı bolmasın)
+    const canon = toCyrillic(String(lit).charAt(0)).charAt(0).toLocaleUpperCase('kk') || lit;
+    setLetter(sameLetter(letter, canon) ? '' : canon);
   };
 
   const onSearchKeyDown = (e) => {
@@ -420,7 +437,7 @@ export default function DictionaryAll() {
                 type="button"
                 onClick={() => selectLetter(lit)}
                 className={`shrink-0 min-w-[2.25rem] h-9 px-2 rounded-lg text-sm font-medium transition-all ${
-                  letter === lit
+                  sameLetter(letter, lit)
                     ? 'bg-gradient-to-br from-teal-600 to-emerald-700 text-white shadow-md shadow-teal-900/25 scale-110'
                     : 'bg-white/40 text-ink/70 hover:bg-teal-50 hover:text-teal-900 hover:border-teal-600/30 border border-ink/[0.06]'
                 }`}

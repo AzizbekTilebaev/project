@@ -33,21 +33,12 @@ export function withActor({ requireActor = true } = {}) {
       noteAnonymousIdFromIp(req.ip || req.socket?.remoteAddress || '', trimmed);
       const actorKey = hashAnonymousId(trimmed);
       const actor = await ensureActor(actorKey);
-      try {
-        const { pools } = await import('../config/db.js');
-        const [[row]] = await pools.users.query(
-          `SELECT COALESCE(is_blocked, 0) AS blocked FROM anonymous_actors WHERE id = ? LIMIT 1`,
-          [actor.id]
-        );
-        if (row && Number(row.blocked)) {
-          return res.status(403).json({
-            success: false,
-            error: 'actor_blocked',
-            message: 'Akkaunt bloklangan',
-          });
-        }
-      } catch {
-        /* is_blocked ustuni yo‘q bo‘lsa — o‘tkazib yuborish */
+      if (Number(actor.isBlocked)) {
+        return res.status(403).json({
+          success: false,
+          error: 'actor_blocked',
+          message: 'Akkaunt bloklangan',
+        });
       }
       req.actor = {
         id: actor.id,

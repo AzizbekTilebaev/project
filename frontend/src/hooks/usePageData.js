@@ -68,29 +68,58 @@ export default function usePageData(loader, { deps = [], enabled = true } = {}) 
   return { status, data, error, reload, loading: status === 'loading', ready: status === 'ready' };
 }
 
-/** Run required + optional fetchers; optional never blocks. */
-export async function loadPageBundle(required = {}, optional = {}) {
+/**
+ * Run required + optional fetchers.
+ * Optional: failures → null; waits up to `optBudgetMs` so Aiven cold start
+ * does not hold the whole page (default 400ms).
+ */
+export async function loadPageBundle(required = {}, optional = {}, optBudgetMs = 400) {
   const reqKeys = Object.keys(required);
   const optKeys = Object.keys(optional);
 
-  const reqPromises = reqKeys.map((k) => Promise.resolve().then(() => required[k]()));
-  const optPromises = optKeys.map((k) =>
-    Promise.resolve()
-      .then(() => optional[k]())
-      .catch(() => null)
+  const reqResults = await Promise.all(
+    reqKeys.map((k) => Promise.resolve().then(() => required[k]()))
   );
-
-  const [reqResults, optResults] = await Promise.all([
-    Promise.all(reqPromises),
-    Promise.all(optPromises),
-  ]);
 
   const out = {};
   reqKeys.forEach((k, i) => {
     out[k] = reqResults[i];
   });
-  optKeys.forEach((k, i) => {
-    out[k] = optResults[i];
+  optKeys.forEach((k) => {
+    out[k] = null;
   });
+
+  if (!optKeys.length) return out;
+
+  const optWork = Promise.all(
+    optKeys.map((k) =>
+      Promise.resolve()
+        .then(() => optional[k]())
+        .catch(() => null)
+    )
+  );
+
+  if (optBudgetMs <= 0) {
+    optWork.then((optResults) => {
+      optKeys.forEach((k, i) => {
+        out[k] = optResults[i];
+      });
+    });
+    return out;
+  }
+
+  const optResults = await Promise.race([
+    optWork,
+    new Promise((resolve) => {
+      const t = setTimeout(() => resolve(null), optBudgetMs);
+      t.unref?.();
+    }),
+  ]);
+
+  if (Array.isArray(optResults)) {
+    optKeys.forEach((k, i) => {
+      out[k] = optResults[i];
+    });
+  }
   return out;
 }

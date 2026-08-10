@@ -39,7 +39,9 @@ export function AdamAtlariDetail() {
               ← {text('Adam atları')}
             </Link>
             <header className="mt-8 mb-6 flex flex-wrap items-start gap-3">
-              <h1 className="font-display text-4xl md:text-5xl text-ink tracking-tight">{entry.name}</h1>
+              <h1 className="font-display text-4xl md:text-5xl text-ink tracking-tight">
+                {text(entry.name)}
+              </h1>
               <GenderBadge gender={entry.gender} text={text} />
             </header>
             <section className="qp-surface p-6 md:p-8">
@@ -182,9 +184,9 @@ export default function AdamAtlariPage() {
                   className="qp-card flex w-full items-start justify-between gap-3 p-4 text-left"
                 >
                   <div className="min-w-0">
-                    <p className="font-semibold text-ink">{row.name}</p>
+                    <p className="font-semibold text-ink">{text(row.name)}</p>
                     <p className="mt-1 line-clamp-2 text-sm text-ink/55">
-                      {row.senses?.[0]?.text || row.gloss}
+                      {text(row.senses?.[0]?.text || row.gloss || '')}
                     </p>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1">

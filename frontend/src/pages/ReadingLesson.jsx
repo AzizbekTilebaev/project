@@ -48,6 +48,7 @@ function Confetti() {
 }
 
 function VocabCard({ item, index, script = 'cyrillic' }) {
+  const { text } = useUiScript();
   const [open, setOpen] = useState(false);
   return (
     <button
@@ -61,19 +62,19 @@ function VocabCard({ item, index, script = 'cyrillic' }) {
           <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-amber-700/50">
             {index + 1}{t('wordTapHint', script)}
           </span>
-          <h3 className="mt-2 font-display text-2xl text-ink">{item.word}</h3>
+          <h3 className="mt-2 font-display text-2xl text-ink">{text(item.word)}</h3>
           <span className="mt-3 flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700">
             <Icon name="sparkle" />
           </span>
         </div>
         <div className="lesson-flip-back overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 p-4 text-white shadow-md">
-          <h3 className="font-display text-lg">{item.word}</h3>
+          <h3 className="font-display text-lg">{text(item.word)}</h3>
           <p className="mt-1 flex-1 overflow-y-auto text-sm leading-6 text-white/90">
-            {item.description}
+            {text(item.description)}
           </p>
           {item.example && (
             <p className="mt-2 border-l-2 border-white/50 pl-2 text-xs italic text-white/75">
-              {item.example}
+              {text(item.example)}
             </p>
           )}
         </div>

@@ -47,8 +47,8 @@ const META = {
   },
 };
 
-function SenseBlock({ entry }) {
-  return <StructuredSenses senses={entry?.senses} />;
+function SenseBlock({ entry, scripted = true }) {
+  return <StructuredSenses senses={entry?.senses} scripted={scripted} />;
 }
 
 export function BilingualDictDetail({ kind }) {
@@ -61,6 +61,11 @@ export function BilingualDictDetail({ kind }) {
   );
   const entry = data?.entry;
   usePageMeta(entry?.word || cfg.title, entry?.gloss?.slice(0, 120));
+  // en: headword = KAA; uzb/ru: headword = chet til, gloss/senses = KAA
+  const headwordIsKaa = kind === 'en';
+  const sensesAreKaa = kind !== 'en';
+  const head = displayHeadword(entry?.word);
+  const shownHead = headwordIsKaa ? text(head) : head;
 
   return (
     <PageGate status={status} error={error} onRetry={reload} backHref={`/dictionary/${kind}`}>
@@ -72,18 +77,18 @@ export function BilingualDictDetail({ kind }) {
             </Link>
             <header className="mt-8 mb-6">
               <h1 className="font-display text-4xl md:text-5xl text-ink tracking-tight">
-                {displayHeadword(entry.word)}
+                {shownHead}
               </h1>
               {entry.pos && <p className="mt-2 text-sm italic text-ink/50">{entry.pos}</p>}
               {entry.primary && (
                 <p className="mt-2 text-base text-teal-900">
-                  {text('Tiypkarı')}: <strong>{entry.primary}</strong>
+                  {text('Tiypkarı')}: <strong>{text(entry.primary)}</strong>
                 </p>
               )}
               {entry.direction && <p className="mt-1 text-xs text-ink/40">{entry.direction}</p>}
             </header>
             <OrnamentFrame>
-              <SenseBlock entry={entry} />
+              <SenseBlock entry={entry} scripted={sensesAreKaa} />
               {entry.titleId && (
                 <Link
                   to={`/dictionary/${entry.titleId}`}
@@ -99,7 +104,7 @@ export function BilingualDictDetail({ kind }) {
                 <ul className="space-y-1.5 text-sm text-ink/70">
                   {entry.lexicon.map((r) => (
                     <li key={`${r.uzb}-${r.kaa}`}>
-                      <strong>{r.uzb}</strong> ↔ {r.kaa}
+                      <strong>{r.uzb}</strong> ↔ {text(r.kaa)}
                       <span className="ml-2 text-[0.65rem] text-ink/35">{r.source}</span>
                     </li>
                   ))}
@@ -209,9 +214,15 @@ export default function BilingualDictPage({ kind }) {
                     className="flex w-full items-start justify-between gap-3 text-left transition-colors hover:text-teal-950"
                   >
                     <div className="min-w-0">
-                      <p className="font-semibold text-ink">{displayHeadword(row.word)}</p>
+                      <p className="font-semibold text-ink">
+                        {kind === 'en'
+                          ? text(displayHeadword(row.word))
+                          : displayHeadword(row.word)}
+                      </p>
                       <p className="mt-1 line-clamp-2 text-sm text-ink/55">
-                        {row.primary || row.senses?.[0]?.text || row.gloss}
+                        {kind === 'en'
+                          ? row.primary || row.senses?.[0]?.text || row.gloss
+                          : text(row.primary || row.senses?.[0]?.text || row.gloss || '')}
                       </p>
                     </div>
                     {row.titleId && (

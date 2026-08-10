@@ -22,22 +22,31 @@ export async function fetchMe() {
   return request('/me');
 }
 
-export async function registerWithEmail({ email, password, displayName }) {
+export async function registerWithEmail({ email, password, displayName, username }) {
   const data = await request('/register', {
     method: 'POST',
-    body: JSON.stringify({ email, password, displayName }),
+    body: JSON.stringify({ email, password, displayName, username }),
   });
   if (data.token) setStoredAuthToken(data.token);
   return data;
 }
 
-export async function loginWithEmail({ email, password }) {
+export async function loginWithEmail({ email, password, login }) {
   const data = await request('/login', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({
+      email,
+      login: login || email,
+      password,
+    }),
   });
   if (data.token) setStoredAuthToken(data.token);
   return data;
+}
+
+export async function checkUsernameAvailable(username) {
+  const q = encodeURIComponent(String(username || '').trim());
+  return request(`/username-available?u=${q}`);
 }
 
 export async function completeTotpLogin({ challengeToken, code }) {

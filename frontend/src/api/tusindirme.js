@@ -172,3 +172,12 @@ export async function voteSuggestion(id, vote) {
     body: JSON.stringify({ vote }),
   });
 }
+
+/** Avtomatik morfologiya qosımta — admin inbox / push outbox */
+export async function reportMorphSuffixReview(body) {
+  return request('/morph-suffix-reviews', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}

@@ -8,7 +8,7 @@ import Icon from '../components/Icon';
 import ScriptToggle from '../components/literature/ScriptToggle';
 import { t } from '../components/literature/litLabels';
 import { useUiScript } from '../contexts/UiScriptContext';
-import { toLatin } from '../utils/qqScript';
+import { inScript, toLatin } from '../utils/qqScript';
 
 async function loadNaqillar() {
   const res = await fetch('/data/naqillar.json');
@@ -18,7 +18,7 @@ async function loadNaqillar() {
 
 function displayText(value, script) {
   if (!value) return '';
-  return script === 'latin' ? toLatin(value) : value;
+  return inScript(value, script);
 }
 
 const CHIP = [

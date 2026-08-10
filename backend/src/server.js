@@ -34,7 +34,7 @@ import { ensureUploadsDir } from './middleware/bookUpload.js';
 import { ensureWriterPhotosDir } from './middleware/writerPhotoUpload.js';
 import { ensureAvatarsDir } from './middleware/avatarUpload.js';
 import { attachGameSocket } from './realtime/gameSocket.js';
-import { pools, DB } from './config/db.js';
+import { pools, DB, warmPools } from './config/db.js';
 import { logAppError } from './utils/errorLogger.js';
 
 dotenv.config();
@@ -380,6 +380,8 @@ server.listen(PORT, () => {
   if (!process.env.IMPORT_API_KEY) {
     console.warn('⚠️  IMPORT_API_KEY yo‘q — HTTP import o‘chirilgan (CLI ishlaydi).');
   }
+  // Aiven SSL: birinchi API so‘rovi ~2s bo‘lmasin
+  warmPools().catch((err) => console.warn('DB warm skip:', err?.message || err));
 });
 
 async function shutdown(signal) {

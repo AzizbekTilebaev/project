@@ -54,14 +54,24 @@ function mapLatinSegment(value) {
   return out;
 }
 
+/** URL / email / UUID / hex id — sózlik lemma (QLAS, QÍLAŃ) emes. */
+function isTechnicalToken(part) {
+  if (!part) return false;
+  if (/^https?:\/\//i.test(part)) return true;
+  if (/^[\w.+-]+@[\w.-]+\.\w+$/.test(part)) return true;
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(part)) return true;
+  // Qısqa hex id (mısalı abf80934) — tek sandı óz ishine alǵanda
+  if (/^[0-9a-f]{8,12}$/i.test(part) && /\d/.test(part)) return true;
+  return false;
+}
+
 export function toCyrillic(text) {
   const source = String(text ?? '').normalize('NFC');
-  // API, PDF, UUID, URL sıyaqlı texnikalıq belgilerdi ózgertpeymiz.
+  // URL / email / UUID saqlanadı; ALL-CAPS lemma (QLAS) endi kirillge aylanadı
+  // (eski [A-Z0-9_-]{2,} qáǵıydası QÍLAŃ ishinde "LA" qaldırıp ҚЫLAҢ qılatuǵın edi).
   return source
-    .split(/(https?:\/\/\S+|[\w.+-]+@[\w.-]+\.\w+|[A-Z0-9_-]{2,})/g)
-    .map((part) =>
-      /^(https?:\/\/|[\w.+-]+@|[A-Z0-9_-]{2,}$)/.test(part) ? part : mapLatinSegment(part)
-    )
+    .split(/(https?:\/\/\S+|[\w.+-]+@[\w.-]+\.\w+|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{8,12})/gi)
+    .map((part) => (isTechnicalToken(part) ? part : mapLatinSegment(part)))
     .join('');
 }
 

@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="kaa">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lottie — holy bible book</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --panel: #1e293b;
+        --ink: #f8fafc;
+        --muted: #94a3b8;
+        --accent: #14b8a6;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background:
+          radial-gradient(circle at 20% 10%, rgba(20, 184, 166, 0.18), transparent 40%),
+          radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.12), transparent 35%),
+          var(--bg);
+        color: var(--ink);
+      }
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 1.5rem;
+        display: grid;
+        gap: 1.25rem;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+      .sub { color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem; }
+      .stage {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      @media (min-width: 800px) {
+        .stage { grid-template-columns: 1.1fr 0.9fr; align-items: start; }
+      }
+      .player-card, .controls {
+        background: rgba(30, 41, 59, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1.25rem;
+        padding: 1rem;
+        backdrop-filter: blur(10px);
+      }
+      #player {
+        width: min(100%, 360px);
+        aspect-ratio: 1;
+        margin: 0 auto;
+        background: #f8fafc;
+        border-radius: 1rem;
+      }
+      #player.dark-bg { background: #0f172a; }
+      label {
+        display: grid;
+        gap: 0.35rem;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 0.85rem;
+      }
+      input[type="color"] {
+        width: 100%;
+        height: 2.4rem;
+        border: 0;
+        border-radius: 0.6rem;
+        background: transparent;
+        cursor: pointer;
+      }
+      input[type="range"] { width: 100%; }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      button, .file-btn {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 0.55rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--accent);
+        color: #042f2e;
+        border-color: transparent;
+      }
+      button:hover, .file-btn:hover { filter: brightness(1.08); }
+      .meta {
+        font-family: ui-monospace, monospace;
+        font-size: 0.75rem;
+        color: var(--muted);
+        line-height: 1.5;
+        white-space: pre-wrap;
+      }
+      .swatch {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-right: 0.75rem;
+      }
+      .dot {
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>wired-outline · holy bible book</h1>
+        <p class="sub">
+          Ko‘rish va tahrirlash — primary / secondary rang, tezlik, fon. Keyin JSON yuklab oling.
+        </p>
+      </header>
+
+      <div class="stage">
+        <div class="player-card">
+          <div id="player" aria-label="Lottie preview"></div>
+          <div class="row" style="justify-content: center; margin-top: 0.85rem">
+            <button type="button" id="btnPlay">Play / Pause</button>
+            <button type="button" id="btnRestart">Qayta</button>
+            <button type="button" id="btnBg">Fon</button>
+          </div>
+        </div>
+
+        <div class="controls">
+          <label>
+            Primary (qora kontur)
+            <input type="color" id="primary" value="#121331" />
+          </label>
+          <label>
+            Secondary (yashil / teal)
+            <input type="color" id="secondary" value="#08a88a" />
+          </label>
+          <label>
+            Stroke kengligi
+            <input type="range" id="stroke" min="8" max="28" step="1" value="18" />
+            <span id="strokeVal">18</span>
+          </label>
+          <label>
+            Tezlik
+            <input type="range" id="speed" min="0.25" max="2.5" step="0.05" value="1" />
+            <span id="speedVal">1.00×</span>
+          </label>
+
+          <div class="row">
+            <button type="button" class="primary" id="btnApply">Qo‘llash</button>
+            <button type="button" id="btnReset">Asliga</button>
+            <button type="button" id="btnDownload">JSON yuklash</button>
+            <label class="file-btn" style="margin: 0; display: inline-flex; align-items: center">
+              Fayl ochish
+              <input type="file" id="file" accept="application/json,.json" hidden />
+            </label>
+          </div>
+
+          <p class="meta" id="meta" style="margin-top: 1rem"></p>
+          <p class="meta" style="margin-top: 0.5rem">
+            <span class="swatch"><span class="dot" id="dotP"></span> primary</span>
+            <span class="swatch"><span class="dot" id="dotS"></span> secondary</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const SRC = './holy-bible-book.json';
+      const DEFAULT_PRIMARY = [0.071, 0.075, 0.192];
+      const DEFAULT_SECONDARY = [0.031, 0.659, 0.541];
+      const DEFAULT_STROKE = 18;
+
+      let original = null;
+      let current = null;
+      let anim = null;
+
+      const el = {
+        player: document.getElementById('player'),
+        primary: document.getElementById('primary'),
+        secondary: document.getElementById('secondary'),
+        stroke: document.getElementById('stroke'),
+        strokeVal: document.getElementById('strokeVal'),
+        speed: document.getElementById('speed'),
+        speedVal: document.getElementById('speedVal'),
+        meta: document.getElementById('meta'),
+        dotP: document.getElementById('dotP'),
+        dotS: document.getElementById('dotS'),
+      };
+
+      function hexToRgb01(hex) {
+        const h = hex.replace('#', '');
+        const n = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16);
+        return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+      }
+
+      function rgb01ToHex([r, g, b]) {
+        const to = (x) => Math.round(x * 255).toString(16).padStart(2, '0');
+        return `#${to(r)}${to(g)}${to(b)}`;
+      }
+
+      function near(a, b, eps = 0.02) {
+        return Math.abs(a - b) <= eps;
+      }
+
+      function colorMatch(k, target) {
+        return Array.isArray(k) && k.length >= 3 && near(k[0], target[0]) && near(k[1], target[1]) && near(k[2], target[2]);
+      }
+
+      function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+      }
+
+      function recolor(data, primary, secondary, strokeW) {
+        const out = deepClone(data);
+        const walk = (node) => {
+          if (!node || typeof node !== 'object') return;
+          if (Array.isArray(node)) {
+            node.forEach(walk);
+            return;
+          }
+          if (node.ty === 'st' && node.c && Array.isArray(node.c.k)) {
+            const k = node.c.k;
+            if (colorMatch(k, DEFAULT_PRIMARY) || node.cl === 'primary' || node.nm === '.primary') {
+              node.c.k = [...primary, k[3] != null ? k[3] : 1];
+            } else if (colorMatch(k, DEFAULT_SECONDARY) || node.cl === 'secondary' || node.nm === '.secondary') {
+              node.c.k = [...secondary, k[3] != null ? k[3] : 1];
+            }
+            if (node.w && typeof node.w.k === 'number') {
+              node.w.k = strokeW;
+            }
+          }
+          // Color control effects on root
+          if (node.ef && Array.isArray(node.ef)) {
+            for (const ef of node.ef) {
+              if (ef.nm === 'primary' && ef.ef?.[0]?.v?.k) ef.ef[0].v.k = [...primary];
+              if (ef.nm === 'secondary' && ef.ef?.[0]?.v?.k) ef.ef[0].v.k = [...secondary];
+            }
+          }
+          Object.values(node).forEach(walk);
+        };
+        walk(out);
+        return out;
+      }
+
+      function destroy() {
+        if (anim) {
+          anim.destroy();
+          anim = null;
+        }
+        el.player.innerHTML = '';
+      }
+
+      function play(data) {
+        destroy();
+        current = data;
+        anim = lottie.loadAnimation({
+          container: el.player,
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          animationData: deepClone(data),
+        });
+        anim.setSpeed(Number(el.speed.value));
+        el.meta.textContent = [
+          `name: ${data.nm || '—'}`,
+          `size: ${data.w}×${data.h} · ${data.fr}fps · frames ${data.ip}–${data.op}`,
+          `duration: ${((data.op - data.ip) / data.fr).toFixed(2)}s`,
+          `assets: ${data.assets?.length || 0} · layers: ${data.layers?.length || 0}`,
+        ].join('\n');
+        el.dotP.style.background = el.primary.value;
+        el.dotS.style.background = el.secondary.value;
+      }
+
+      function applyEdits() {
+        if (!original) return;
+        const next = recolor(
+          original,
+          hexToRgb01(el.primary.value),
+          hexToRgb01(el.secondary.value),
+          Number(el.stroke.value)
+        );
+        play(next);
+      }
+
+      async function loadFromUrl(url) {
+        const res = await fetch(url);
+        original = await res.json();
+        el.primary.value = rgb01ToHex(DEFAULT_PRIMARY);
+        el.secondary.value = rgb01ToHex(DEFAULT_SECONDARY);
+        el.stroke.value = String(DEFAULT_STROKE);
+        el.strokeVal.textContent = String(DEFAULT_STROKE);
+        play(deepClone(original));
+      }
+
+      document.getElementById('btnApply').onclick = applyEdits;
+      document.getElementById('btnReset').onclick = () => {
+        if (!original) return;
+        el.primary.value = rgb01ToHex(DEFAULT_PRIMARY);
+        el.secondary.value = rgb01ToHex(DEFAULT_SECONDARY);
+        el.stroke.value = String(DEFAULT_STROKE);
+        el.strokeVal.textContent = String(DEFAULT_STROKE);
+        el.speed.value = '1';
+        el.speedVal.textContent = '1.00×';
+        play(deepClone(original));
+      };
+      document.getElementById('btnPlay').onclick = () => {
+        if (!anim) return;
+        anim.isPaused ? anim.play() : anim.pause();
+      };
+      document.getElementById('btnRestart').onclick = () => anim?.goToAndPlay(0, true);
+      document.getElementById('btnBg').onclick = () => el.player.classList.toggle('dark-bg');
+      document.getElementById('btnDownload').onclick = () => {
+        const blob = new Blob([JSON.stringify(current || original, null, 0)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'holy-bible-book.json';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      };
+      el.stroke.oninput = () => {
+        el.strokeVal.textContent = el.stroke.value;
+      };
+      el.speed.oninput = () => {
+        el.speedVal.textContent = `${Number(el.speed.value).toFixed(2)}×`;
+        if (anim) anim.setSpeed(Number(el.speed.value));
+      };
+      el.primary.oninput = el.secondary.oninput = () => {
+        el.dotP.style.background = el.primary.value;
+        el.dotS.style.background = el.secondary.value;
+      };
+      document.getElementById('file').onchange = async (e) => {
+        const f = e.target.files?.[0];
+        if (!f) return;
+        original = JSON.parse(await f.text());
+        play(deepClone(original));
+      };
+
+      loadFromUrl(SRC).catch((err) => {
+        el.meta.textContent = `Yuklash xatosi: ${err.message}`;
+      });
+    </script>
+  </body>
+</html>

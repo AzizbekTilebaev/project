@@ -30,6 +30,7 @@ const securityHeaders = {
 export default defineConfig({
   plugins: [react()],
   server: {
+    host: '0.0.0.0',
     port: 3000,
     headers: securityHeaders,
     fs: {

@@ -305,6 +305,7 @@ await ensureColumn(
   `geocode_status ENUM('none','pending','resolved','failed','manual') NOT NULL DEFAULT 'none' AFTER birth_lng`
 );
 await ensureColumn('literature_writers', 'facts_json', `facts_json JSON NULL AFTER geocode_status`);
+await ensureColumn('literature_writers', 'roles_json', `roles_json JSON NULL AFTER facts_json`);
 await ensureColumn(
   'writer_creative_works',
   'linked_section_index',

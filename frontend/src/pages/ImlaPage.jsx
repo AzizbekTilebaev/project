@@ -32,13 +32,16 @@ export function ImlaDetail() {
   const entry = data?.entry;
   usePageMeta(entry?.word || 'Imla sózligi', entry?.entryText?.slice(0, 120));
 
+  const backHref = entry?.titleId ? `/dictionary/${entry.titleId}` : '/dictionary';
+  const backLabel = entry?.titleId ? text('Túsindirme sózlik') : text('Sózlik');
+
   return (
-    <PageGate status={status} error={error} onRetry={reload} backHref="/dictionary/imla">
+    <PageGate status={status} error={error} onRetry={reload} backHref={backHref}>
       {entry && (
         <DictShell className="pt-24 pb-24">
           <div className="relative mx-auto max-w-3xl px-5 md:px-8">
-            <Link to="/dictionary/imla" className="text-sm text-ink/45 hover:text-teal-900">
-              ← {text('Imla sózligi')}
+            <Link to={backHref} className="text-sm text-ink/45 hover:text-teal-900">
+              ← {backLabel}
             </Link>
             <header className="mt-8 mb-6">
               <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -51,13 +54,15 @@ export function ImlaDetail() {
                   </span>
                 ) : null}
               </div>
-              <h1 className="font-display text-4xl md:text-5xl text-ink tracking-tight">{entry.word}</h1>
+              <h1 className="font-display text-4xl md:text-5xl text-ink tracking-tight">
+                {text(entry.word)}
+              </h1>
             </header>
             <section className="qp-surface p-6 md:p-8">
               <p className="text-[0.7rem] font-bold uppercase tracking-[0.14em] text-teal-800/65">
                 {text('Durıs jazılıwı')}
               </p>
-              <p className="mt-3 text-lg leading-relaxed text-ink">{entry.entryText}</p>
+              <p className="mt-3 text-lg leading-relaxed text-ink">{text(entry.entryText)}</p>
               {entry.tags?.length ? (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {entry.tags.map((tag) => (
@@ -65,7 +70,7 @@ export function ImlaDetail() {
                       key={tag}
                       className="rounded-full bg-ink/5 px-2.5 py-1 text-[0.7rem] font-semibold text-ink/55"
                     >
-                      {tag}
+                      {text(tag)}
                     </span>
                   ))}
                 </div>
@@ -259,8 +264,8 @@ export default function ImlaPage() {
                   className="qp-card flex w-full items-start justify-between gap-3 p-4 text-left"
                 >
                   <div className="min-w-0">
-                    <p className="font-semibold text-ink">{row.word}</p>
-                    <p className="mt-1 line-clamp-2 text-sm text-ink/55">{row.entryText}</p>
+                    <p className="font-semibold text-ink">{text(row.word)}</p>
+                    <p className="mt-1 line-clamp-2 text-sm text-ink/55">{text(row.entryText)}</p>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1">
                     <span className="rounded-full bg-teal-50 px-2 py-1 text-[0.65rem] font-bold text-teal-800">

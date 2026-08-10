@@ -54,7 +54,7 @@ export const FAQ_CTAS = {
   script: [{ to: '/settings', labelKey: 'sazlawlar', icon: 'layers', tone: 'primary' }],
 };
 
-/** Footer «sheksiz» strip — 2 hub eshigi (Ádebiyat + Oyınlar). */
+/** Footer «sheksiz» strip — 2 hub eshigi (Kitapxana + Oyınlar). */
 export const FOOTER_FREE_LINKS = [
   { to: '/literature', labelKey: 'adebiyat', icon: 'book' },
   { to: '/games', labelKey: 'oyinlar', icon: 'trophy', tone: 'primary' },
@@ -76,8 +76,8 @@ export const FOOTER_NAV = [
     titleKey: 'footerColLearn',
     links: [
       { to: '/literature', labelKey: 'adebiyat' },
+      { to: '/literature/qaraqalpaq-tili', labelKey: 'qaraqalpaqTili' },
       { to: '/dictionary', labelKey: 'sozlik' },
-      { to: '/qoidalar', labelKey: 'qoidalarShort' },
       { to: '/english', labelKey: 'englishShort' },
       { to: '/facts', labelKey: 'qiziqarliShort' },
       { to: '/books', labelKey: 'faqTryBooks' },

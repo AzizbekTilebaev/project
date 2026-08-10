@@ -9,10 +9,12 @@ import { AnimChevron } from '../animations';
 
 /**
  * WordDetail — sinonim / antonim / qurma usınısı + vote (server counts).
+ * Ádette jabıq: kishi "Úles qosamıź" tipinde ashiladı.
  */
-export default function CommunitySuggestPanel({ word }) {
+export default function CommunitySuggestPanel({ word, defaultOpen = false }) {
   const { text } = useUiScript();
   const senses = Array.isArray(word?.aniqlamalar) ? word.aniqlamalar : [];
+  const [open, setOpen] = useState(Boolean(defaultOpen));
   const [type, setType] = useState('synonym');
   const [descriptionId, setDescriptionId] = useState(senses[0]?.id || '');
   const [suggestedWord, setSuggestedWord] = useState('');
@@ -26,6 +28,7 @@ export default function CommunitySuggestPanel({ word }) {
   }, [word?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    if (!open) return undefined;
     let cancelled = false;
     (async () => {
       try {
@@ -41,7 +44,7 @@ export default function CommunitySuggestPanel({ word }) {
     return () => {
       cancelled = true;
     };
-  }, [word?.id, descriptionId, type]);
+  }, [open, word?.id, descriptionId, type]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -70,8 +73,23 @@ export default function CommunitySuggestPanel({ word }) {
     }
   };
 
+  if (!open) {
+    return (
+      <aside className="mt-12 border-t border-dashed border-ink/10 pt-6">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="text-sm font-semibold text-sky-700 hover:text-sky-900 hover:underline underline-offset-4 transition-colors"
+        >
+          {text(KAA.jamiyetUlesQosamiz)}
+        </button>
+        <p className="mt-1 text-[0.7rem] text-ink/35">{text(KAA.jamiyetPanelEyebrow)}</p>
+      </aside>
+    );
+  }
+
   return (
-    <aside className="relative mt-16 overflow-hidden rounded-3xl border border-teal-500/15 bg-gradient-to-br from-teal-50/80 via-white/60 to-sky-50/70 px-6 py-7">
+    <aside className="relative mt-12 overflow-hidden rounded-3xl border border-teal-500/15 bg-gradient-to-br from-teal-50/80 via-white/60 to-sky-50/70 px-6 py-7">
       <div
         className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-teal-400/15 blur-3xl"
         aria-hidden
@@ -91,6 +109,13 @@ export default function CommunitySuggestPanel({ word }) {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="text-xs font-bold text-sky-700 hover:underline"
+          >
+            {text(KAA.jamiyetUlesYopiw)}
+          </button>
           <Link
             to="/community"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-900/70 hover:underline"

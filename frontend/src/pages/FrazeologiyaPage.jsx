@@ -29,14 +29,16 @@ export function FrazeologiyaDetail() {
               ← {text('Frazeologizmler sózligi')}
             </Link>
             <header className="mt-8 mb-6">
-              <h1 className="font-display text-4xl md:text-5xl text-ink tracking-tight">{entry.phrase}</h1>
+              <h1 className="font-display text-4xl md:text-5xl text-ink tracking-tight">
+                {text(entry.phrase)}
+              </h1>
               {entry.source ? <p className="mt-2 text-xs text-ink/40">{entry.source}</p> : null}
             </header>
             <section className="qp-surface p-6 md:p-8">
               <StructuredSenses senses={entry.senses} showEmpty />
               {entry.variants ? (
                 <p className="mt-4 text-sm text-ink/50">
-                  {text('Variantlar')}: {entry.variants}
+                  {text('Variantlar')}: {text(entry.variants)}
                 </p>
               ) : null}
               {entry.titleId ? (
@@ -147,9 +149,9 @@ export default function FrazeologiyaPage() {
                   className="qp-card flex w-full items-start justify-between gap-3 p-4 text-left"
                 >
                   <div className="min-w-0">
-                    <p className="font-semibold text-ink">{row.phrase}</p>
+                    <p className="font-semibold text-ink">{text(row.phrase)}</p>
                     <p className="mt-1 line-clamp-2 text-sm text-ink/55">
-                      {row.senses?.[0]?.text || row.gloss}
+                      {text(row.senses?.[0]?.text || row.gloss || '')}
                     </p>
                   </div>
                   {row.titleId ? (

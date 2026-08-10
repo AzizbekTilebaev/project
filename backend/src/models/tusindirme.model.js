@@ -1,8 +1,13 @@
 import { pools } from '../config/db.js';
-
-const db = pools.tusindirme;
 import { POS_LIST, THEME_LIST, getPosBySlug, getThemeBySlug } from '../config/dictionaryTaxonomy.js';
 import searchFold from '../utils/searchFold.js';
+import {
+  letterMatchVariants,
+  canonicalLetter,
+  KK_ALPHABET,
+} from '../utils/letterIndex.js';
+
+const db = pools.tusindirme;
 
 /** LIKE wildcardsni escape — foydalanuvchi %/_ yuborsa keng scan bo'lmasin */
 function escapeLike(s) {
@@ -398,7 +403,7 @@ getIdiomDesc = async(idiomIds) => {
 
   // ------------------- ALPHABET -------------------
   // Qaraqalpaq alifbosi tartibi (MySQL kolatsiyasi buni bilmaydi)
-  static KK_ALPHABET = 'АӘБВГҒДЕЁЖЗИЙКҚЛМНҢОӨПРСТУҮЎФХҲЦЧШЩЪЫІЬЭЮЯ';
+  static KK_ALPHABET = KK_ALPHABET;
 
   getAlphabetStats = async () => {
     const letters = TusindirmeModel.KK_ALPHABET.split('');
@@ -414,7 +419,26 @@ GROUP BY st_let
 ORDER BY FIELD(st_let, ${fieldList});`,
       letters
     );
-    return rows;
+
+    // Lotin st_let (F, Q, …) qaldıqların kirill háripine qosıw — álipbede eki "Ф" bolmasın
+    const byCanon = new Map();
+    for (const lit of letters) {
+      byCanon.set(lit, {
+        arip: lit,
+        jami: 0,
+        tastiyiqlangan: 0,
+        tastiyiqlanbagan: 0,
+      });
+    }
+    for (const row of rows) {
+      const canon = canonicalLetter(row.arip || '');
+      if (!byCanon.has(canon)) continue;
+      const bucket = byCanon.get(canon);
+      bucket.jami += Number(row.jami) || 0;
+      bucket.tastiyiqlangan += Number(row.tastiyiqlangan) || 0;
+      bucket.tastiyiqlanbagan += Number(row.tastiyiqlanbagan) || 0;
+    }
+    return letters.map((lit) => byCanon.get(lit)).filter((r) => r && (r.jami > 0 || r.tastiyiqlangan > 0));
   };
 
   // ------------------- MAQAL-MATEL -------------------
@@ -466,14 +490,16 @@ ORDER BY FIELD(st_let, ${fieldList});`,
 
   // ------------------- LETTER FILTER -------------------
   getSozlerByLetter = async (letter, limit, offset) => {
-    const lit = String(letter || '').charAt(0);
+    const variants = letterMatchVariants(letter);
+    if (!variants.length) return [];
+    const placeholders = variants.map(() => '?').join(',');
     const [rows] = await db.query(
       `SELECT ${FIRST_SENSE_SELECT}
        FROM titles s
-       WHERE s.status = 1 AND s.st_let = ?
+       WHERE s.status = 1 AND s.st_let IN (${placeholders})
        ORDER BY s.\`order\`
        LIMIT ? OFFSET ?`,
-      [lit, limit, offset]
+      [...variants, limit, offset]
     );
     return rows;
   };
@@ -628,10 +654,12 @@ ORDER BY FIELD(st_let, ${fieldList});`,
   };
 
   getCountByLetter = async (letter) => {
-    const lit = String(letter || '').charAt(0);
+    const variants = letterMatchVariants(letter);
+    if (!variants.length) return 0;
+    const placeholders = variants.map(() => '?').join(',');
     const [[{ total }]] = await db.query(
-      'SELECT COUNT(*) as total FROM titles WHERE status = 1 AND st_let = ?',
-      [lit]
+      `SELECT COUNT(*) as total FROM titles WHERE status = 1 AND st_let IN (${placeholders})`,
+      variants
     );
     return total;
   };

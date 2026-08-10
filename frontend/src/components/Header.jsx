@@ -8,14 +8,13 @@ import { anim } from '../animations';
 import { safeMediaUrl } from '../lib/safeUrl';
 import GuestSoftContinue from './GuestSoftContinue';
 
-const ACTIVE_NAV = 'bg-teal-900 text-white font-semibold shadow-sm';
+const ACTIVE_NAV = 'text-teal-950 font-semibold';
 
-/** Asosiy eshiklar — Sózlik / Oyın / Ádebiyat / Qoida (mobil tab + desktop). */
+/** Asosiy eshiklar — Sózlik / Oyın / Kitapxana (mobil tab + desktop). */
 const PLAY_NAV = [
   { path: '/dictionary', label: KAA.sozlik, icon: 'book' },
   { path: '/games', label: KAA.oyinlar, icon: 'bolt' },
-  { path: '/literature', label: KAA.adebiyat, icon: 'scroll' },
-  { path: '/qoidalar', label: KAA.qoidalarShort, icon: 'grammar' },
+  { path: '/literature', label: KAA.kitapxana, icon: 'book' },
 ];
 
 /** Sidebar «Yana» — bas bet, mashq, statistika, boshqa. */
@@ -69,7 +68,9 @@ export default function Header() {
         location.pathname.startsWith('/literature') ||
         location.pathname.startsWith('/writers') ||
         location.pathname.startsWith('/books') ||
-        location.pathname.startsWith('/jumbaqlar')
+        location.pathname.startsWith('/jumbaqlar') ||
+        location.pathname.startsWith('/qoidalar') ||
+        location.pathname.startsWith('/kitapxana')
       );
     }
     if (path === '/games') {
@@ -94,9 +95,6 @@ export default function Header() {
     if (path === '/community') {
       return location.pathname.startsWith('/community');
     }
-    if (path === '/qoidalar') {
-      return location.pathname.startsWith('/qoidalar');
-    }
     if (path === '/english') {
       return location.pathname.startsWith('/english');
     }
@@ -115,7 +113,7 @@ export default function Header() {
     location.pathname.startsWith('/register');
   const onSettings = location.pathname.startsWith('/settings');
 
-  const accountHref = '/profile';
+  const accountHref = isAuthenticated ? '/profile' : '/register';
   const accountLabel = isAuthenticated ? KAA.profil : KAA.profileGuestNav;
 
   return (
@@ -129,7 +127,7 @@ export default function Header() {
           </Link>
 
           <nav
-            className="hidden items-center gap-1 rounded-2xl border border-white/60 bg-white/45 p-1 shadow-qp-soft backdrop-blur-xl md:flex"
+            className="hidden items-center gap-0.5 md:flex"
             aria-label={text(KAA.tiykargiMenyu)}
           >
             {PLAY_NAV.map((link) => {
@@ -139,10 +137,10 @@ export default function Header() {
                   key={link.path}
                   to={link.path}
                   title={text(link.label)}
-                  className={`lollipop-nav-link ${anim.underlineGrow} group inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm tracking-wide transition-colors ${
+                  className={`lollipop-nav-link ${anim.underlineGrow} group inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm tracking-wide transition-colors ${
                     on
                       ? `${ACTIVE_NAV} is-active`
-                      : 'font-medium text-ink/50 hover:bg-white/70 hover:text-ink'
+                      : 'font-medium text-ink/45 hover:text-ink'
                   }`}
                 >
                   <LollipopIcon name={link.icon} active={on} size={18} />
@@ -154,14 +152,14 @@ export default function Header() {
 
           <div className="flex items-center gap-1 sm:gap-1.5">
             <div
-              className="theme-focus-hide flex rounded-full border border-white/60 bg-white/50 p-0.5 text-[0.65rem] font-bold backdrop-blur-sm"
+              className="theme-focus-hide flex rounded-lg border border-ink/10 bg-white/40 p-0.5 text-[0.65rem] font-bold"
               role="group"
               aria-label={text(KAA.jaziwTuri)}
             >
               <button
                 type="button"
                 onClick={() => setScript('cyrillic')}
-                className={`rounded-full px-2.5 py-1 transition ${
+                className={`rounded-md px-2.5 py-1 transition ${
                   script === 'cyrillic' ? 'bg-teal-900 text-white' : 'text-ink/45 hover:text-ink'
                 }`}
                 aria-pressed={script === 'cyrillic'}
@@ -171,7 +169,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => setScript('latin')}
-                className={`rounded-full px-2.5 py-1 transition ${
+                className={`rounded-md px-2.5 py-1 transition ${
                   script === 'latin' ? 'bg-teal-900 text-white' : 'text-ink/45 hover:text-ink'
                 }`}
                 aria-pressed={script === 'latin'}
@@ -182,10 +180,10 @@ export default function Header() {
 
             <Link
               to="/settings"
-              className={`inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/50 bg-white/40 transition-colors backdrop-blur-sm ${
+              className={`inline-flex h-9 w-9 items-center justify-center rounded-xl transition-colors ${
                 onSettings
-                  ? 'text-teal-950 shadow-sm'
-                  : 'text-ink/55 hover:bg-white/70 hover:text-ink'
+                  ? 'text-teal-950'
+                  : 'text-ink/50 hover:bg-ink/[0.04] hover:text-ink'
               }`}
               aria-label={text(KAA.sazlawlar)}
               title={text(KAA.sazlawlar)}
@@ -195,10 +193,10 @@ export default function Header() {
 
             <Link
               to={accountHref}
-              className={`inline-flex h-9 items-center gap-1.5 rounded-full border border-white/50 bg-white/45 px-1.5 transition-colors backdrop-blur-sm sm:px-2.5 ${
+              className={`inline-flex h-9 items-center gap-1.5 rounded-xl px-1.5 transition-colors sm:px-2 ${
                 onAccount
-                  ? 'text-teal-950 shadow-sm'
-                  : 'text-ink/55 hover:bg-white/75 hover:text-ink'
+                  ? 'text-teal-950'
+                  : 'text-ink/50 hover:bg-ink/[0.04] hover:text-ink'
               }`}
               aria-label={text(accountLabel)}
               title={text(accountLabel)}
@@ -207,10 +205,10 @@ export default function Header() {
                 <img
                   src={safeMediaUrl(user.avatarUrl)}
                   alt=""
-                  className="h-7 w-7 rounded-full border border-ink/10 object-cover"
+                  className="h-7 w-7 rounded-lg border border-ink/10 object-cover"
                 />
               ) : (
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-emerald-500 text-white">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-teal-800 text-white">
                   <LollipopIcon name="user" active={onAccount} size={16} />
                 </span>
               )}
@@ -220,7 +218,7 @@ export default function Header() {
             <button
               ref={menuBtnRef}
               type="button"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/50 bg-white/40 text-ink backdrop-blur-sm hover:bg-white/70 md:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-ink hover:bg-ink/[0.04] md:hidden"
               onClick={() => setSidebarOpen((v) => !v)}
               aria-expanded={sidebarOpen}
               aria-controls="mobile-nav"
@@ -243,7 +241,7 @@ export default function Header() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`lollipop-tab flex flex-1 flex-col items-center gap-0.5 rounded-2xl px-1 py-1 text-[0.62rem] font-semibold transition-colors ${
+                className={`lollipop-tab flex flex-1 flex-col items-center gap-0.5 rounded-xl px-1 py-1 text-[0.62rem] font-semibold transition-colors ${
                   on ? 'text-teal-950' : 'text-ink/40'
                 }`}
               >

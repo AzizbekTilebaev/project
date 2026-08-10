@@ -1,9 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useUiScript } from '../../contexts/UiScriptContext';
 
-/** Numbered senses + nested citation examples (shared by bilingual / frazeologiya). */
-export default function StructuredSenses({ senses, showEmpty = false }) {
+/**
+ * Numbered senses + nested citation examples (shared by bilingual / frazeologiya).
+ * @param {boolean} [scripted=true] — Qaraqalpaqsha mánisi/mısal ushın KIR/LAT; English ushın false.
+ */
+export default function StructuredSenses({ senses, showEmpty = false, scripted = true }) {
   const { text } = useUiScript();
+  const show = scripted ? text : (v) => (v == null ? '' : String(v));
   const list = Array.isArray(senses) ? senses : [];
   if (!list.length) {
     return showEmpty ? <p className="text-sm text-ink/45">{text('Mánisi joq')}</p> : null;
@@ -19,14 +23,14 @@ export default function StructuredSenses({ senses, showEmpty = false }) {
             {multi ? (
               <span className="shrink-0 font-semibold text-teal-800">{s.n}.</span>
             ) : null}
-            <p className="min-w-0 text-ink/80">{s.text}</p>
+            <p className="min-w-0 text-ink/80">{show(s.text)}</p>
           </div>
           {(s.examples || []).length > 0 ? (
             <ul className="mt-3 space-y-3 border-l-2 border-teal-800/15 pl-3">
               {s.examples.map((ex, idx) => (
                 <li key={ex.id || `${s.n}-ex-${idx}`} className="min-w-0">
                   <p className="font-display text-[0.95rem] italic leading-relaxed text-ink/70">
-                    {ex.example}
+                    {show(ex.example)}
                   </p>
                   {ex.author ? (
                     <p className="mt-1.5 text-xs text-ink/45">

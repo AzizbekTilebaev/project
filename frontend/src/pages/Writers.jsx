@@ -9,6 +9,7 @@ import ScriptToggle from '../components/literature/ScriptToggle';
 import WriterAlphabet from '../components/literature/WriterAlphabet';
 import { pickWriterName } from '../components/literature/litUtils';
 import { t } from '../components/literature/litLabels';
+import WriterRoleChips from '../components/literature/WriterRoleChips';
 import { useUiScript } from '../contexts/UiScriptContext';
 import { fetchWriters } from '../api/literature';
 import { AnimIconDivider, AnimChevron, anim, PageEnter } from '../animations';
@@ -324,6 +325,12 @@ export default function Writers() {
                           {name}
                         </span>
                         <LifeBadge writer={w} script={script} />
+                        <WriterRoleChips
+                          roles={w.roles}
+                          script={script}
+                          limit={3}
+                          className="mt-1.5"
+                        />
                       </span>
                       {w.hasBooks ? (
                         <span className="hidden shrink-0 items-center gap-1 rounded-full bg-emerald-100/90 px-2.5 py-1 text-[0.65rem] font-bold text-emerald-900 sm:inline-flex">

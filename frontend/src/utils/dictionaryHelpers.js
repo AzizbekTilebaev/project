@@ -16,17 +16,26 @@ export function splitHighlight(text, query) {
   };
 }
 
-/** Havola-yozuv (к./қ. = «qara») nishonini aniqlash */
+/** Havola-yozuv (к./қ. = «qara» / «қараң») nishonini aniqlash */
 export function referenceTarget(entry) {
   const cat = (entry.category || '').trim().toLowerCase();
   const def = (entry.birinshi_aniqlama || '').trim();
   if (!def || def.length > 60) return null;
   const cleaned = def.replace(/\([^)]*\)/g, '').trim();
+
+  // "к е л." / "к ел." = кел. POS — havola emes
+  if (/^[кқ]\s+е\s*л\s*\./iu.test(cleaned)) return null;
+  if (/^[кқ]\s+\S+\s+фейил/iu.test(cleaned)) return null;
+
   const isRefCat = cat === 'к.' || cat === 'қ.';
-  const startsWithRef = /^[кқ]\.\s+/.test(cleaned);
-  if (!isRefCat && !startsWithRef) return null;
-  const target = cleaned.replace(/^[кқ]\.\s*/, '').replace(/\.$/, '').trim();
+  const refPrefix = cleaned.match(/^(?:[кқ]\.\s+|[кқ]\s+|қараң[\s.:]+|каран[\s.:]+|qarań[\s.:]+)/iu);
+  if (!isRefCat && !refPrefix) return null;
+
+  let target = cleaned;
+  if (refPrefix) target = cleaned.slice(refPrefix[0].length);
+  target = target.replace(/\.+$/u, '').trim();
   if (!target || target.length > 30 || target.split(/\s+/).length > 3) return null;
+  if (/^(ат|ф|кел|рәў|алм|сан|лин)\.?$/iu.test(target)) return null;
   return target;
 }
 

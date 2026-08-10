@@ -11,10 +11,9 @@ export default function SiteFooter() {
   const { text } = useUiScript();
 
   return (
-    <footer className="theme-focus-hide border-t border-white/40 bg-white/35 backdrop-blur-xl">
+    <footer className="theme-focus-hide border-t border-ink/10">
       <div className="mx-auto flex max-w-5xl flex-col gap-8 px-5 py-10 sm:px-6 md:px-10">
-        <div className="qp-surface p-6 md:p-8">
-        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+        <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           <div className="max-w-sm">
             <p className="font-display text-xl tracking-tight text-ink">{text(KAA.platformName)}</p>
             <p className="mt-1 text-sm text-ink/50">{text(KAA.footerTagline)}</p>
@@ -58,7 +57,6 @@ export default function SiteFooter() {
               </div>
             ))}
           </nav>
-        </div>
         </div>
       </div>
       <div className="border-t border-ink/5 px-5 py-4 text-center text-[0.7rem] text-ink/35 sm:px-6">

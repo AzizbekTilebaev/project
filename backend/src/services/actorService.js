@@ -61,14 +61,23 @@ function sanitizePayload(payload) {
 }
 
 export async function ensureActor(actorKey) {
-  const selectSql =
+  const selectWithBlock =
+    'SELECT id, age_years AS ageYears, age_consent AS ageConsent, COALESCE(is_blocked, 0) AS isBlocked FROM anonymous_actors WHERE actor_key = ? LIMIT 1';
+  const selectPlain =
     'SELECT id, age_years AS ageYears, age_consent AS ageConsent FROM anonymous_actors WHERE actor_key = ? LIMIT 1';
 
-  const [rows] = await db.query(selectSql, [actorKey]);
+  let rows;
+  try {
+    [rows] = await db.query(selectWithBlock, [actorKey]);
+  } catch {
+    [rows] = await db.query(selectPlain, [actorKey]);
+    if (rows[0]) rows[0].isBlocked = 0;
+  }
   if (rows[0]) {
-    await db.query('UPDATE anonymous_actors SET last_seen_at = CURRENT_TIMESTAMP WHERE id = ?', [
+    // last_seen — loginni to‘xtatmasin (Aiven RTT)
+    db.query('UPDATE anonymous_actors SET last_seen_at = CURRENT_TIMESTAMP WHERE id = ?', [
       rows[0].id,
-    ]);
+    ]).catch(() => {});
     return rows[0];
   }
 
@@ -76,17 +85,24 @@ export async function ensureActor(actorKey) {
     const [result] = await db.query('INSERT INTO anonymous_actors (actor_key) VALUES (?)', [
       actorKey,
     ]);
-    return { id: result.insertId, ageYears: null, ageConsent: 0 };
+    return { id: result.insertId, ageYears: null, ageConsent: 0, isBlocked: 0 };
   } catch (err) {
     // Parallel requests: unique key race — re-read existing row.
     if (err?.code === 'ER_DUP_ENTRY' || err?.errno === 1062) {
-      const [again] = await db.query(selectSql, [actorKey]);
-      if (again[0]) {
-        await db.query(
-          'UPDATE anonymous_actors SET last_seen_at = CURRENT_TIMESTAMP WHERE id = ?',
-          [again[0].id]
-        );
-        return again[0];
+      try {
+        const [again] = await db.query(selectWithBlock, [actorKey]);
+        if (again[0]) {
+          db.query('UPDATE anonymous_actors SET last_seen_at = CURRENT_TIMESTAMP WHERE id = ?', [
+            again[0].id,
+          ]).catch(() => {});
+          return again[0];
+        }
+      } catch {
+        const [again] = await db.query(selectPlain, [actorKey]);
+        if (again[0]) {
+          again[0].isBlocked = 0;
+          return again[0];
+        }
       }
     }
     throw err;

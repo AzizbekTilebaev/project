@@ -1,12 +1,14 @@
 /**
  * Google Sign-In (OAuth 2.0 / OpenID Connect) ID token verification.
- * Uses Google's tokeninfo endpoint (signature checked by Google).
+ * Prefer local JWKS verify (cached) — tokeninfo har safar Google ga boradi, sekin.
  */
+
+import crypto from 'crypto';
 
 function parseClientIds() {
   const raw = [
     process.env.GOOGLE_CLIENT_ID || '',
-    ...(String(process.env.GOOGLE_CLIENT_IDS || '').split(',')),
+    ...String(process.env.GOOGLE_CLIENT_IDS || '').split(','),
   ]
     .map((s) => s.trim())
     .filter(Boolean);
@@ -25,44 +27,41 @@ export function isGoogleSignInConfigured() {
   return parseClientIds().length > 0;
 }
 
-/**
- * @param {string} credential - GIS ID token (JWT)
- * @param {{ expectedNonce?: string | null }} [opts]
- */
-export async function verifyGoogleIdToken(credential, opts = {}) {
+let jwksCache = null;
+
+function b64urlToBuf(part) {
+  const pad = part.length % 4 === 0 ? '' : '='.repeat(4 - (part.length % 4));
+  return Buffer.from(part.replace(/-/g, '+').replace(/_/g, '/') + pad, 'base64');
+}
+
+function decodeJwtPart(part) {
+  return JSON.parse(b64urlToBuf(part).toString('utf8'));
+}
+
+async function getGoogleJwks() {
+  if (jwksCache && Date.now() < jwksCache.expiresAt) return jwksCache.keys;
+  const res = await fetch('https://www.googleapis.com/oauth2/v3/certs', {
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) {
+    const err = new Error('Google JWKS júklenbedi');
+    err.statusCode = 503;
+    err.code = 'GOOGLE_JWKS_UNREACHABLE';
+    throw err;
+  }
+  const body = await res.json();
+  const cc = String(res.headers.get('cache-control') || '');
+  const maxAgeMatch = cc.match(/max-age=(\d+)/i);
+  const maxAgeSec = maxAgeMatch ? Math.min(Number(maxAgeMatch[1]) || 3600, 86400) : 3600;
+  jwksCache = {
+    keys: Array.isArray(body.keys) ? body.keys : [],
+    expiresAt: Date.now() + Math.max(60, maxAgeSec) * 1000,
+  };
+  return jwksCache.keys;
+}
+
+function validateClaims(payload, opts = {}) {
   const clientIds = parseClientIds();
-  if (!clientIds.length) {
-    const err = new Error('Google kiriw házirshe sozlanbaǵan');
-    err.statusCode = 503;
-    err.code = 'GOOGLE_NOT_CONFIGURED';
-    throw err;
-  }
-  if (!credential || typeof credential !== 'string') {
-    const err = new Error('Google credential kerek');
-    err.statusCode = 400;
-    err.code = 'GOOGLE_CREDENTIAL_MISSING';
-    throw err;
-  }
-
-  let payload;
-  try {
-    const url = `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(credential)}`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-    if (!res.ok) {
-      const err = new Error('Google token tekshiruwden ótpedi');
-      err.statusCode = 401;
-      err.code = 'GOOGLE_TOKEN_INVALID';
-      throw err;
-    }
-    payload = await res.json();
-  } catch (e) {
-    if (e.statusCode) throw e;
-    const err = new Error('Google token tekshirile almadi');
-    err.statusCode = 503;
-    err.code = 'GOOGLE_TOKEN_UNREACHABLE';
-    throw err;
-  }
-
   const aud = String(payload.aud || '');
   const azp = String(payload.azp || '');
   if (!clientIds.includes(aud) && !clientIds.includes(azp)) {
@@ -113,4 +112,89 @@ export async function verifyGoogleIdToken(credential, opts = {}) {
   }
 
   return payload;
+}
+
+async function verifyWithJwks(credential) {
+  const parts = String(credential).split('.');
+  if (parts.length !== 3) {
+    const err = new Error('Google credential jaramlı emes');
+    err.statusCode = 400;
+    err.code = 'GOOGLE_CREDENTIAL_MISSING';
+    throw err;
+  }
+  const header = decodeJwtPart(parts[0]);
+  const payload = decodeJwtPart(parts[1]);
+  const keys = await getGoogleJwks();
+  const jwk = keys.find((k) => k.kid && k.kid === header.kid) || keys[0];
+  if (!jwk) {
+    const err = new Error('Google JWKS key tabılmadı');
+    err.statusCode = 503;
+    err.code = 'GOOGLE_JWKS_EMPTY';
+    throw err;
+  }
+  const keyObject = crypto.createPublicKey({ key: jwk, format: 'jwk' });
+  const data = Buffer.from(`${parts[0]}.${parts[1]}`);
+  const signature = b64urlToBuf(parts[2]);
+  const alg = String(header.alg || 'RS256');
+  const verifyAlg = alg === 'RS256' ? 'RSA-SHA256' : alg === 'RS384' ? 'RSA-SHA384' : 'RSA-SHA256';
+  const ok = crypto.verify(verifyAlg, data, keyObject, signature);
+  if (!ok) {
+    const err = new Error('Google token tekshiruwden ótpedi');
+    err.statusCode = 401;
+    err.code = 'GOOGLE_TOKEN_INVALID';
+    throw err;
+  }
+  return payload;
+}
+
+/** Fallback — tokeninfo (sekinroq, har safar Google). */
+async function verifyWithTokeninfo(credential) {
+  const url = `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(credential)}`;
+  const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  if (!res.ok) {
+    const err = new Error('Google token tekshiruwden ótpedi');
+    err.statusCode = 401;
+    err.code = 'GOOGLE_TOKEN_INVALID';
+    throw err;
+  }
+  return res.json();
+}
+
+/**
+ * @param {string} credential - GIS ID token (JWT)
+ * @param {{ expectedNonce?: string | null }} [opts]
+ */
+export async function verifyGoogleIdToken(credential, opts = {}) {
+  const clientIds = parseClientIds();
+  if (!clientIds.length) {
+    const err = new Error('Google kiriw házirshe sozlanbaǵan');
+    err.statusCode = 503;
+    err.code = 'GOOGLE_NOT_CONFIGURED';
+    throw err;
+  }
+  if (!credential || typeof credential !== 'string') {
+    const err = new Error('Google credential kerek');
+    err.statusCode = 400;
+    err.code = 'GOOGLE_CREDENTIAL_MISSING';
+    throw err;
+  }
+
+  let payload;
+  try {
+    payload = await verifyWithJwks(credential);
+  } catch (e) {
+    if (e?.code === 'GOOGLE_NOT_CONFIGURED' || e?.code === 'GOOGLE_CREDENTIAL_MISSING') throw e;
+    // JWKS fail → tokeninfo fallback
+    try {
+      payload = await verifyWithTokeninfo(credential);
+    } catch (e2) {
+      if (e2.statusCode) throw e2;
+      const err = new Error('Google token tekshirile almadi');
+      err.statusCode = 503;
+      err.code = 'GOOGLE_TOKEN_UNREACHABLE';
+      throw err;
+    }
+  }
+
+  return validateClaims(payload, opts);
 }

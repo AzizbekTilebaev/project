@@ -104,6 +104,15 @@ export async function listUsers({
   const safePage = Math.max(Number(page) || 1, 1);
   const offset = (safePage - 1) * safeLimit;
 
+  // Soft schema — eski DB da joq bolsa
+  await db.query(`ALTER TABLE anonymous_actors ADD COLUMN nickname VARCHAR(40) NULL`).catch(() => {});
+  await db
+    .query(`ALTER TABLE app_sessions ADD COLUMN ip VARCHAR(45) NULL`)
+    .catch(() => {});
+  await db
+    .query(`ALTER TABLE app_sessions ADD COLUMN user_agent VARCHAR(255) NULL`)
+    .catch(() => {});
+
   const where = [];
   const params = [];
   const days = Number(activeDays);
@@ -117,8 +126,11 @@ export async function listUsers({
       where.push('a.id = ?');
       params.push(Number(needle));
     } else {
-      where.push('a.actor_key LIKE ?');
-      params.push(`%${needle.slice(0, 64)}%`);
+      where.push(
+        `(a.actor_key LIKE ? OR u.email LIKE ? OR u.display_name LIKE ? OR u.username LIKE ? OR a.nickname LIKE ?)`
+      );
+      const like = `%${needle.slice(0, 64)}%`;
+      params.push(like, like, like, like, like);
     }
   }
   const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
@@ -131,7 +143,10 @@ export async function listUsers({
         : 'a.last_seen_at DESC';
 
   const [[{ total }]] = await db.query(
-    `SELECT COUNT(*) AS total FROM anonymous_actors a ${whereSql}`,
+    `SELECT COUNT(*) AS total
+     FROM anonymous_actors a
+     LEFT JOIN app_users u ON u.id = a.user_id
+     ${whereSql}`,
     params
   );
 
@@ -141,17 +156,30 @@ export async function listUsers({
     `SELECT
        a.id,
        a.actor_key AS actorKey,
+       a.user_id AS userId,
+       a.nickname AS nickname,
        a.age_years AS ageYears,
        a.age_consent AS ageConsent,
        a.created_at AS createdAt,
        a.last_seen_at AS lastSeenAt,
        COALESCE(a.is_blocked, 0) AS isBlocked,
+       u.email AS email,
+       u.username AS username,
+       u.display_name AS displayName,
+       u.google_sub AS googleSub,
+       (SELECT s.ip FROM app_sessions s
+         WHERE s.user_id = a.user_id
+         ORDER BY s.created_at DESC LIMIT 1) AS lastIp,
+       (SELECT s.created_at FROM app_sessions s
+         WHERE s.user_id = a.user_id
+         ORDER BY s.created_at DESC LIMIT 1) AS lastLoginAt,
        (SELECT COUNT(*) FROM ${DB.quiz}.quiz_attempts qa WHERE qa.actor_id = a.id) AS quizAttempts,
        (SELECT COUNT(*) FROM ${DB.statistika}.learning_events le WHERE le.actor_id = a.id) AS events,
        (SELECT COUNT(*) FROM ${DB.statistika}.book_progress bp WHERE bp.actor_id = a.id) AS booksInProgress,
        (SELECT COUNT(*) FROM ${DB.krasvord}.crossword_stats cs WHERE cs.actor_id = a.id) AS crosswordsDone,
        (SELECT COUNT(*) FROM ${DB.ai}.mistake_bank mb WHERE mb.actor_id = a.id) AS mistakes
      FROM anonymous_actors a
+     LEFT JOIN app_users u ON u.id = a.user_id
      ${whereSql}
      ORDER BY ${orderSql}
      LIMIT ? OFFSET ?`,
@@ -165,6 +193,8 @@ export async function listUsers({
       ageConsent: Boolean(r.ageConsent),
       isBlocked: Boolean(r.isBlocked),
       active: !r.isBlocked,
+      googleLinked: Boolean(r.googleSub),
+      googleSub: undefined,
       quizAttempts: Number(r.quizAttempts),
       events: Number(r.events),
       booksInProgress: Number(r.booksInProgress),
@@ -337,12 +367,38 @@ export async function getUserDetail(id) {
   if (!Number.isInteger(actorId) || actorId <= 0) throw httpError('ID nadurıs');
 
   const [[actor]] = await db.query(
-    `SELECT id, actor_key AS actorKey, age_years AS ageYears, age_consent AS ageConsent,
-            created_at AS createdAt, last_seen_at AS lastSeenAt
-     FROM anonymous_actors WHERE id = ? LIMIT 1`,
+    `SELECT
+       a.id,
+       a.actor_key AS actorKey,
+       a.user_id AS userId,
+       a.nickname AS nickname,
+       a.age_years AS ageYears,
+       a.age_consent AS ageConsent,
+       a.created_at AS createdAt,
+       a.last_seen_at AS lastSeenAt,
+       u.email AS email,
+       u.username AS username,
+       u.display_name AS displayName,
+       u.google_sub AS googleSub
+     FROM anonymous_actors a
+     LEFT JOIN app_users u ON u.id = a.user_id
+     WHERE a.id = ? LIMIT 1`,
     [actorId]
   );
   if (!actor) throw httpError('Paydalanıwshı tabılmadı', 404);
+
+  let recentSessions = [];
+  if (actor.userId) {
+    const [sessions] = await db.query(
+      `SELECT id, ip, user_agent AS userAgent, created_at AS createdAt, expires_at AS expiresAt
+       FROM app_sessions
+       WHERE user_id = ?
+       ORDER BY created_at DESC
+       LIMIT 8`,
+      [actor.userId]
+    );
+    recentSessions = sessions;
+  }
 
   const [attempts] = await db.query(
     `SELECT qa.id, qa.quiz_id AS quizId, qa.status, qa.score, qa.total,
@@ -381,7 +437,13 @@ export async function getUserDetail(id) {
   );
 
   return {
-    user: { ...actor, ageConsent: Boolean(actor.ageConsent) },
+    user: {
+      ...actor,
+      ageConsent: Boolean(actor.ageConsent),
+      googleLinked: Boolean(actor.googleSub),
+      googleSub: undefined,
+    },
+    recentSessions,
     quizAttempts: attempts,
     eventSummary: events.map((e) => ({ ...e, count: Number(e.count) })),
     ability,

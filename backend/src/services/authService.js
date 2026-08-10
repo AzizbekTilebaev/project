@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import { pools } from '../config/db.js';
 import { claimAnonymousHistory } from './actorService.js';
-import { linkActorToUser } from './quotaService.js';
 import { sendPasswordResetMail } from '../utils/mail.js';
 import {
   getPrimaryGoogleClientId,
@@ -12,10 +11,18 @@ import { authFeatures, requireFeature } from '../config/authFeatures.js';
 import { generateTotpSecret, totpUri, verifyTotp } from './totpService.js';
 import { fetchGooglePeopleProfile, GOOGLE_PEOPLE_SCOPES } from './googlePeopleService.js';
 import { sanitizeAvatarUrl } from '../utils/safeUrl.js';
+import {
+  looksLikeEmail,
+  normalizeUsername,
+  suggestUsernameBase,
+  validateUsername,
+} from '../utils/username.js';
 
 const db = pools.users;
-const SESSION_DAYS = Math.min(Math.max(Number(process.env.AUTH_SESSION_DAYS) || 30, 1), 30);
+const SESSION_DAYS = Math.min(Math.max(Number(process.env.AUTH_SESSION_DAYS) || 1, 1), 30);
 const TOTP_CHALLENGE_MS = 5 * 60 * 1000;
+/** Schema migratsiyasi — bir marta (Aiven RTT ni login yo‘lida takrorlamaslik). */
+let schemaReadyPromise = null;
 
 function hashToken(token) {
   return crypto.createHash('sha256').update(token).digest('hex');
@@ -45,6 +52,7 @@ function publicUser(row) {
   return {
     id: row.id,
     email: row.email,
+    username: row.username || null,
     displayName: row.display_name || row.displayName || '',
     avatarUrl: row.avatar_url || row.avatarUrl || null,
     bio: row.bio || '',
@@ -71,6 +79,8 @@ function parseJson(v, fallback) {
 }
 
 export async function ensureAuthSchema() {
+  if (schemaReadyPromise) return schemaReadyPromise;
+  schemaReadyPromise = (async () => {
   await db.query(`
     CREATE TABLE IF NOT EXISTS app_users (
       id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -125,19 +135,38 @@ export async function ensureAuthSchema() {
     `ALTER TABLE app_users ADD COLUMN totp_enabled TINYINT(1) NOT NULL DEFAULT 0`,
     `ALTER TABLE app_users ADD COLUMN totp_pending_secret VARCHAR(64) NULL`,
     `ALTER TABLE app_users ADD COLUMN google_access_meta JSON NULL`,
+    `ALTER TABLE app_users ADD COLUMN username VARCHAR(32) NULL`,
   ];
   for (const sql of alters) {
     await db.query(sql).catch(() => {});
   }
+  await db
+    .query(`ALTER TABLE app_users ADD UNIQUE KEY uq_app_users_username (username)`)
+    .catch(() => {});
+  // Login audit (IP ixtiyoriy ko‘rsatiladi — admin UI)
+  const sessionAlters = [
+    `ALTER TABLE app_sessions ADD COLUMN ip VARCHAR(45) NULL`,
+    `ALTER TABLE app_sessions ADD COLUMN user_agent VARCHAR(255) NULL`,
+  ];
+  for (const sql of sessionAlters) {
+    await db.query(sql).catch(() => {});
+  }
+  })().catch((err) => {
+    schemaReadyPromise = null;
+    throw err;
+  });
+  return schemaReadyPromise;
 }
 
-async function createSession(userId) {
+async function createSession(userId, meta = {}) {
   const token = crypto.randomBytes(32).toString('hex');
   const tokenHash = hashToken(token);
+  const ip = meta.ip ? String(meta.ip).slice(0, 45) : null;
+  const userAgent = meta.userAgent ? String(meta.userAgent).slice(0, 255) : null;
   await db.query(
-    `INSERT INTO app_sessions (user_id, token_hash, expires_at)
-     VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ? DAY))`,
-    [userId, tokenHash, SESSION_DAYS]
+    `INSERT INTO app_sessions (user_id, token_hash, expires_at, ip, user_agent)
+     VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ? DAY), ?, ?)`,
+    [userId, tokenHash, SESSION_DAYS, ip, userAgent]
   );
   return token;
 }
@@ -145,13 +174,54 @@ async function createSession(userId) {
 async function afterAuth(userId, actorId) {
   if (!actorId) return;
   try {
-    await linkActorToUser(actorId, userId);
+    // claimAnonymousHistory ichida linkActorToUser ham bor — ikki marta chaqirmaymiz
     await claimAnonymousHistory(actorId, userId);
   } catch (e) {
     // Qurılma boshqa akkauntqa tegishli — login ishlasin, merge yo‘q
     if (e?.statusCode === 409) return;
     throw e;
   }
+}
+
+/** Unikal username tayyorlaw (band bolsa 2,3… qosıladı). */
+async function allocateUniqueUsername(seed, { excludeUserId = null } = {}) {
+  const base = suggestUsernameBase(seed);
+  for (let i = 0; i < 40; i++) {
+    const candidate = i === 0 ? base : `${base.slice(0, 24)}${i + 1}`;
+    const checked = validateUsername(candidate);
+    if (!checked.ok) continue;
+    const params = [checked.username];
+    let sql = `SELECT id FROM app_users WHERE username = ?`;
+    if (excludeUserId) {
+      sql += ` AND id <> ?`;
+      params.push(excludeUserId);
+    }
+    sql += ` LIMIT 1`;
+    const [[row]] = await db.query(sql, params);
+    if (!row) return checked.username;
+  }
+  return `u${Date.now().toString(36)}`;
+}
+
+export async function checkUsernameAvailable(raw, { excludeUserId = null } = {}) {
+  await ensureAuthSchema();
+  const checked = validateUsername(raw);
+  if (!checked.ok) {
+    return { available: false, username: normalizeUsername(raw), reason: checked.error };
+  }
+  const params = [checked.username];
+  let sql = `SELECT id FROM app_users WHERE username = ?`;
+  if (excludeUserId) {
+    sql += ` AND id <> ?`;
+    params.push(excludeUserId);
+  }
+  sql += ` LIMIT 1`;
+  const [[row]] = await db.query(sql, params);
+  return {
+    available: !row,
+    username: checked.username,
+    reason: row ? 'Bul login band' : null,
+  };
 }
 
 function assertPasswordStrength(password) {
@@ -216,16 +286,16 @@ function verifyTotpChallenge(token) {
   return Number.isFinite(id) && id > 0 ? id : null;
 }
 
-async function issueAuthSession(userId, actorId) {
+async function issueAuthSession(userId, actorId, meta = {}) {
   await afterAuth(userId, actorId);
-  const token = await createSession(userId);
+  const token = await createSession(userId, meta);
   const user = await getUserById(userId);
-  return { token, user: publicUser(user) };
+  return { token, user: publicUser(user), expiresInDays: SESSION_DAYS };
 }
 
-async function maybeRequireTotp(userRow, actorId) {
+async function maybeRequireTotp(userRow, actorId, meta = {}) {
   if (!authFeatures().totp2fa || !userRow?.totp_enabled) {
-    return issueAuthSession(userRow.id, actorId);
+    return issueAuthSession(userRow.id, actorId, meta);
   }
   return {
     requiresTotp: true,
@@ -234,7 +304,14 @@ async function maybeRequireTotp(userRow, actorId) {
   };
 }
 
-export async function registerEmail({ email, password, displayName, actorId }) {
+export async function registerEmail({
+  email,
+  password,
+  displayName,
+  username: usernameRaw,
+  actorId,
+  meta = {},
+}) {
   await ensureAuthSchema();
   const cleanEmail = String(email || '')
     .trim()
@@ -247,53 +324,87 @@ export async function registerEmail({ email, password, displayName, actorId }) {
   assertPasswordStrength(password);
   const hash = hashPassword(password);
   const name = String(displayName || cleanEmail.split('@')[0]).slice(0, 80);
+
+  let username;
+  if (usernameRaw != null && String(usernameRaw).trim()) {
+    const checked = validateUsername(usernameRaw);
+    if (!checked.ok) {
+      const err = new Error(checked.error);
+      err.statusCode = checked.statusCode || 400;
+      throw err;
+    }
+    const avail = await checkUsernameAvailable(checked.username);
+    if (!avail.available) {
+      const err = new Error(avail.reason || 'Bul login band');
+      err.statusCode = 409;
+      err.code = 'USERNAME_TAKEN';
+      throw err;
+    }
+    username = checked.username;
+  } else {
+    username = await allocateUniqueUsername(cleanEmail);
+  }
+
   let userId;
   try {
     const [result] = await db.query(
-      `INSERT INTO app_users (email, password_hash, display_name) VALUES (?, ?, ?)`,
-      [cleanEmail, hash, name]
+      `INSERT INTO app_users (email, password_hash, display_name, username) VALUES (?, ?, ?, ?)`,
+      [cleanEmail, hash, name, username]
     );
     userId = result.insertId;
   } catch (e) {
     if (e?.code === 'ER_DUP_ENTRY') {
-      const err = new Error('Bul email allaqachon tipke alınǵan');
+      const msg = String(e.message || '');
+      const err = new Error(
+        msg.includes('username') ? 'Bul login band' : 'Bul email allaqachon tipke alınǵan'
+      );
       err.statusCode = 409;
       throw err;
     }
     throw e;
   }
   await afterAuth(userId, actorId);
-  const token = await createSession(userId);
+  const token = await createSession(userId, meta);
   const user = await getUserById(userId);
-  return { token, user: publicUser(user) };
+  return { token, user: publicUser(user), expiresInDays: SESSION_DAYS };
 }
 
-export async function loginEmail({ email, password, actorId }) {
+export async function loginEmail({ email, password, login, actorId, meta = {} }) {
   await ensureAuthSchema();
-  const cleanEmail = String(email || '')
+  const identifier = String(login || email || '')
     .trim()
     .toLowerCase();
-  const [rows] = await db.query(
-    `SELECT * FROM app_users WHERE email = ? LIMIT 1`,
-    [cleanEmail]
-  );
+  if (!identifier) {
+    const err = new Error('Email yamasa login kerek');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  let rows;
+  if (looksLikeEmail(identifier)) {
+    [rows] = await db.query(`SELECT * FROM app_users WHERE email = ? LIMIT 1`, [identifier]);
+  } else {
+    const uname = normalizeUsername(identifier);
+    [rows] = await db.query(`SELECT * FROM app_users WHERE username = ? LIMIT 1`, [uname]);
+  }
+
   const row = rows[0];
   if (!row?.password_hash) {
-    const err = new Error('Email yamasa qupıya sóz qáte');
+    const err = new Error('Email/login yamasa qupıya sóz qáte');
     err.statusCode = 401;
     throw err;
   }
   const ok = verifyPassword(password, row.password_hash);
   if (!ok) {
-    const err = new Error('Email yamasa qupıya sóz qáte');
+    const err = new Error('Email/login yamasa qupıya sóz qáte');
     err.statusCode = 401;
     throw err;
   }
-  return maybeRequireTotp(row, actorId);
+  return maybeRequireTotp(row, actorId, meta);
 }
 
 /** Google Sign-In (OAuth 2.0 / OpenID Connect ID token). */
-export async function loginGoogle({ credential, actorId, nonce }) {
+export async function loginGoogle({ credential, actorId, nonce, meta = {} }) {
   await ensureAuthSchema();
   if (!isGoogleSignInConfigured()) {
     const err = new Error('Google kiriw házirshe sozlanbaǵan');
@@ -310,10 +421,10 @@ export async function loginGoogle({ credential, actorId, nonce }) {
   const payload = await verifyGoogleIdToken(String(credential), {
     expectedNonce: nonce || null,
   });
-  return upsertGoogleUser(payload, actorId);
+  return upsertGoogleUser(payload, actorId, meta);
 }
 
-async function upsertGoogleUser(payload, actorId) {
+async function upsertGoogleUser(payload, actorId, meta = {}) {
   const sub = payload.sub;
   const email = payload.email ? String(payload.email).toLowerCase() : null;
   const name = String(payload.name || email?.split('@')[0] || 'Oyınshı').slice(0, 80);
@@ -346,9 +457,10 @@ async function upsertGoogleUser(payload, actorId) {
 
   if (!user) {
     try {
+      const username = await allocateUniqueUsername(email || name);
       const [result] = await db.query(
-        `INSERT INTO app_users (email, google_sub, display_name, avatar_url) VALUES (?, ?, ?, ?)`,
-        [email, sub, name, avatar]
+        `INSERT INTO app_users (email, google_sub, display_name, avatar_url, username) VALUES (?, ?, ?, ?, ?)`,
+        [email, sub, name, avatar, username]
       );
       user = await getUserById(result.insertId);
     } catch (e) {
@@ -359,12 +471,19 @@ async function upsertGoogleUser(payload, actorId) {
       }
       throw e;
     }
+  } else if (!user.username) {
+    const username = await allocateUniqueUsername(user.email || name, { excludeUserId: user.id });
+    await db.query(`UPDATE app_users SET username = ? WHERE id = ? AND username IS NULL`, [
+      username,
+      user.id,
+    ]);
+    user = await getUserById(user.id);
   }
 
-  return maybeRequireTotp(user, actorId);
+  return maybeRequireTotp(user, actorId, meta);
 }
 
-export async function completeTotpLogin({ challengeToken, code, actorId }) {
+export async function completeTotpLogin({ challengeToken, code, actorId, meta = {} }) {
   requireFeature('totp2fa');
   await ensureAuthSchema();
   const userId = verifyTotpChallenge(challengeToken);
@@ -386,7 +505,7 @@ export async function completeTotpLogin({ challengeToken, code, actorId }) {
     err.code = 'TOTP_INVALID';
     throw err;
   }
-  return issueAuthSession(userId, actorId);
+  return issueAuthSession(userId, actorId, meta);
 }
 
 /** Logged-in email user: attach Google sub. */
@@ -509,6 +628,23 @@ export async function updateUserProfile(userId, profile = {}) {
       vals.push(val);
     }
   }
+  if (profile.username !== undefined) {
+    const checked = validateUsername(profile.username);
+    if (!checked.ok) {
+      const err = new Error(checked.error);
+      err.statusCode = checked.statusCode || 400;
+      throw err;
+    }
+    const avail = await checkUsernameAvailable(checked.username, { excludeUserId: userId });
+    if (!avail.available) {
+      const err = new Error(avail.reason || 'Bul login band');
+      err.statusCode = 409;
+      err.code = 'USERNAME_TAKEN';
+      throw err;
+    }
+    fields.push('username = ?');
+    vals.push(checked.username);
+  }
   // Client avatarUrl ignored — faqat /avatar upload yoki Google sync
   if (profile.avatarUrl !== undefined && process.env.AUTH_ALLOW_CLIENT_AVATAR_URL === '1') {
     const safe = sanitizeAvatarUrl(profile.avatarUrl);
@@ -525,7 +661,17 @@ export async function updateUserProfile(userId, profile = {}) {
   }
   if (!fields.length) return publicUser(await getUserById(userId));
   vals.push(userId);
-  await db.query(`UPDATE app_users SET ${fields.join(', ')} WHERE id = ?`, vals);
+  try {
+    await db.query(`UPDATE app_users SET ${fields.join(', ')} WHERE id = ?`, vals);
+  } catch (e) {
+    if (e?.code === 'ER_DUP_ENTRY') {
+      const err = new Error('Bul login band');
+      err.statusCode = 409;
+      err.code = 'USERNAME_TAKEN';
+      throw err;
+    }
+    throw e;
+  }
   return publicUser(await getUserById(userId));
 }
 
@@ -600,7 +746,7 @@ export async function requestPasswordReset(email) {
   return out;
 }
 
-export async function resetPasswordWithToken({ token, newPassword, actorId = null }) {
+export async function resetPasswordWithToken({ token, newPassword, actorId = null, meta = {} }) {
   await ensureAuthSchema();
   assertPasswordStrength(newPassword);
   const raw = String(token || '').trim();
@@ -630,9 +776,9 @@ export async function resetPasswordWithToken({ token, newPassword, actorId = nul
 
   await afterAuth(row.userId, actorId);
 
-  const sessionToken = await createSession(row.userId);
+  const sessionToken = await createSession(row.userId, meta);
   const user = await getUserById(row.userId);
-  return { token: sessionToken, user: publicUser(user) };
+  return { token: sessionToken, user: publicUser(user), expiresInDays: SESSION_DAYS };
 }
 
 export async function destroyOtherSessions(userId, keepToken) {
@@ -800,7 +946,7 @@ export async function markPhoneVerified(userId, phoneE164) {
  * Soft phone login — faqat phone_verified_at bar akkaunt.
  * Yangi akkaunt yaratmaydı (verify Profile orqalı).
  */
-export async function loginWithPhone({ phoneE164, actorId }) {
+export async function loginWithPhone({ phoneE164, actorId, meta = {} }) {
   await ensureAuthSchema();
   const phone = String(phoneE164 || '').trim();
   const [rows] = await db.query(
@@ -816,7 +962,7 @@ export async function loginWithPhone({ phoneE164, actorId }) {
     err.code = 'PHONE_NOT_LINKED';
     throw err;
   }
-  return maybeRequireTotp(row, actorId);
+  return maybeRequireTotp(row, actorId, meta);
 }
 
 export { publicUser };

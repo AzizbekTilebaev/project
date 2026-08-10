@@ -28,13 +28,6 @@ function FactRow({ label, value }) {
 export default function WriterFacts({ writer, script = 'cyrillic' }) {
   if (!writer) return null;
   const birthFormatted = formatBirthDay(writer, script);
-  const birthplace =
-    script === 'latin'
-      ? writer.birthplaceLatin || writer.birthplace || writer.birthplaceOriginal
-      : writer.birthplaceCyrillic ||
-        writer.birthplaceOriginal ||
-        writer.birthplace ||
-        writer.birthplaceLatin;
   const birthYear =
     writer.birthYear ||
     (writer.lifeSpan ? Number(String(writer.lifeSpan).match(/\d{4}/)?.[0]) || null : null);
@@ -48,14 +41,13 @@ export default function WriterFacts({ writer, script = 'cyrillic' }) {
     ? `${birthYear}–${deathYear || '…'}${age ? ` (${age} ${t('livedYears', script)})` : ''}`
     : writer.lifeSpan || null;
 
-  if (!birthFormatted && !birthplace && !lifeYears) return null;
+  if (!birthFormatted && !lifeYears) return null;
 
   return (
     <section className="mt-6" aria-label={t('facts', script)}>
       <h2 className="mb-3 font-display text-xl tracking-tight text-ink">{t('facts', script)}</h2>
       <dl className="grid gap-2">
         <FactRow label={t('birthDay', script)} value={birthFormatted} />
-        <FactRow label={t('birthPlace', script)} value={birthplace} />
         <FactRow label={t('deathYear', script)} value={deathYear ? String(deathYear) : null} />
         <FactRow label={t('lifeYears', script)} value={lifeYears} />
       </dl>

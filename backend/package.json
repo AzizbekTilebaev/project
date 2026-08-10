@@ -14,6 +14,7 @@
     "setup-books": "node scripts/setup-books-db.js",
     "setup-literature": "node scripts/setup-literature-db.js",
     "import-literature": "node scripts/import-literature-data.js",
+    "seed-writer-roles": "node scripts/seed-writer-roles.mjs",
     "setup-crosswords": "node scripts/setup-crosswords-db.js",
     "backup": "node scripts/backup-db.js",
     "restore": "node scripts/restore-db.js",

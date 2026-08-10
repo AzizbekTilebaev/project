@@ -24,6 +24,7 @@ import FreePlayCtaRow from '../components/FreePlayCtaRow';
 import { FOOTER_FREE_LINKS } from '../data/siteDeepLinks';
 import GuestSoftContinue from '../components/GuestSoftContinue';
 import { useAuth } from '../contexts/AuthContext';
+import { pickFeaturedBooks } from '../data/featuredBooks';
 
 const PROGRESS_KEY = 'books:progress';
 
@@ -255,6 +256,8 @@ export default function Books() {
   };
 
   const genres = useMemo(() => [...new Set(books.map((b) => b.genre).filter(Boolean))], [books]);
+  const featuredBooks = useMemo(() => pickFeaturedBooks(books, 6), [books]);
+  const showFeaturedStrip = !query.trim() && !genre && featuredBooks.length > 0;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -544,6 +547,49 @@ export default function Books() {
         <p className="mb-8 max-w-xl text-lg leading-relaxed text-ink/60">
           {t('booksIntro', script)}
         </p>
+
+        {showFeaturedStrip ? (
+          <div className="mb-10">
+            <div className="qp-section-head mb-3">
+              <div>
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-teal-800/65">
+                  {t('featuredBooks', script)}
+                </p>
+                <p className="mt-1 text-sm text-ink/50">{t('featuredBooksDesc', script)}</p>
+              </div>
+              <Link to="/literature" className="qp-chip text-teal-900 no-underline">
+                {t('literatureBack', script)}
+                <AnimChevron count={2} className="opacity-50" />
+              </Link>
+            </div>
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredBooks.map((book) => {
+                const disp = bookDisplay(book, script);
+                return (
+                  <li key={book.id}>
+                    <button
+                      type="button"
+                      onClick={() => openBook(book)}
+                      className="group flex w-full items-center gap-3 qp-card p-3 text-left transition hover:-translate-y-0.5 hover:border-teal-700/25"
+                    >
+                      <BookCover book={book} compact script={script} />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate font-display text-lg text-ink group-hover:text-teal-900">
+                          {disp.title}
+                        </span>
+                        <span className="mt-0.5 block text-xs text-ink/45">{disp.author}</span>
+                        <span className="mt-2 inline-flex items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wide text-teal-800/70">
+                          {t('startThisBook', script)}
+                          <AnimChevron count={2} className="opacity-60" />
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ) : null}
 
         {(continueBook || readingMeta.streak > 0) && (
           <div className="mb-8 rounded-2xl border border-sky-600/15 bg-sky-50/50 px-4 py-3">

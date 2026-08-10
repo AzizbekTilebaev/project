@@ -499,6 +499,32 @@ html[data-theme='night'] .qp-play-card__badge {
   color: #a7f3d0;
 }
 
+/* Home — ixcham eshik kartaları (~50%) */
+.qp-play-card--compact {
+  border-radius: 1rem;
+  box-shadow: 0 10px 24px -18px rgba(26, 46, 40, 0.3);
+}
+
+.qp-play-card--compact:hover {
+  transform: translateY(-3px);
+}
+
+.qp-play-card--compact .qp-play-card__media {
+  aspect-ratio: 1 / 0.48;
+}
+
+.qp-play-card--compact .qp-play-card__badge {
+  top: 0.4rem;
+  left: 0.4rem;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.58rem;
+  gap: 0.2rem;
+}
+
+.qp-play-card--compact .qp-play-card__body {
+  padding: 0.55rem 0.7rem 0.65rem;
+}
+
 .qp-header-glass {
   background: rgba(246, 244, 239, 0.72);
   border-bottom: 1px solid rgba(255, 255, 255, 0.45);

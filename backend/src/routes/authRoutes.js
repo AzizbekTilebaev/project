@@ -6,6 +6,7 @@ import {
   authConfig,
   beginTotpSetup,
   changePassword,
+  checkUsernameAvailable,
   completeTotpLogin,
   confirmTotpSetup,
   destroyOtherSessions,
@@ -32,6 +33,18 @@ import {
   handleAvatarMulter,
   publicAvatarUrl,
 } from '../middleware/avatarUpload.js';
+
+function clientMeta(req) {
+  const fwd = String(req.headers['x-forwarded-for'] || '')
+    .split(',')[0]
+    .trim();
+  const ip = fwd || req.ip || req.socket?.remoteAddress || null;
+  const userAgent = req.headers['user-agent'] || null;
+  return {
+    ip: ip ? String(ip).slice(0, 45) : null,
+    userAgent: userAgent ? String(userAgent).slice(0, 255) : null,
+  };
+}
 
 const router = Router();
 
@@ -78,18 +91,29 @@ router.get('/me', optionalAuth, optionalActor, async (req, res, next) => {
   }
 });
 
+router.get('/username-available', async (req, res, next) => {
+  try {
+    const result = await checkUsernameAvailable(req.query?.u || req.query?.username);
+    res.json({ success: true, ...result });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post('/register', authWriteLimiter, optionalActor, optionalAuth, async (req, res, next) => {
   try {
     const result = await registerEmail({
       email: req.body?.email,
       password: req.body?.password,
       displayName: req.body?.displayName,
+      username: req.body?.username,
       actorId: req.actor?.id || null,
+      meta: clientMeta(req),
     });
     res.status(201).json({ success: true, ...result });
   } catch (err) {
     if (err.statusCode) {
-      return res.status(err.statusCode).json({ success: false, message: err.message });
+      return res.status(err.statusCode).json({ success: false, message: err.message, code: err.code });
     }
     next(err);
   }
@@ -99,8 +123,10 @@ router.post('/login', loginLimiter, optionalActor, async (req, res, next) => {
   try {
     const result = await loginEmail({
       email: req.body?.email,
+      login: req.body?.login || req.body?.username,
       password: req.body?.password,
       actorId: req.actor?.id || null,
+      meta: clientMeta(req),
     });
     res.json({ success: true, ...result });
   } catch (err) {
@@ -117,6 +143,7 @@ router.post('/login/totp', loginLimiter, optionalActor, async (req, res, next) =
       challengeToken: req.body?.challengeToken,
       code: req.body?.code,
       actorId: req.actor?.id || null,
+      meta: clientMeta(req),
     });
     res.json({ success: true, ...result });
   } catch (err) {
@@ -137,6 +164,7 @@ router.post('/google', loginLimiter, optionalActor, async (req, res, next) => {
       credential: req.body?.credential,
       nonce: req.body?.nonce,
       actorId: req.actor?.id || null,
+      meta: clientMeta(req),
     });
     res.json({ success: true, ...result });
   } catch (err) {
@@ -204,6 +232,7 @@ router.post('/reset-password', resetLimiter, optionalActor, async (req, res, nex
       token: req.body?.token,
       newPassword: req.body?.newPassword || req.body?.password,
       actorId: req.actor?.id || null,
+      meta: clientMeta(req),
     });
     res.json({ success: true, ...result });
   } catch (err) {
@@ -391,6 +420,7 @@ router.post('/phone/verify-otp', loginLimiter, optionalActor, async (req, res, n
     const data = await loginWithPhone({
       phoneE164: verified.phone,
       actorId: req.actor?.id || null,
+      meta: clientMeta(req),
     });
     res.json({ success: true, ...data });
   } catch (err) {
